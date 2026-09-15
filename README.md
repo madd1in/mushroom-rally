@@ -2,6 +2,22 @@
 
 Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
+## Sound-Update 16.09.2026
+
+Musik steht jetzt standardmaessig auf AN (♪ AN); Browser-Autoplay-Beschraenkungen werden
+abgefangen: Der Ton startet mit der ersten Nutzereingabe (Klick oder Taste), fruehere
+Autoplay-Blockaden werden beim Arming aufgeraeumt und erneut versucht. Die Renn-BGM ist
+jetzt `Five Star Mayhem` (A-Variante, aus dem Shuffle-Bestand des Nutzers) statt des
+entspannteren Boulevard-Heat-Loops; im Menue bleibt Radio Chrom. Neu sind deutsche
+Ansagen ueber die lokale Web-Speech-API (kein Netz, keine Kosten): Startfreigabe,
+Rundenwechsel, Volltreffer, Turbo und Endplatzierung; pausierbar ueber den Ton-Schalter.
+Die Sprecherqualitaet haengt vom installierten Windows-Stimme ab. ElevenLabs war in
+dieser Session nicht erreichbar (MCP nicht verbunden, kein API-Key) — fuer Eleven-Music-
+Tracks oder hochwertiges TTS muss der ElevenLabs-MCP erst wieder verbunden werden.
+Entfernt: das Speedlines-Overlay (gleichmaessige senkrechte Streifen beim Turbo), das
+als Renderfehler wahrgenommen wurde; Boost-Feedback kommt jetzt nur aus FOV-Kick,
+Kamerabeben, Funken und HUD.
+
 ## Asset-Update 15.09.2026, Runde 2 (Blender-CLI)
 
 Start-Ziel-Tor und Streckenbaeume sind jetzt echte Blender-Modelle: `assets/gate.glb`

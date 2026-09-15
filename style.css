@@ -10,7 +10,6 @@
 #autoGas{background:transparent;border:1px solid #fff4;border-radius:20px;padding:6px 12px;font-size:10px;color:#e4e9d5} #autoGas[aria-pressed=true]{background:#ffe16a;color:#234d39}
 
 #vignette{position:fixed;inset:0;pointer-events:none;z-index:2;background:radial-gradient(ellipse at center,transparent 55%,rgba(9,40,40,.30) 100%)}
-#speedlines{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .25s;background:repeating-linear-gradient(90deg,transparent 0 44px,rgba(255,255,255,.13) 44px 47px,transparent 47px 130px)}
 .track .best{display:block;font-size:10px;margin-top:4px;color:#ffcf4d;font-variant-numeric:tabular-nums;letter-spacing:.5px}
 .track.selected .best{color:#b07f1e}
 
