@@ -13,7 +13,9 @@ geprueft; exportiert als glTF. Der Pilz-Baum ersetzt pro Instanz den frueheren
 Prozedural-Bau (gleiche Draw-Call-Zahl, drei Kronengruentoene per `CapPaint` getintet);
 das Tor loest den alten Kasten-Bogen ab, das MUSHROOM-RALLY-Textschild bleibt Canvas-
 basiert liegen. Bei fehlenden Dateien greift weiter der prozedurale Fallback. `npm test`
-unveraendert gruen (4/4).
+unveraendert gruen (4/4). Beide neuen GLB-Dateien wurden ebenfalls per offiziellem
+Unreal-MCP (UE 5.8, Testprojekt test123, /Game/MushroomRally) importiert und dort als
+StaticMeshes mit Materialinstanzen verifiziert; im Spiel geaendert hat das nichts.
 
 ## Asset-Update 15.09.2026 (Blender-MCP)
 
