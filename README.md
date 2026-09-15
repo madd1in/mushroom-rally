@@ -16,6 +16,18 @@ misst alle 2 Sekunden die FPS im Rennen und senkt unter 45 FPS zuerst die Aufloe
 dann die Schatten. Unter `?test=1` liefert `window.rallyTest.perf()` Draw-Calls, Dreiecke,
 DPR und Qualitaetsstufe fuer Messungen. Touch-Steuerung ist enthalten.
 
+## Musik (15.09.2026)
+
+Echte BGM statt nur Synthese: `assets/audio/menu.mp3` (Radio Chrom, 18-s-Loop) im Menue
+und `assets/audio/race.mp3` (Boulevard Heat Loop, 2:52, als Web-MP3 auf 96 kbps komprimiert)
+im Rennen, als `<audio>`-Loops mit 15 % Lautstaerke. Beide stammen aus vom Nutzer
+bereitgestellten Musikdateien (Downloads-Ordner); Lizenzen vor spaeterer kommerzieller
+Nutzung pruefen. Der Ton-Schalter steuert Musik, Motor und Effekte zusammen; fehlen die
+Dateien, springt automatisch der prozedurale Chiptune-Sequencer ein. Weitere Kandidaten
+fuer schnellere Tausch-Aktionen liegen unter `Downloads/assets/audio/shuffle/`
+(Five Star Mayhem, Neon Heist Run, Vice Coast Run — je A/B-Variante) und
+`Downloads/assets/audio/` (basskeller, betonhain-night, funk-88-8, nachtfalter-fm).
+
 ## Start
 
 Im Projektordner `npm start` ausfuehren und http://127.0.0.1:4218 oeffnen. Node.js wird benoetigt. Das Spiel verwendet eine lokale Three.js-Datei und benoetigt keine CDN-Verbindung, API-Keys oder Build-Installation.
