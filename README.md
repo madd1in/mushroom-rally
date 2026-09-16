@@ -2,6 +2,22 @@
 
 Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
+## Grafik & Musik Runde 4 (16.09.2026)
+
+Item-Boxen sind jetzt Geschenk-Modelle aus Blender (`assets/itembox.glb`, goldene
+Rundbox mit rotem Band und Schleife, 396 Dreiecke) mit einem schwebenden roten
+„?"-Sprite darueber (billboardet, bleibt also immer lesbar). Der Spieler-Kart pustet
+beim Anfahren graue Auspuff-Puffs (Pool, max. 24, steigen auf und verwehen). Der
+Nacht-Kurs Sternen-Garten hat zusaetzlich zum Sternenhimmel jetzt einen Mond, und um
+die Insel pulsiert ein heller Kuestenschaum-Ring auf dem Wasser.
+
+Musik komplett eigenständig: Auch das Menue läuft jetzt mit einem eigenen Track
+(`assets/audio/menu_own.wav`, „Pilz-Cafe", 100 BPM, C-Dur, 58 s) — Dreieck-Melodie
+ueber Cmaj7/Am7/F/G7, weicher Bass, Besen-Percussion. Die Rennmusik laeuft zudem
+durch einen dynamischen Tiefpass (WebAudio), der sich mit dem Tempo oeffnet: Im
+Stand klingt die Musik geschlossen, bei Vollgas und Turbo voll auf. Neu ist auch
+ein Bestzeiten-Jubel (goldene Konfetti, Ansage und Einblendung bei neuer Bestzeit).
+
 ## Grafik- & Sound-Update 16.09.2026, Runde 2
 
 Drei neue Blender-Assets (headless gebaut, numerisch geprueft, EEVEE-Rendercheck):
