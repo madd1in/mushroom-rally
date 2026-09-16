@@ -4,6 +4,16 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Mobile-Nachbesserung 16.09.2026 (diese Session)
+
+Long-Press auf GAS erzeugte Textmarkierung: jetzt `user-select:none` + `-webkit-touch-callout:none`
+global, `touch-action:manipulation` auf allen Buttons und `oncontextmenu`-Block auf den
+Touch-Tasten (per Touch-emuliertem Browser-Test bestaetigt: 1,8-s-Hold, Selektion bleibt leer).
+Das Hochformat-Layout dieser Sektion unten wurde pixelgenau bei 390x844 nachgeprueft: zwei
+Vollbreiten-Reihen, alle Tasten ~98 px, GAS anteilig breiter, Tacho/Minimap darueber, kein
+Overflow, safe-area-Abstand. Offener Punkt: `assets/keyart.jpg` ist in og:image referenziert,
+existiert aber noch nicht (nur Share-Vorschau betroffen).
+
 ## Runde 5 (16.09.2026): ElevenLabs-Sound, neue Items, Unreal-Showcase
 
 **Musik (ElevenLabs Music v2, instrumental):** drei neue BGM-Tracks ersetzen die selbst
