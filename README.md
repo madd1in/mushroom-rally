@@ -4,6 +4,51 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 7 (17.09.2026): Koennen statt Schienen, Geisterhaus, Zeitfahren
+
+**Fahrphysik neu (`core.mjs`):** Das Kart faehrt nicht mehr auf der Strecke entlang, sondern frei
+(Position, Richtung, Geschwindigkeit). Die Strecke wird nur noch fuer Rundenfortschritt und Offroad
+projiziert. Wer nicht lenkt, faehrt geradeaus in die Wiese. Tempo nach Mario-Kart-Vorbild: 30 m/s
+Spitze (108 km/h), Turbo 40 m/s. Offroad bremst hart auf 12,5 m/s. Driften ist steuerbar: Gegenlenken
+ergibt einen weiten Bogen, Einlenken einen engen. Mini-Turbos laden in drei Stufen
+(blau/orange/lila). Karts rempeln sich, Baeume/Felsen/Zaeune sind Hindernisse, grosse Abkuerzungen
+zaehlen nicht. Ein Rettungspilz setzt nach Schluchtstuerzen zurueck.
+
+**KI mit Koennen:** Ideallinie, Pure-Pursuit-Lenkung, Bremspunkte aus einer
+Kurvengeschwindigkeits-Tabelle und Drift-Einsatz je Klasse (50cc/100cc/150cc). Das Gummiband ist
+nur noch mild, der Spieler startet von Platz 6.
+
+**Erfolgserlebnis:** Klassenwahl, Grand-Prix-Pokale je Klasse, freischaltbares Goldpilz-Kart,
+Sterne (bei Sieg ohne Treffer: „Perfekt"), Ergebnis-Statistik (beste Runde, Mini-Turbos, Tricks,
+Ringe, Windschatten, Ueberholmanoever, Treffer), Rundenzeiten-Einblendung. **Zeitfahren 👻**: Deine
+Bestfahrt wird aufgezeichnet und faehrt als Geist mit; im HUD steht der Abstand zum Geist, dazu
+Gold-/Silber-/Bronze-Medaillen je Strecke.
+
+**Strecken:** Pilz-Promenade (sattes Gruen), Sonnen-Canyon (Abendrot, rote Felsnadeln, Kakteen,
+Plateau mit Schluchtsprung), Neon-Pilzwald (Pendel-Pilze, leuchtende Curbs, Gluehwuermchen) und neu
+das **Geisterhaus**: Die Strasse fuehrt mitten durch eine Spukvilla (Blender: Halle mit
+Kronleuchtern und Portraits, zwei schiefe Tuerme). Buh-Geister schweben quer ueber die Fahrbahn
+(Dreher + Sporenverlust), dazu Friedhof, Kuerbislaternen und Fledermaeuse. Schanzen, Pads und
+Boost-Felder suchen sich automatisch gerade Abschnitte. Die Strassen-Ueberhoehung kippt jetzt um die
+Innenkante, damit die Wiese die Strecke nicht mehr verschluckt. Pfeiltafeln kuendigen enge Kurven
+frueh an, eine Startampel zeigt das Raketenstart-Timing.
+
+**Fahrermodelle (Blender):** Pilzkinder mit Gesicht, gepunkteter Kappe in Kartfarbe, Schal,
+Latzhose und Handschuhen. Kart, Raeder (`kartwheel.glb`) und Fahrer (`driver.glb`) sind getrennt:
+Raeder drehen und lenken, der Fahrer lehnt sich in Kurven, wackelt bei Treffern und jubelt im Ziel
+und auf dem Podest. Neu sind ausserdem Windschatten-Boost, Speedlines beim Turbo,
+Landungs-Stauchung und Scheinwerfer auf Nachtstrecken.
+
+**Mobile:** DRIFT sitzt direkt ueber GAS in der rechten Daumenspalte und gibt selbst Gas. Der Daumen
+darf zwischen den Tasten gleiten (Toleranz zwischen den Tasten). Mit Auto-Gas (Menue oder Pause)
+wird DRIFT zur grossen Einzeltaste. Die Stimme ist lauter, die Musik wird beim Sprechen staerker
+abgesenkt. `assets/keyart.jpg` ist jetzt eine Spielszene aus dem Geisterhaus.
+
+Tests: `node --test core.test.mjs` (13 Tests: Beschleunigung, freies Lenken, Offroad, Drift-Stufen,
+Kurventabelle, Abkuerzungen, Kollision, Items, Sterne). Unter `?test=1` faehrt
+`rallyTest.autopilot(true)` alle vier Strecken durch; damit wurden Rundenzeiten, Offroad-Anteile
+der KI und die Medaillenzeiten kalibriert.
+
 ## Mobile-Nachbesserung 16.09.2026 (diese Session)
 
 Long-Press auf GAS erzeugte Textmarkierung: jetzt `user-select:none` + `-webkit-touch-callout:none`
@@ -157,7 +202,7 @@ Im Projektordner `npm start` ausfuehren und http://127.0.0.1:4218 oeffnen. Node.
 ## Steuerung
 
 - WASD / Pfeiltasten: Gas, Bremse und Lenken.
-- Shift beim Lenken halten, dann loslassen: Drift und Mini-Turbo.
+- Shift beim Lenken halten, dann loslassen: Drift und Mini-Turbo (blau → orange → lila). In der Luft Shift: Trick-Turbo.
 - Leertaste oder Item-Slot anklicken: Item einsetzen.
 - P / Escape: Pause. R: zur Streckenmitte zuruecksetzen.
 - Optionales Auto-Gas im Hauptmenue.

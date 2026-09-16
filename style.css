@@ -40,6 +40,24 @@ p{font-size:15px;line-height:1.65;color:#e1eddd}
 .mode{flex:1;text-align:left;background:#ffffff0e;border:1px solid #ffffff2b;border-radius:12px;padding:10px 12px}
 .mode b{display:block;font-size:13px}.mode span{display:block;font-size:10px;opacity:.75;margin-top:3px}
 .mode.selected{background:var(--yellow);color:#203e2f;border-color:var(--yellow)}
+#classes{display:flex;gap:8px;margin:-8px 0 18px}
+.cls{flex:1;background:#ffffff0e;border:1px solid #ffffff2b;border-radius:12px;padding:8px 10px;text-align:center}
+.cls b{display:block;font-size:14px;font-style:italic}.cls span{display:block;font-size:10px;opacity:.75}
+.cls.selected{background:#ff6b4a;border-color:#ff6b4a;color:#fff}
+.tips b{font-weight:900}.c-mini{color:#5ad0ff}.c-super{color:#ffa531}.c-ultra{color:#e08bff}
+.swatch.gold{background:linear-gradient(135deg,#fff3b0,#ffc93c 45%,#c98a12)}
+.swatch.locked{filter:grayscale(1) brightness(.6)}.swatch.locked:after{content:'🔒';font-size:16px}
+#toast{position:fixed;top:24%;left:50%;transform:translate(-50%,-10px) scale(.9);padding:8px 18px;border-radius:14px;background:#1b2a3ad9;color:#fff;font-weight:900;font-size:22px;letter-spacing:1px;font-style:italic;opacity:0;pointer-events:none;z-index:4;white-space:nowrap;transition:opacity .15s,transform .15s}
+#toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+#toast.good{background:#2f9a57e6}#toast.bad{background:#c2413be6}
+#toast.mt-mini{background:#1f8ec9e6}#toast.mt-super{background:#e07a12e6}#toast.mt-ultra{background:#9a3fd1e6;box-shadow:0 0 24px #d36bff}
+#resultStars{font-size:40px;letter-spacing:6px;color:#ffffff30;display:flex;align-items:center;gap:4px}
+#resultStars i{font-style:normal}#resultStars i.on{color:#ffd23f;text-shadow:0 0 14px #ffb70088}
+#resultStars b{font-size:13px;letter-spacing:2px;background:#ffd23f;color:#203e2f;border-radius:8px;padding:4px 8px;margin-left:10px}
+#resultStats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 12px}
+#resultStats div{background:#ffffff10;border-radius:10px;padding:7px 10px;display:flex;flex-direction:column}
+#resultStats span{font-size:10px;letter-spacing:1px;opacity:.7}#resultStats b{font-size:16px;font-variant-numeric:tabular-nums}
+#cerUnlock{color:var(--yellow);font-weight:bold;margin:4px 0}
 #colors{display:flex;gap:12px;margin:12px 0 20px}
 .swatch{width:44px;height:34px;border-radius:9px;background:var(--swatch);border:2px solid transparent;box-shadow:inset 0 -5px #0002;position:relative}
 .swatch.selected{border-color:var(--cream);outline:2px solid #fff5;outline-offset:3px}
@@ -133,7 +151,10 @@ kbd{font-family:inherit;font-size:9px;border:1px solid #ffffff40;padding:4px;bor
  .setup{max-width:none}
  .step{font-size:17px;letter-spacing:2px;margin-top:6px}.step small{font-size:16px}
  #modes{gap:10px;margin:12px 0 20px}.mode{padding:16px 14px;border-radius:16px}.mode b{font-size:19px}.mode span{font-size:14px}
- #colors{gap:16px;margin:14px 0 22px}.swatch{width:74px;height:60px;border-radius:14px}.swatch.selected:after{font-size:28px}
+ #classes{gap:10px;margin:-10px 0 20px}.cls{padding:12px 8px;border-radius:16px}.cls b{font-size:19px}.cls span{font-size:14px}
+ #toast{font-size:24px;top:22%}
+ #resultStats span{font-size:13px}#resultStats b{font-size:19px}
+ #colors{gap:12px;margin:14px 0 22px;flex-wrap:wrap}.swatch{width:62px;height:56px;border-radius:14px}.swatch.selected:after{font-size:28px}
  #tracks{gap:10px;margin:14px 0 22px}.track{padding:18px 12px;border-radius:16px}.track b{font-size:18px}.track span{font-size:14px}.track .best{font-size:13px}.track i{font-size:32px}
  #start,.modal button:not(.secondary),#ceremony button:not(.secondary){font-size:22px;padding:24px 22px;border-radius:18px}
  #start span{font-size:28px;line-height:22px}
@@ -196,5 +217,43 @@ kbd{font-family:inherit;font-size:9px;border:1px solid #ffffff40;padding:4px;bor
  .t-gas{width:86px;height:112px;font-size:18px}
  #menu{padding-top:62px}
  #ceremony{right:10px;bottom:10px;left:auto}#ceremony>div{width:340px;padding:14px;max-height:80vh}#ceremony h2{font-size:22px;margin:6px 0}#ceremony li{font-size:14px;padding:5px 0}
- .modal>div{max-height:94vh;padding:18px}.modal h2{font-size:24px;margin:6px 0}.modal li{font-size:14px;padding:5px 0}
+ .modal>div{max-height:94vh;padding:18px;width:560px}.modal h2{font-size:24px;margin:6px 0}.modal li{font-size:14px;padding:5px 0}
+ #resultStars{font-size:28px}#resultStats{grid-template-columns:1fr 1fr 1fr}#resultStats b{font-size:14px}
+ #toast{top:20%;font-size:18px}
+}
+
+/* Zeitfahren, Speedlines */
+#modes{flex-wrap:wrap}.mode{min-width:120px}
+#classes.locked{opacity:.4;pointer-events:none}
+#hud.tt .position{display:none}
+#ttDelta.ahead{color:#7dffa8}#ttDelta.behind{color:#ff8a7a}
+#speedlines{position:fixed;inset:-12%;pointer-events:none;z-index:1;opacity:0;transition:opacity .3s;background:repeating-conic-gradient(from 0deg at 50% 52%,#fff0 0deg 4.4deg,#ffffff40 4.7deg,#fff0 5.2deg 9deg);-webkit-mask:radial-gradient(ellipse 60% 55% at 50% 52%,transparent 45%,#000 95%);mask:radial-gradient(ellipse 60% 55% at 50% 52%,transparent 45%,#000 95%);animation:speedspin .16s steps(2) infinite}
+body.boosting #speedlines{opacity:.9}
+@keyframes speedspin{50%{transform:rotate(2.2deg)}}
+@media(prefers-reduced-motion:reduce){#speedlines{animation:none}}
+/* Vier Strecken: Raster statt Zeile */
+#tracks{display:grid;grid-template-columns:repeat(4,1fr)}
+.track{padding:10px 8px}.track b{font-size:11px}.track span{font-size:9px}
+@media(max-width:760px){#tracks{grid-template-columns:repeat(2,1fr)}.track b{font-size:18px}.track span{font-size:14px}}
+@media(pointer:coarse) and (orientation:landscape){#tracks{grid-template-columns:repeat(4,1fr)}}
+/* Touch v3: rechte Daumenspalte = DRIFT direkt ueber GAS (Daumen gleitet hoch, Drift gibt selbst Gas); links daneben Item & Bremse */
+#touch .act{grid-template-columns:auto auto;grid-template-areas:"item drift" "brake gas";justify-items:center;align-items:end}
+.t-drift small{font-size:10px;letter-spacing:.5px}
+body.autogas #touch .act{grid-template-areas:"item drift" "brake drift"}
+body.autogas .t-gas{display:none!important}
+@media(pointer:coarse) and (orientation:portrait){
+ #touch .act{gap:10px}
+ .t-item{width:clamp(66px,18vw,88px);height:clamp(66px,18vw,88px)}
+ .t-brake{width:clamp(66px,18vw,88px);height:58px;font-size:14px}
+ .t-drift{width:clamp(100px,28vw,132px);height:clamp(92px,12vh,112px);font-size:21px;border-radius:26px!important}
+ .t-gas{width:clamp(100px,28vw,132px);height:clamp(112px,14vh,134px);font-size:26px}
+ body.autogas .t-drift{height:clamp(214px,27vh,256px);font-size:24px}
+}
+@media(pointer:coarse) and (orientation:landscape){
+ #touch .act{gap:8px}
+ .t-item{width:58px;height:58px;font-size:26px}
+ .t-brake{width:62px;height:44px;font-size:11px}
+ .t-drift{width:108px;height:80px;font-size:16px}
+ .t-gas{width:108px;height:96px;font-size:18px}
+ body.autogas .t-drift{height:184px;font-size:18px}
 }
