@@ -4,6 +4,45 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 9 (17.09.2026): Leitplanken, Viadukt, Abzweigungen, schnelle Streckenwahl
+
+**Ladezeiten im Menue:** Jede gebaute Strecke bleibt als eigene Szenengruppe im Speicher; ein
+Wechsel tauscht nur die Gruppe (gemessen 11–45 ms statt 1–2 s). Waehrend das Menue im Leerlauf
+ist, werden die restlichen Strecken im Hintergrund vorgebaut (~215 ms je Strecke) und ihre Shader
+per `compileAsync` kompiliert. Eine frisch gebaute Strecke wird ausserdem ueber mehrere Frames
+schrittweise eingeblendet, statt den ersten Frame ~500 ms blockieren zu lassen. Dazu schnellere
+Bauschritte: Projektion grob→fein (statt 2048 Vergleiche), Streifen-Geometrie ohne
+Zwischenobjekte, gecachte Boden-/Strassen-Texturen.
+
+**Leitplanken:** Aussen an kritischen Kurven (Radius < 48 m) und beidseitig auf erhoehten
+Abschnitten stehen durchgehende Planken mit Pfosten (Farben je Welt, im Neon-/Spuk-Wald
+leuchtend). Die Kollision laesst das Kart entlanggleiten statt zu stoppen: Rueckstellung an die
+Plankenlinie, kleiner Geschwindigkeitsverlust, Funken und Kratzgeraeusch — harte Treffer setzen
+die Drift-Combo zurueck.
+
+**Unterfuehrung:** Die Pilz-Promenade ist jetzt eine Acht. Die Strecke kreuzt sich selbst, der
+zweite Durchgang laeuft als Viadukt (8 m hoch, Deck, Seitenwaende, Pfeiler) ueber den ersten.
+Dafuer: hoehenbewusste Projektion (die Ebene mit passender Hoehe gewinnt), keine Boeschung unter
+der Bruecke, Pfeiler nur ausserhalb der unteren Fahrbahn, und Hoehenpruefung bei Bananen und
+Bomben, damit von oben nichts nach unten trifft.
+
+**Weggabelungen:** Sonnen-Canyon und Neon-Pilzwald haben eine Abkuerzung: eine tangential
+anschliessende Bezier-Innenlinie mit eigener (schmalerer) Fahrbahn, Curbs, Insel mit Pilzen und
+Schild. Canyon spart 25 m (Radius 63 m), der Neon-Pilzwald 20 m (Radius 132 m); die Hauptlinie
+behaelt dafuer Boost-Pad bzw. Pendelpilz. Sporen und zwei Item-Boxen liegen auf der Abkuerzung.
+Die KI entscheidet sich je nach Koennen fuer eine Route und bremst auf der Innenlinie passend.
+
+**Flow:** Die Mittellinie wird beim Bauen automatisch geglaettet — enge Stellen (< 24 m Radius)
+werden iterativ aufgeweitet, der Rest bleibt wie entworfen. Ergebnis: kleinster Radius auf allen
+vier Strecken 23,6–24 m (vorher 6–14 m), KI-Anteil abseits der Strecke 0–7 % (vorher 7–17 %).
+Fahnen, Laternen, Pfeiltafeln und Kuerbisse stehen weiter aussen (12,6–13 m statt 9,8–12 m), damit
+man am Rand nicht mehr haengen bleibt; Item-Boxen liegen nicht mehr im Startfeld. Die Zaeune sind
+durch die Leitplanken ersetzt.
+
+Weil sich die Layouts geaendert haben, werden alte Bestzeiten, Geister und Medaillen einmalig
+verworfen (`LAYOUT_VER`); die Medaillenzeiten sind per Autopilot neu kalibriert. Draw-Calls im
+Rennen 56–128, Frame-CPU 10–22 ms.
+
 ## Runde 8 (17.09.2026): Fluessiger, minimales Menue, Pilzbombe & Drift-Combos
 
 **Performance (gemessen auf Intel UHD, `rallyTest.bench()`):** Draw-Calls im Rennen von 310–460 auf
