@@ -4,6 +4,51 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 10 (18.09.2026): Menue im Spiel-Look, Tunnel & Bruecken, vier Fahrerfiguren
+
+**Menue:** Statt Formularleisten jetzt eine Karte mit Glas-/Schattenrand, Marken-Kopf und eigener
+Schrift (Baloo 2). Jede Strecke ist eine Bildkarte: Der Mini-Streckenplan wird aus derselben
+Mittellinie gezeichnet, die auch im Spiel gefahren wird (Canvas, einmal pro Strecke), dazu Icon,
+Name, Bestzeit/Medaille und die Themenfarben der Welt als Verlauf. Neu ist eine Fahrerauswahl
+neben der Kartfarbe; die Wahl wird gespeichert und sofort im Startfeld gezeigt.
+
+**Fahrerfiguren:** Es gibt vier statt einer: Pilzi (Pilz), Schildi (Schildkroete mit Panzer und
+Schwimmbrille), Volt (Roboter mit Visier und Antenne) und Mochi (Katze mit Helm). Alle in Blender
+gebaut, gleiche Masse wie die alte Figur, faerbbare Flaeche (`CapPaint`) fuer die Kartfarbe. Das
+KI-Feld mischt die Figuren; die Instanzierung baut pro Figurtyp einen eigenen Satz Instanzen,
+Zeichenaufrufe bleiben dadurch bei 79–133 je Strecke.
+
+**Geisterhaus:** Die Villa ist neu gebaut — Torbogen aus Keilsteinen ueber der Fahrbahn (Durchfahrt
+24 m breit, 17 m hoch), Fensterrose, Balkon mit Eisengelaender, zwei Fluegel mit Fachwerk, Erkern,
+Gauben und schiefen Schornsteinen, dazu zwei Tuerme mit Zinnen und krummen Spitzen sowie Laternen
+in der Durchfahrt. Nach Material zusammengefasst: 9 Meshes, 18,5k Dreiecke, 720 kB.
+
+**Tunnel (neu):** Gewoelbe ueber der Strecke mit Portalen, Wandlichtern und Fels aussen herum.
+Vier Ausfuehrungen: Pilzstamm (Wald), Felstunnel (Canyon), Neonroehre mit Leuchtringen (Neonwald),
+Gruft (Geisterhaus). Drinnen sinkt die Belichtung um ein Viertel und der Scheinwerfer geht an;
+Leitplanken laufen durch den Tunnel mit, Deko haelt Abstand.
+
+**Mehr Bruecken und Spruenge:** Canyon und Neonwald bekommen je einen Viadukt-Abschnitt (Deck,
+Seitenwaende, Pfeiler), das Geisterhaus einen Viadukt ueber die Senke; Wald und Neonwald bekommen
+je einen Sprung ueber eine Schlucht mit Anlauframpe und Boostfeld davor. Schluchten sind jetzt
+eine Liste statt einer einzelnen Stelle.
+
+**Gabelungen muenden sauber:** Die Abzweigung waechst als Keil aus der Aussenkante der
+Hauptstrecke heraus und laeuft dort auch wieder hinein (variable Breite je Stuetzpunkt), statt als
+Rechteck mitten auf der Fahrbahn zu enden. Randsteine laufen aussen durch, innen nur dort, wo
+wirklich eine Insel dazwischen liegt. Die Fahrphysik nutzt dasselbe Band (`forkBand`), damit
+Fahrbahn und Kollision zusammenpassen.
+
+**Sonstiges:** Gras wiegt sich im Wind (Vertex-Shader auf den Gras-Instanzen), Streckenlayouts von
+Canyon und Geisterhaus haben eine echte Haarnadel bzw. einen schaerferen Haken bekommen,
+Medaillenzeiten neu gemessen (85/93/99/92 s Gold), alte Rekorde einmalig verworfen
+(`LAYOUT_VER=10`).
+
+**Gemessen** (Autopilot, 150cc, 3 Runden): alle vier Strecken fahren durch, KI ist 0,1–4,4 % der
+Zeit neben der Strecke; 79–133 Zeichenaufrufe, 205k–370k Dreiecke. Die CPU-Zeit pro Bild war
+waehrend der Messung 48–62 ms — auf diesem Rechner liefen parallel Unreal Editor und Blender, die
+sich die GPU teilen; ohne sie lagen dieselben Szenen in Runde 9 bei 10–22 ms.
+
 ## Runde 9 (17.09.2026): Leitplanken, Viadukt, Abzweigungen, schnelle Streckenwahl
 
 **Ladezeiten im Menue:** Jede gebaute Strecke bleibt als eigene Szenengruppe im Speicher; ein

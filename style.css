@@ -308,3 +308,101 @@ body:not(.racing):not(.cer) .shade{background:linear-gradient(90deg,#08140fd9 0%
  #menu #tracks{grid-template-columns:repeat(4,1fr)}#menu #tracks .track{padding:6px 4px;display:block;text-align:center}#menu #tracks .track i{font-size:18px}#menu #tracks .track b{font-size:12px}
  #menu #colors .swatch{width:30px;height:30px}#menu #start{padding:12px 16px;font-size:17px}
 }
+/* ================= Menue v4: weniger Formular, mehr Spielhalle ================= */
+:root{--gold:#ffd45c;--gold2:#ffb02e;--ink:#12261c}
+body,button,input,kbd,select{font-family:'Baloo 2','Trebuchet MS',Arial,sans-serif}
+body:not(.racing):not(.cer) .shade{background:linear-gradient(90deg,#06120dee 0%,#06120db8 34%,#06120d26 62%,transparent 78%)}
+.menu-panel{width:min(468px,calc(100vw - 32px));gap:11px;padding:20px 20px 18px;border-radius:26px;
+ background:linear-gradient(165deg,#12291ee6,#07140eF2);border:1px solid #ffffff1f;
+ box-shadow:0 26px 60px -18px #000c,0 2px 0 #ffffff1a inset,0 -30px 60px -40px var(--gold) inset;backdrop-filter:blur(16px) saturate(1.2)}
+.menu-brand{display:flex;align-items:center;gap:12px;margin-bottom:2px}
+.mb-icon{width:52px;height:52px;flex:none;display:grid;place-items:center;font-size:27px;border-radius:17px;
+ background:radial-gradient(circle at 32% 28%,#ffffff30,#ffffff08 60%),linear-gradient(150deg,#ff5f57,#c9302a);
+ box-shadow:0 6px 16px -6px #000a,0 1px 0 #ffffff55 inset;transform:rotate(-6deg)}
+.menu-title{margin:0;font-size:clamp(31px,3.3vw,41px);line-height:.94;letter-spacing:-.5px;font-weight:800;
+ background:linear-gradient(180deg,#fffdf6 38%,#ffd45c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 10px #0007)}
+.menu-title em{display:inline;color:transparent;font-style:normal}
+.menu-tag{margin:1px 0 0;font-size:12.5px;letter-spacing:.3px;color:#a9c6b3;font-weight:500}
+#menu .seg{gap:3px;padding:4px;border-radius:15px;background:#05100bc7;border:1px solid #ffffff12;box-shadow:0 2px 10px #0004 inset}
+#menu .seg button{padding:9px 6px;border-radius:11px;color:#b9d2c1;font-weight:700;transition:.16s}
+#menu .seg button:hover{color:#fff;background:#ffffff12}
+#menu .seg button.selected{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a1a06;box-shadow:0 3px 10px -3px #ffb02e99,0 1px 0 #fff6 inset}
+#menu #tracks{grid-template-columns:repeat(2,1fr);gap:8px}
+#menu #tracks .track{position:relative;overflow:hidden;padding:0;aspect-ratio:16/8.4;border-radius:15px;border:1.5px solid #ffffff1a;
+ background:linear-gradient(158deg,var(--c1,#1d4030),var(--c2,#07140e));box-shadow:0 8px 18px -12px #000b;transition:transform .16s,border-color .16s,box-shadow .16s}
+#menu #tracks .track canvas{position:absolute;left:0;top:-4%;width:100%;height:104%;opacity:.92}
+#menu #tracks .track i{position:absolute;left:8px;top:6px;z-index:2;font-size:15px;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;
+ background:#06120db3;border:1px solid #ffffff24;margin:0}
+#menu #tracks .track b{position:absolute;left:9px;right:9px;bottom:16px;z-index:2;text-align:left;font-size:13.5px;font-weight:700;line-height:1.1;
+ text-shadow:0 2px 6px #000b,0 0 14px #0009}
+#menu #tracks .track .best{position:absolute;left:9px;right:9px;bottom:4px;z-index:2;text-align:left;font-size:10.5px;margin:0;color:var(--acc,#ffe16a);
+ letter-spacing:.3px;text-shadow:0 1px 4px #000c}
+#menu #tracks .track:after{content:'';position:absolute;inset:auto 0 0 0;height:56%;z-index:1;background:linear-gradient(0deg,#04100ce8,#04100c00)}
+#menu #tracks .track:hover{transform:translateY(-2px)}
+#menu #tracks .track.selected{border-color:var(--acc,var(--gold));box-shadow:0 0 0 1px var(--acc,var(--gold)) inset,0 10px 26px -12px var(--acc,#ffd45c);background:linear-gradient(158deg,var(--c1,#1d4030),var(--c2,#07140e))}
+#menu #tracks .track.selected canvas{opacity:1}
+.menu-picks{display:flex;gap:14px;align-items:flex-end;margin-top:1px}
+.pick{display:flex;flex-direction:column;gap:5px}
+.pick>small{font-size:9.5px;letter-spacing:1.6px;color:#8fae9b;font-weight:700}
+#menu #drivers{display:flex;gap:6px}
+#menu #drivers button{width:40px;height:40px;margin:0;padding:0;border-radius:13px;font-size:19px;line-height:1;background:#05100bc7;border:1.5px solid #ffffff1a;transition:.15s}
+#menu #drivers button:hover{transform:translateY(-2px)}
+#menu #drivers button.selected{background:linear-gradient(180deg,#ffffff1f,#ffffff08);border-color:var(--gold);box-shadow:0 0 0 3px #ffd45c33,0 6px 14px -8px #ffd45c}
+#menu #colors{display:flex;gap:7px;margin:0}
+#menu #colors .swatch{width:26px;height:26px;border:1.5px solid #ffffff22;box-shadow:inset 0 -5px 8px -4px #0007,inset 0 4px 6px -3px #fff5}
+#menu #colors .swatch.selected{border:2px solid #fff;transform:scale(1.14);box-shadow:0 0 0 3px #ffffff2e,inset 0 -5px 8px -4px #0007}
+#menu #start{position:relative;overflow:hidden;margin:6px 0 0;padding:15px 18px;border-radius:16px;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:space-between;
+ background:linear-gradient(180deg,#ffe98a,var(--gold2));color:#2a1a06;box-shadow:0 6px 0 -1px #c2820f,0 14px 26px -14px #ffb02e}
+#menu #start b{font-weight:800}
+#menu #start span{float:none;font-size:21px;line-height:1;transition:transform .16s}
+#menu #start:hover span{transform:translateX(4px)}
+#menu #start:after{content:'';position:absolute;top:-60%;left:-30%;width:28%;height:220%;transform:rotate(18deg);
+ background:linear-gradient(90deg,#fff0,#ffffffb0,#fff0);animation:shine 4.2s ease-in-out infinite}
+@keyframes shine{0%,72%{left:-35%}92%,100%{left:125%}}
+.menu-meta{padding-top:2px;border-top:1px solid #ffffff10;margin-top:2px}
+.menu-meta small{color:#ffe16a}
+#menu .controls{color:#87a692}
+@media(max-width:760px){
+ .menu-panel{margin:0 12px calc(12px + env(safe-area-inset-bottom,0px));padding:16px 16px 14px;border-radius:22px;gap:10px}
+ .menu-title{font-size:clamp(30px,8.4vw,40px)}.mb-icon{width:46px;height:46px;font-size:24px}
+ #menu #tracks{grid-template-columns:repeat(2,1fr);gap:8px}
+ #menu #tracks .track{aspect-ratio:16/9;display:block;padding:0}
+ #menu #tracks .track i{grid-row:auto;font-size:15px;margin:0}
+ #menu #tracks .track b{font-size:14px}#menu #tracks .track .best{font-size:11px}
+ #menu #colors .swatch{width:30px;height:30px}#menu #drivers button{width:44px;height:44px;font-size:21px}
+ #menu #start{font-size:19px;padding:16px 18px}
+}
+@media(pointer:coarse) and (orientation:landscape){
+ .menu-panel{width:min(540px,calc(100vw - 24px));padding:12px 14px 11px;gap:7px;border-radius:18px}
+ .menu-brand{gap:9px;margin:0}.mb-icon{width:36px;height:36px;font-size:18px;border-radius:12px}
+ .menu-title{font-size:26px}.menu-tag{display:none}
+ #menu .seg button{padding:7px 4px}
+ #menu #tracks{grid-template-columns:repeat(4,1fr);gap:6px}
+ #menu #tracks .track{aspect-ratio:16/11}#menu #tracks .track b{font-size:11px;bottom:13px}#menu #tracks .track .best{font-size:9.5px}
+ #menu #drivers button{width:34px;height:34px;font-size:17px}
+ #menu #colors .swatch{width:24px;height:24px}
+ #menu #start{padding:11px 16px;font-size:16px}
+ .menu-meta{display:none}
+}
+/* Panel kompakt halten: der Titel steht im Panel, die Kopfzeilen-Marke waere doppelt */
+body:not(.racing):not(.cer) header .brand{opacity:0;pointer-events:none}
+.menu-panel{max-height:calc(100vh - 56px);overflow:auto;scrollbar-width:none}
+.menu-panel::-webkit-scrollbar{display:none}
+#menu #tracks .track{aspect-ratio:16/9.4}
+@media(min-width:761px) and (max-height:820px){
+ .menu-panel{margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));padding:15px 17px 13px;gap:8px;border-radius:22px}
+ .menu-brand{gap:10px}.mb-icon{width:42px;height:42px;font-size:22px;border-radius:14px}
+ .menu-title{font-size:30px}.menu-tag{font-size:11.5px}
+ #menu .seg button{padding:7px 6px}#menu .seg button b{font-size:13px}
+ #menu #tracks .track{aspect-ratio:16/10.4}#menu #tracks .track b{font-size:12.5px;bottom:15px}
+ #menu #drivers button{width:36px;height:36px;font-size:17px}
+ #menu #colors .swatch{width:24px;height:24px}
+ #menu #start{padding:12px 17px;font-size:17px;margin-top:3px}
+ .menu-meta{font-size:11px}
+}
+.menu-picks{align-items:flex-start}
+@media(max-width:430px){
+ .menu-picks{gap:10px}
+ #menu #drivers{gap:5px}#menu #drivers button{width:40px;height:40px;font-size:19px}
+ #menu #colors{gap:6px}#menu #colors .swatch{width:26px;height:26px}
+}
