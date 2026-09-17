@@ -257,3 +257,54 @@ body.autogas .t-gas{display:none!important}
  .t-gas{width:108px;height:96px;font-size:18px}
  body.autogas .t-drift{height:184px;font-size:18px}
 }
+/* Strecke laedt (Shader werden im Hintergrund kompiliert) */
+#trackLoading{position:fixed;left:50%;top:46%;transform:translate(-50%,-50%);z-index:8;display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:30px;background:#10202acc;font-weight:bold;letter-spacing:1px;pointer-events:none}
+#trackLoading i{width:16px;height:16px;border-radius:50%;border:3px solid #fff4;border-top-color:var(--yellow);animation:tlspin .8s linear infinite}
+@keyframes tlspin{to{transform:rotate(360deg)}}
+/* ================= Menue v3: minimal ================= */
+.edition{display:none}
+body:not(.racing):not(.cer) .shade{background:linear-gradient(90deg,#08140fd9 0%,#08140f8c 30%,transparent 58%)}
+#menu{padding:0;display:flex;align-items:flex-end;overflow:auto}
+.menu-panel{margin:0 0 calc(34px + env(safe-area-inset-bottom,0px)) clamp(16px,5vw,64px);width:min(430px,calc(100vw - 32px));display:flex;flex-direction:column;gap:12px}
+.menu-title{margin:0 0 6px;font-size:clamp(40px,4.4vw,60px);line-height:.9;letter-spacing:-2px;font-weight:900;text-shadow:0 4px 18px #0006}
+.menu-title em{display:block;color:var(--yellow);font-style:normal}
+#menu .seg{display:flex;gap:4px;margin:0;padding:4px;border-radius:14px;background:#08140fb3;backdrop-filter:blur(8px)}
+#menu .seg button{flex:1;min-width:0;margin:0;padding:10px 6px;border:0;border-radius:10px;background:transparent;text-align:center;color:#dfe9dd}
+#menu .seg button b{font-size:14px;font-style:normal}#menu .seg button span{display:none}
+#menu .seg button.selected{background:var(--yellow);color:#16301f}
+#menu #classes.locked{opacity:.35}
+#menu #tracks{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0}
+#menu #tracks .track{margin:0;padding:10px 4px 8px;border:2px solid transparent;border-radius:12px;background:#08140fb3;backdrop-filter:blur(8px);text-align:center;color:#eef4ec}
+#menu #tracks .track i{font-size:22px;margin:0 0 4px}#menu #tracks .track b{font-size:11px;line-height:1.2}
+#menu #tracks .track .best{font-size:10px;margin-top:3px;color:#ffe16acc}
+#menu #tracks .track.selected{border-color:var(--yellow);background:#08140fe0;color:#fff}
+#menu #tracks.locked .track{opacity:.8}
+#menu #colors{display:flex;gap:10px;margin:2px 0}
+#menu #colors .swatch{width:30px;height:30px;border-radius:50%;box-shadow:inset 0 -4px #0003;outline:0}
+#menu #colors .swatch.selected{border:3px solid #fff;transform:scale(1.12)}#menu #colors .swatch.selected:after{content:''}
+#menu #start{margin:4px 0 0;padding:17px 20px;border-radius:14px;font-size:18px;text-align:left}
+.menu-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:18px;color:#cddbcb}
+.menu-meta small{font-size:13px;letter-spacing:.5px}
+#menu .controls{margin:0;font-size:11px;color:#b9c9b8}
+#autoGas{display:none}
+@media(pointer:coarse){#menu .controls{display:none}#autoGas{display:inline-block;margin:0}}
+@media(max-width:760px){
+ body:not(.racing):not(.cer) .shade{background:linear-gradient(0deg,#08140fe6 0%,#08140f99 45%,transparent 75%)}
+ .menu-panel{margin:0 16px calc(18px + env(safe-area-inset-bottom,0px));width:auto;flex:1;gap:12px}
+ .menu-title{font-size:clamp(44px,13vw,62px)}
+ #menu .seg button{padding:14px 4px}#menu .seg button b{font-size:17px}
+ #menu #tracks{grid-template-columns:repeat(2,1fr);gap:8px}
+ #menu #tracks .track{padding:12px 6px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;text-align:left;align-items:center}
+ #menu #tracks .track i{grid-row:span 2;font-size:28px;margin:0}#menu #tracks .track b{font-size:16px}#menu #tracks .track .best{font-size:13px;margin:0}
+ #menu #colors{gap:14px;justify-content:center}#menu #colors .swatch{width:42px;height:42px}
+ #menu #start{font-size:22px;padding:20px}
+ .menu-meta small{font-size:15px}
+ #autoGas{font-size:15px;padding:10px 16px}
+}
+@media(pointer:coarse) and (orientation:landscape){
+ .menu-panel{margin-bottom:10px;gap:7px;width:min(520px,calc(100vw - 32px))}
+ .menu-title{font-size:34px;margin:0}.menu-title em{display:inline}
+ #menu .seg button{padding:8px 4px}#menu .seg button b{font-size:14px}
+ #menu #tracks{grid-template-columns:repeat(4,1fr)}#menu #tracks .track{padding:6px 4px;display:block;text-align:center}#menu #tracks .track i{font-size:18px}#menu #tracks .track b{font-size:12px}
+ #menu #colors .swatch{width:30px;height:30px}#menu #start{padding:12px 16px;font-size:17px}
+}

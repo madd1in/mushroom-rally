@@ -4,6 +4,39 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 8 (17.09.2026): Fluessiger, minimales Menue, Pilzbombe & Drift-Combos
+
+**Performance (gemessen auf Intel UHD, `rallyTest.bench()`):** Draw-Calls im Rennen von 310–460 auf
+70–150, Render-Zeit pro Frame auf der Pilz-Promenade von ~39 ms auf 8–15 ms (bei freier GPU). Die
+wichtigsten Schritte:
+- Schattenkamera nur noch ±62 m um den Spieler statt der ganzen Insel, einfacher PCF-Filter. Auf
+  Touch-Geraeten und bei niedriger FPS werden Schatten nur jeden zweiten Frame aktualisiert.
+- GLB-Teile ohne Einfaerbung werden beim Laden in Vertexfarben gebacken (ein Mesh statt vieler).
+- Baeume, Pilze, Felsen, Zaeune, Grabsteine, Kuerbisse und Gras laufen instanziert in raeumlichen
+  Kacheln. Die Lackfarbe kommt pro Instanz, das Leuchten wird per Shader mit eingefaerbt.
+- Die 7 KI-Karts teilen sich je Bauteil ein InstancedMesh (Karosserie, Lack, Fahrer, Kappe, Raeder).
+- Funken, Reifenspuren und Staubwolken sind je ein InstancedMesh. Fahnen, Pfeiltafeln, Wolken,
+  Huegel und Tafelberge sind zu wenigen Meshes verschmolzen.
+- **Ruckler am Anfang:** Ein Neustart auf derselben Strecke baut die Welt nicht mehr neu auf
+  (vorher ~1 s, jetzt ~20 ms). Shader werden per `compileAsync` im Hintergrund kompiliert; bis dahin
+  zeigt das Menue „Strecke lädt …“ und der Countdown wartet. Flammen, Schild, Banane, Panzer, Bombe
+  und Geist werden vorab mitkompiliert. Audio wird nacheinander dekodiert, Rausch-SFX nutzen einen
+  gemeinsamen Puffer, und die Minimap zeichnet ihre statische Ebene nur einmal.
+- Hinweis: Ein laufender Unreal Editor belegt auf demselben Rechner dauerhaft GPU und CPU. Damit
+  schwankten die Messungen um den Faktor 5–10. Zum Spielen Unreal schliessen.
+
+**Menue minimal:** Titel, Modus (Rennen/Grand Prix/Zeitfahren), Klasse, vier Strecken-Kacheln,
+Kartfarben als Kreise, Start-Knopf, eine Zeile fuer Pokale/Medaillen. Behoben: Die normalen
+Kartfarben wurden faelschlich als gesperrt markiert (`classList.toggle` mit `undefined`).
+Kart- und KI-Farben sind jetzt kraeftiger.
+
+**Neu im Spiel:** **Pilzbombe 💣** (vor allem Mittelfeld-Item): fliegt im Bogen voraus, zischt
+nach der Landung und explodiert nach 1,1 s oder bei Kontakt. Die Druckwelle (6,5 m) schleudert
+Karts hoch und kostet Sporen, das Sternenschild blockt. **Drift-Combo:** Mini-Turbos im Abstand von
+hoechstens 4,5 s zaehlen hoch (×2, ×3 …) und geben je eine Spore. Wiese, Wand oder Treffer setzen
+die Combo zurueck, die beste Combo steht im Ergebnis. Dazu Grasbueschel am Strassenrand je Welt
+und ein Druckwellen-Ring bei Explosionen. Tests: 15 (neu: Bombe, Combo).
+
 ## Runde 7 (17.09.2026): Koennen statt Schienen, Geisterhaus, Zeitfahren
 
 **Fahrphysik neu (`core.mjs`):** Das Kart faehrt nicht mehr auf der Strecke entlang, sondern frei

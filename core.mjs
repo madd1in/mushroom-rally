@@ -51,7 +51,7 @@ export function driveKart(k,dt,input,surf={}){
 export function maxCornerSpeed(kappa,drift=false){if(kappa<1e-4)return 99;let lo=0,hi=60;for(let i=0;i<24;i++){const v=(lo+hi)/2,cap=drift?PHYS.turn*driftFactor(1)*Math.min(1,v/10):PHYS.turn*turnCurve(v);if(v*kappa<=cap)lo=v;else hi=v;}return lo;}
 // Fortschritt entlang der Strecke aus der projizierten Rundendistanz; Spruenge (Abkuerzungen, Teleports) zaehlen nicht.
 export function advanceProgress(k,lapD,length){const prev=((k.distance%length)+length)%length;let d=lapD-prev;if(d>length/2)d-=length;if(d<-length/2)d+=length;if(Math.abs(d)<25)k.distance+=d;return d;}
-export function hitKart(k,stun,keep){k.stun=Math.max(k.stun,stun);k.vx*=keep;k.vz*=keep;k.driftDir=0;k.drift=0;}
+export function hitKart(k,stun,keep){k.stun=Math.max(k.stun,stun);k.vx*=keep;k.vz*=keep;k.driftDir=0;k.drift=0;k.combo=0;}
 // Zwei Karts als Kreise: auseinanderschieben und Impuls entlang der Normalen tauschen (leicht elastisch).
 export function collideKarts(a,b,rad=1.2){const dx=b.x-a.x,dz=b.z-a.z,d=Math.hypot(dx,dz);if(d>=rad*2||d<1e-6)return false;const nx=dx/d,nz=dz/d,pen=rad*2-d;a.x-=nx*pen/2;a.z-=nz*pen/2;b.x+=nx*pen/2;b.z+=nz*pen/2;const rel=(b.vx-a.vx)*nx+(b.vz-a.vz)*nz;if(rel<0){const j=-rel*.65;a.vx-=nx*j;a.vz-=nz*j;b.vx+=nx*j;b.vz+=nz*j;}return true;}
 export function lap(r,length){return clamp(Math.floor(Math.max(0,r.distance)/length)+1,1,LAPS);}
@@ -64,7 +64,13 @@ export function activate(r,all){const item=r.item;if(!item)return null;r.item=nu
  if(item==='shield'){r.shield=6;r.boost=Math.max(r.boost,.5);}
  if(item==='shell'){const ahead=all.filter(a=>a.id!==r.id&&a.distance>r.distance&&a.finishTime===null).sort((a,b)=>a.distance-b.distance)[0];if(ahead&&!ahead.shield)ahead.stun=Math.max(ahead.stun,1.6);return {type:item,target:ahead?.id};}
  return {type:item,charges:r.charges};}
-export function itemWeights(place,count){const t=count>1?(place-1)/(count-1):0;return {banana:40*(1-t)+8,shield:22*(1-t)+10,shell:18+10*t,boost:6+30*t,triple:t>.45?66*(t-.45):0};}
+// Pilzbombe: vor allem fuers Mittelfeld (dort ist das Gedraenge am groessten)
+export function itemWeights(place,count){const t=count>1?(place-1)/(count-1):0;return {banana:40*(1-t)+8,shield:22*(1-t)+10,shell:18+10*t,boost:6+30*t,triple:t>.45?66*(t-.45):0,bomb:3+16*Math.max(0,1-Math.abs(t-.5)*2.2)};}
+// Explosion: Karts im Radius werden getroffen (Schild blockt). Rueckgabe: false | 'blocked' | true
+export function blastHit(k,dx,dz,radius=6.5){if(Math.hypot(dx,dz)>radius)return false;if(k.shield>0)return 'blocked';hitKart(k,1.3,.3);return true;}
+// Drift-Combo: Mini-Turbos in kurzer Folge ohne Fehler zaehlen hoch; Fehler (Treffer, Wand, Wiese) setzen auf 0
+export const COMBO_WINDOW=4.5;
+export function comboStep(k,time){k.combo=(k.combo>0&&time-(k.comboT??-99)<=COMBO_WINDOW)?k.combo+1:1;k.comboT=time;return k.combo;}
 export function rollItem(place,count,rnd=Math.random){const w=itemWeights(place,count);let x=rnd()*Object.values(w).reduce((a,b)=>a+b,0);for(const [k,v] of Object.entries(w)){if((x-=v)<0)return k;}return 'boost';}
 export function loseSpores(r,n=3){const lost=Math.min(r.spores||0,n);r.spores=(r.spores||0)-lost;return lost;}
 export function addGpPoints(table,order){order.forEach((r,i)=>{table[r.id]=(table[r.id]||0)+GP_POINTS[i];});return table;}
