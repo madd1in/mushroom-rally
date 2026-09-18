@@ -4,6 +4,33 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 12 (18.09.2026): Ruckler am Start behoben, Grafikschalter, Anti-Grav
+
+**Rennstart:** Karts, Raeder und Fahrerinstanzen bleiben zwischen Rennen stehen, solange Figur,
+Farbe und Feldgroesse gleich sind — der Start kostet damit 5–12 ms statt bis zu 600 ms, weil
+nichts mehr neu gebaut und zur Grafikkarte geschoben wird. Schattenkarte von 1024 auf 768,
+engerer Schattenausschnitt, Aufloesung standardmaessig auf 1,25 gedeckelt.
+
+**Grafikstufe von Hand:** Im Menue gibt es jetzt Auto / Mittel / Sparsam. Gemessen auf einem
+ausgelasteten Rechner (Unreal und Blender liefen parallel): 47 / 35 / 13 ms je Bild. Auto regelt
+weiterhin selbst nach, jetzt schon waehrend des Countdowns und alle 1,2 s statt alle 2 s.
+
+**Anti-Grav (neu):** Die Streckentabelle hat eine Rollachse (`TP.rl`). Markierte Abschnitte kippen
+die Fahrbahn um die Fahrtrichtung, die Mittellinie hebt sich dabei an, sodass eine echte Wand
+entsteht statt einer Grube. Die Fahrbahn haelt magnetisch fest (sonst wirft die Kuppe jeden ab),
+die Kamera rollt zu 90 % mit, die Raeder klappen nach aussen, Leitplanken und Randsteine folgen
+der Drehung, darunter liegt ein dunkler Kiel. Die Projektion rechnet den verkuerzten
+Horizontalabstand wieder auf den echten Querabstand zurueck, damit Physik und Optik zusammenpassen.
+Abschnitte: Neon-Pilzwald (75 m, 58°) und Lava-Feste (ca. 48 m, 56°).
+
+**Gemessen** (Autopilot, 150cc, 3 Runden): alle fuenf Strecken fahren durch — 92,2 / 109,9 /
+100,8 / 99,8 / 95,6 s, KI 0,3–5,6 % neben der Strecke. Medaillenzeiten fuer Neon-Pilzwald und
+Lava-Feste neu gemessen, alte Rekorde einmalig verworfen (`LAYOUT_VER=12`).
+
+**Noch offen:** Echte Loopings und Korkenzieher (Fahrbahn ueber Kopf) brauchen eine
+Streckentabelle in 3D — die aktuelle Tabelle ist eine Funktion ueber x/z und kann sich nicht
+selbst ueberlagern. Die Wandfahrten sind der erste Schritt dahin.
+
 ## Runde 11 (18.09.2026): Lava-Feste, Fahrer-Vorschau, neues Item-Fenster
 
 **Neue Strecke "Lava-Feste"** (eigene Welt, kein fremdes Markenmaterial): schwarze Basaltnadeln,
