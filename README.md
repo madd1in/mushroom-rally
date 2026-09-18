@@ -4,6 +4,27 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 11 (18.09.2026): Lava-Feste, Fahrer-Vorschau, neues Item-Fenster
+
+**Neue Strecke "Lava-Feste"** (eigene Welt, kein fremdes Markenmaterial): schwarze Basaltnadeln,
+gluehende Lavaseen, Vulkane am Horizont, Glutflocken in der Luft und ein Lavameer statt Wasser.
+Die Strecke fuehrt durch eine **Torburg** mit Spitzbogen, Zinnen, Fallgitter, Bannern und
+Feuerschalen (in Blender gebaut, nach Material zusammengefasst). Dazu ein Magmaschacht-Tunnel,
+ein Sprung ueber eine Lavaschlucht, ein Viadukt und drei **Feuerbaelle**, die quer ueber die
+Fahrbahn pendeln. Layout mit zwei langen Geraden und einer S-Passage: KI faehrt 0,4 % der Zeit
+neben der Strecke (erster Entwurf lag bei 10,5 %), engster Radius 23,7 m, Rundenzeit 91,8 s.
+
+**Fahrer-Vorschau:** Die Auswahl im Menue zeigt die Figuren jetzt als kleine gerenderte Bilder
+(Render-Target aus dem laufenden Renderer, einmal beim Start und bei jedem Farbwechsel neu) statt
+als Emoji — inklusive der gewaehlten Kartfarbe.
+
+**Item-Fenster:** Statt Emoji jetzt gezeichnete SVG-Symbole (Turbo, Panzer, Banane, Schild,
+Bombe, Dreifach-Turbo mit Zaehler), Rahmen und Schein in der Item-Farbe, Pop-Animation beim
+Erhalten und ein Zittern waehrend die Item-Walze laeuft.
+
+**Nachladen:** Villa und Burg (zusammen ~2 MB) werden erst nach dem Spielstart geladen; die
+betroffenen Strecken bauen sich danach automatisch neu. Der Start wartet nicht mehr darauf.
+
 ## Runde 10 (18.09.2026): Menue im Spiel-Look, Tunnel & Bruecken, vier Fahrerfiguren
 
 **Menue:** Statt Formularleisten jetzt eine Karte mit Glas-/Schattenrand, Marken-Kopf und eigener
