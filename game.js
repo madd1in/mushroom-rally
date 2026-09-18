@@ -247,7 +247,7 @@ function smoothCurve(points,minR=24){const base=new T.CatmullRomCurve3(points.ma
  const rad=(a,b,c)=>{const ab=Math.hypot(b[0]-a[0],b[1]-a[1]),bc=Math.hypot(c[0]-b[0],c[1]-b[1]),ca=Math.hypot(a[0]-c[0],a[1]-c[1]),ar=Math.abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]))/2;return ar<1e-6?1e9:ab*bc*ca/(4*ar);};
  for(let it=0;it<400;it++){let worst=1e9;const tight=new Uint8Array(n);for(let i=0;i<n;i++){const r=rad(p[(i-3+n)%n],p[i],p[(i+3)%n]);worst=Math.min(worst,r);if(r<minR*1.25)for(let k=-8;k<=8;k++)tight[(i+k+n)%n]=1;}if(worst>=minR)break;p=p.map((b,i)=>{if(!tight[i])return b;const a=p[(i-1+n)%n],c=p[(i+1)%n];return [b[0]+((a[0]+c[0])/2-b[0])*.5,b[1]+((a[1]+c[1])/2-b[1])*.5];});}
  const c=new T.CatmullRomCurve3(p.map(([x,z])=>new T.Vector3(x,0,z)),true,'centripetal');c.arcLengthDivisions=4000;return c;}
-function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world=new T.Group();obsGrid=new Map();TP=newTP();
+function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world=new T.Group();obsGrid=new Map();TP=newTP();swayCache=new Map();
  flags=[];balloons=[];ramps=[];pads=[];rings=[];spores=[];swingers=[];gaps=[];zones=[];bats=null;boostPads=[];sporeMesh=null;crowd=null;fireflies=null;rails=[];forks=[];raises=[];tunnels=[];
  course=courses[selected];theme=THEMES[course.theme];
  scene.background=skyTexture(hex(theme.skyTop),hex(theme.skyBottom));scene.fog=new T.Fog(theme.fog,theme.fogNear,theme.fogFar);applyTheme();
@@ -479,13 +479,21 @@ function buildMansion(){const castle=course.castle!==undefined,cp=castle?course.
  else{for(const sx of [-1,1]){for(let y=-15;y<=15;y+=2)ob(sx*12.3,y,1.3);for(let y=-13;y<=13;y+=3.5){ob(sx*15,y,2);ob(sx*17.6,y,1.4);}}
   ob(-21.5,-6,3.6);ob(21,9,2.8);
   zones.push({d,half:17,x:s.p.x,z:s.p.z,r:36});}}
-function buildScenery(random){batch=new Map();buildSceneryInner(random);forkIslandDecor();for(const b of batch.values())scatterColored(b.proto,b.list,'CapPaint',b.tint,120);batch=null;buildGrass(random);}
+function buildScenery(random){batch=new Map();buildSceneryInner(random);forkIslandDecor();for(const b of batch.values())scatterColored(b.proto,b.list,'CapPaint',b.tint,120,.028);batch=null;buildGrass(random);}
 // Eine Instanz-Gruppe je Modell statt je Farbe: Lackfarbe pro Instanz (instanceColor), Leuchten wird per Shader mit eingefaerbt
 const tintEmissive=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n#ifdef USE_COLOR\ntotalEmissiveRadiance *= vColor.rgb;\n#endif');};
-function scatterColored(proto,list,paint,glow,chunk){if(!proto||!list.length)return;const cells=new Map();for(const t of list){const k=Math.floor(t.x/chunk)+','+Math.floor(t.z/chunk);let c=cells.get(k);if(!c)cells.set(k,c=[]);c.push(t);}
+let swayCache=new Map();
+// Baeume und Pilze wiegen sich im Wind: Versatz waechst mit der Hoehe, Phase aus der Instanzposition
+function swayMat(m,amp){const key=m.uuid+'|'+amp;let c=swayCache.get(key);if(c)return c;c=m.clone();const prev=c.onBeforeCompile;
+ c.onBeforeCompile=sh=>{if(prev)prev(sh);sh.uniforms.uTime=shaderTime;
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nuniform float uTime;')
+   .replace('#include <begin_vertex>','#include <begin_vertex>\n#ifdef USE_INSTANCING\nvec3 wp=instanceMatrix[3].xyz;float ws=sin(uTime*.85+wp.x*.06+wp.z*.08)*'+amp+'+sin(uTime*1.6+wp.z*.11)*'+(amp*.4).toFixed(4)+';\ntransformed.x+=ws*transformed.y;transformed.z+=ws*.55*transformed.y;\n#endif');};
+ c.customProgramCacheKey=()=>'sway'+amp+(prev?'_p':'');swayCache.set(key,c);return c;}
+function scatterColored(proto,list,paint,glow,chunk,sway=0){if(!proto||!list.length)return;const cells=new Map();for(const t of list){const k=Math.floor(t.x/chunk)+','+Math.floor(t.z/chunk);let c=cells.get(k);if(!c)cells.set(k,c=[]);c.push(t);}
  const srcs=[];proto.traverse(o=>{if(o.isMesh&&!Array.isArray(o.material))srcs.push(o);});const paintMats=new Map();
  for(const cell of cells.values())for(const src of srcs){let material=src.material;const isPaint=material.name===paint;
   if(isPaint){material=paintMats.get(src)||material.clone();if(!paintMats.has(src)){material.color.set(0xffffff);if(glow){material.emissive=new T.Color(0xffffff);material.emissiveIntensity=glow;material.onBeforeCompile=tintEmissive;material.customProgramCacheKey=()=>'tintEmissive';}paintMats.set(src,material);}}
+  if(sway)material=swayMat(material,sway);
   const im=new T.InstancedMesh(src.geometry,material,cell.length);im.castShadow=true;im.receiveShadow=true;
   cell.forEach((t,i)=>{_e.set(0,t.ry||0,0);_q.setFromEuler(_e);_m.compose(_v.set(t.x,t.y||0,t.z),_q,_s.set(t.s,t.s,t.s));im.setMatrixAt(i,_m);if(isPaint)im.setColorAt(i,_col.setHex(t.col));});world.add(im);}}
 const GRASS={forest:[0x2f8a2a,0x9be25a],canyon:[0x9a6a2a,0xf0c878],night:[0x14505a,0x44d6c8],haunted:[0x2e3c26,0x7f8f58],lava:[0x3a2a26,0x8a4424]};
@@ -588,7 +596,10 @@ function updateCrowd(now){if(!crowd)return;const p=racers[0],party=state==='fini
 function updateSpores(dt,now){if(!sporeMesh)return;spores.forEach((s,i)=>{if(s.cd>0)s.cd-=dt;const vis=s.cd<=0?1:0;_e.set(0,now*.002+s.ph,.4);_q.setFromEuler(_e);_m.compose(_v.set(s.x,s.y+Math.sin(now*.004+s.ph)*.18,s.z),_q,_s.set(vis,vis,vis));sporeMesh.setMatrixAt(i,_m);});sporeMesh.instanceMatrix.needsUpdate=true;}
 function updateSwingers(t=elapsed){const pl=racers[0];for(const s of swingers){const off=Math.sin(t*s.spd+s.ph)*s.amp,p=samplePos(s.d,off,_sp);s.x=p.x;s.z=p.z;
  if(s.kind==='ghost'){s.y=p.y+.9+Math.sin(t*2.2+s.ph)*.45;s.mesh.position.set(p.x,s.y,p.z);const face=pl?Math.atan2(pl.x-p.x,pl.z-p.z):t;s.mesh.rotation.set(0,face,-Math.cos(t*s.spd+s.ph)*.25);const near=pl&&Math.hypot(pl.x-p.x,pl.z-p.z)<18;s.boo=(s.boo||0)+((near?1:0)-(s.boo||0))*.08;s.mesh.scale.setScalar(1.2+s.boo*.35);}
- else{s.mesh.position.copy(p);s.mesh.rotation.y=t*1.5+s.ph;}}}
+ else{s.mesh.position.copy(p);s.mesh.rotation.y=t*1.5+s.ph;
+  if(s.fire){const fl=1+Math.sin(t*9+s.ph*3)*.12;s.mesh.scale.setScalar(1.5*fl);s.mesh.position.y=p.y+1.4+Math.sin(t*3+s.ph)*.35;
+   s.cd=Math.max(0,(s.cd||0)-.016);
+   if(pl&&state==='race'){const dd=Math.hypot(pl.x-p.x,pl.z-p.z);if(dd<20&&!s.cd){s.cd=1.4;SFX.fire(Math.max(.25,1-dd/20));}}}}}}
 
 // ---------------------------------------------------------------- Partikel (Pool, keine Allokation im Rennen)
 const _zeroM=new T.Matrix4().makeScale(0,0,0),_col=new T.Color();
@@ -680,7 +691,7 @@ const VOICE={start:'Auf die Plätze — fertig — los!',lap2:'Runde zwei',lastl
 const VIP=new Set(['start','lap2','lastlap','win','podium','finish','best','gpnext','gpwin','gppodium','gpfinish']);
 const SFX_MAX={pickup:1.2,banana:1.6,hit:1,cheer:4,jingle:8,goodtry:6,finallap:4,spore:.6,ramp:1.3,trick:1.1,rocket:1.8};
 const CLIPS={};for(const k of Object.keys(VOICE))CLIPS['v_'+k]='assets/audio/voice/'+k+'.mp3';for(const k of Object.keys(SFX_MAX))CLIPS['s_'+k]='assets/audio/sfx/'+k+'.mp3';
-const clipData={},clipBuf={},clipFail={},clipNorm={};let voiceGain=null,sfxGain=null,voiceSrc=null,voiceKey=null,voiceQueue=null,pendingVoice=null,duckUntil=0,ducked=false,engine=null,raceFilter=null;
+const clipData={},clipBuf={},clipFail={},clipNorm={};let echoSend=null,ambSrc=null,ambGain=null,voiceGain=null,sfxGain=null,voiceSrc=null,voiceKey=null,voiceQueue=null,pendingVoice=null,duckUntil=0,ducked=false,engine=null,raceFilter=null;
 for(const [k,url] of Object.entries(CLIPS))clipData[k]=fetch(url).then(r=>{if(!r.ok)throw new Error(url);return r.arrayBuffer();}).catch(()=>{clipFail[k]=true;return null;});
 function prepClip(k,b){const sr=b.sampleRate,ch=b.numberOfChannels,d0=b.getChannelData(0),thr=.004;let start=0;while(start<d0.length&&Math.abs(d0[start])<thr)start++;start=Math.max(0,start-Math.floor(sr*.005));const max=k.startsWith('s_')?SFX_MAX[k.slice(2)]:10;let end=Math.min(d0.length,start+Math.floor(sr*max)),e=end-1;while(e>start&&Math.abs(d0[e])<thr)e--;end=Math.min(end,e+Math.floor(sr*.03));
  const len=Math.max(1,end-start),out=ctx.createBuffer(ch,len,sr),fade=Math.min(len,Math.floor(sr*.04));let sum=0,n=0;for(let c=0;c<ch;c++){const dst=out.getChannelData(c);dst.set(b.getChannelData(c).subarray(start,end));for(let i=0;i<fade;i++)dst[len-1-i]*=i/fade;if(c===0)for(let i=0;i<len;i+=3){sum+=dst[i]*dst[i];n++;}}
@@ -699,8 +710,22 @@ function audioInit(){if(ctx)return;ctx=new (window.AudioContext||window.webkitAu
  const o1=ctx.createOscillator();o1.type='sawtooth';const o2=ctx.createOscillator();o2.type='square';const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=700;f.Q.value=1.1;const g=ctx.createGain();g.gain.value=0;o1.connect(f);o2.connect(f);f.connect(g);g.connect(ctx.destination);o1.start();o2.start();
  const nb=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;const ns=ctx.createBufferSource();ns.buffer=nb;ns.loop=true;const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=950;bp.Q.value=3.2;const ng=ctx.createGain();ng.gain.value=0;ns.connect(bp);bp.connect(ng);ng.connect(ctx.destination);ns.start();
  engine={o1,o2,f,g,noise:ng,bp};
- voiceGain=ctx.createGain();voiceGain.gain.value=.78;voiceGain.connect(ctx.destination);sfxGain=ctx.createGain();sfxGain.gain.value=.6;sfxGain.connect(ctx.destination);buildRaceFilter();decodeClips();}
+ voiceGain=ctx.createGain();voiceGain.gain.value=.78;voiceGain.connect(ctx.destination);sfxGain=ctx.createGain();sfxGain.gain.value=.6;sfxGain.connect(ctx.destination);
+ // Hallweg: im Tunnel wird er aufgezogen
+ echoSend=ctx.createGain();echoSend.gain.value=0;const dl=ctx.createDelay(.6),fb=ctx.createGain(),lp=ctx.createBiquadFilter();
+ dl.delayTime.value=.165;fb.gain.value=.34;lp.type='lowpass';lp.frequency.value=2600;
+ sfxGain.connect(echoSend);echoSend.connect(dl);dl.connect(lp);lp.connect(fb);fb.connect(dl);lp.connect(ctx.destination);buildRaceFilter();decodeClips();}
 let noiseBuf=null;
+// Dauerklang der Lavawelt: gefiltertes Rauschen mit langsam atmender Lautstaerke
+function setAmbience(on){if(!ctx)return;
+ if(on&&!ambSrc){if(!noiseBuf){noiseBuf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
+  ambSrc=ctx.createBufferSource();ambSrc.buffer=noiseBuf;ambSrc.loop=true;
+  const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=170;lp.Q.value=.7;
+  ambGain=ctx.createGain();ambGain.gain.value=0;
+  const lfo=ctx.createOscillator(),lg=ctx.createGain();lfo.frequency.value=.12;lg.gain.value=.16;lfo.connect(lg);lg.connect(ambGain.gain);lfo.start();
+  ambSrc.connect(lp);lp.connect(ambGain);ambGain.connect(ctx.destination);ambSrc.start();
+  ambGain.gain.setTargetAtTime(.32,ctx.currentTime,1.2);}
+ else if(!on&&ambSrc){const s=ambSrc,g=ambGain;ambSrc=null;ambGain=null;g.gain.setTargetAtTime(0,ctx.currentTime,.4);setTimeout(()=>{try{s.stop();}catch(e){}},1400);}}
 function sfxNoise(dur,f0,f1,vol=.2,q=2){if(!soundOn||!ctx)return;const t=ctx.currentTime;if(!noiseBuf){noiseBuf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}const s=ctx.createBufferSource();s.buffer=noiseBuf;const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.Q.value=q;bp.frequency.setValueAtTime(f0,t);bp.frequency.exponentialRampToValueAtTime(Math.max(40,f1),t+dur);const gg=ctx.createGain();gg.gain.setValueAtTime(vol,t);gg.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(bp);bp.connect(gg);gg.connect(ctx.destination);s.start(t,Math.random()*.9,dur+.02);}
 function sfxTone(f0,f1,dur,type='square',vol=.08,delay=0){if(!soundOn||!ctx)return;const t=ctx.currentTime+delay,o=ctx.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(Math.max(30,f1),t+dur);const gg=ctx.createGain();gg.gain.setValueAtTime(vol,t);gg.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(gg);gg.connect(ctx.destination);o.start(t);o.stop(t+dur+.02);}
 const SFX={
@@ -725,6 +750,7 @@ const SFX={
  boing(v=1){if(playClip('s_ramp',sfxGain,.7*v,1.25))return;sfxTone(160,700,.35,'triangle',.1*v);},
  trick(){if(playClip('s_trick',sfxGain,.8,1.1))return;sfxTone(600,1500,.25,'triangle',.07);},
  whoosh(){sfxNoise(.3,500,2500,.1,1.4);},
+ fire(v=1){sfxNoise(.55,260,1700,.16*v,1.1);sfxTone(90,220,.4,'sawtooth',.05*v);},
  ring(){[988,1318,1760].forEach((f,i)=>sfxTone(f,f,.12,'triangle',.05,i*.05));},
  spore(n){if(playClip('s_spore',sfxGain,.4,1+n*.035))return;sfxTone(1200+n*60,1800+n*60,.08,'sine',.05);},
  land(v){sfxTone(110,45,.2,'sine',.14*v);sfxNoise(.14,500,120,.08*v,1);},
@@ -751,11 +777,11 @@ function setSound(){soundOn=!soundOn;if(soundOn)audioInit();if(engine)engine.g.g
 
 // ---------------------------------------------------------------- Spielablauf
 function newStats(){return {mt:{mini:0,super:0,ultra:0},maxCombo:0,drafts:0,tricks:0,rings:0,hitsDealt:0,hitsTaken:0,overtakes:0,bestLap:Infinity,lapStart:0,falls:0,bumps:0,maxSpores:0};}
-function start(){if(gp.active)selected=gp.race;syncTrackButtons();keys.clear();buildCourse();state='countdown';elapsed=0;countdown=3;startPress=-1;noticeTimer=0;stats=newStats();
+function start(){if(gp.active)selected=gp.race;syncTrackButtons();keys.clear();buildCourse();setAmbience(!!theme.ember);state='countdown';elapsed=0;countdown=3;startPress=-1;noticeTimer=0;stats=newStats();
  for(const id of ['menu','result','ceremony','pausePanel'])$(id).hidden=true;$('hud').hidden=false;$('pause').hidden=false;$('touch').hidden=false;$('gpBadge').hidden=!gp.active;$('hud').classList.toggle('tt',isTT());$('ttGhost').hidden=$('ttMedal').hidden=!isTT();if(isTT())for(const b of boxes)b.cooldown=1e9;
  document.body.classList.add('racing');document.body.classList.remove('cer');if(soundOn)audioInit();finishMusicAt=0;playBgm(raceTrack());setBgmRate(course.bgmRate||1);stopVoice();say('start');updateCamera(1,true);
  toast(`${course.name} · ${isTT()?'Zeitfahren':cc+'cc'}`,2.2);if(isTT()&&ghost)setTimeout(()=>toast('👻 Dein Geist fährt mit – schlag ihn!',2),2300);if(coarseInput){wantFs=true;enterFs();}}
-function home(){gp.active=false;state='menu';keys.clear();buildCourse();for(const id of ['hud','touch','pause','pausePanel','result','ceremony'])$(id).hidden=true;$('menu').hidden=false;setText('message','');document.body.classList.remove('racing','cer');if(engine)engine.g.gain.value=0;stopVoice();finishMusicAt=0;playBgm('menu');refreshMenu();}
+function home(){setAmbience(false);gp.active=false;state='menu';keys.clear();buildCourse();for(const id of ['hud','touch','pause','pausePanel','result','ceremony'])$(id).hidden=true;$('menu').hidden=false;setText('message','');document.body.classList.remove('racing','cer');if(engine)engine.g.gain.value=0;stopVoice();finishMusicAt=0;playBgm('menu');refreshMenu();}
 let beforePause='race';function pause(){if(state==='paused'){state=beforePause;$('pausePanel').hidden=true;}else if(state==='race'||state==='countdown'){beforePause=state;state='paused';keys.clear();$('pausePanel').hidden=false;stopVoice();}if(engine)engine.g.gain.value=soundOn&&state==='race'?.011:0;}
 function use(){if(state!=='race')return;useItem(racers[0]);}
 function useItem(r){if(r.itemPending)return null;const prevStun=racers.map(x=>x.stun),res=activate(r,racers);if(!res)return null;const me=r.id===0;
@@ -984,7 +1010,8 @@ function animateWorld(dt,now){
  if(boostTex)boostTex.offset.y=-(now*.0022)%1;
  if(state==='menu')updateSwingersMenu(now);
  {const p=racers[0],want=p&&tunnels.length&&inTunnel(p.distance)?1:0;
-  if(want||tunnelMix>.002){tunnelMix+=(want-tunnelMix)*Math.min(1,dt*4.5);renderer.toneMappingExposure=theme.exposure*(1-.26*tunnelMix);headlight.intensity=Math.max(theme.stars?90:0,tunnelMix*130);}}
+  if(want||tunnelMix>.002){tunnelMix+=(want-tunnelMix)*Math.min(1,dt*4.5);renderer.toneMappingExposure=theme.exposure*(1-.26*tunnelMix);
+   headlight.intensity=Math.max(theme.head!==undefined?theme.head:(theme.stars?90:0),tunnelMix*130);if(echoSend)echoSend.gain.value=tunnelMix*.5;}}
  if(!dbg.noSpores)updateSpores(dt,now);if(!dbg.noCrowd&&frame%2===0)updateCrowd(now);
  if(noticeTimer>0){noticeTimer-=dt;if(noticeTimer<=0&&state!=='countdown')setText('message','');}
  if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)$('toast').className='';}}
