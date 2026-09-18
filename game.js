@@ -75,7 +75,7 @@ const MT_COLORS={mini:0x5ad0ff,super:0xffa531,ultra:0xd36bff},MT_LABEL={mini:'MI
 
 let selected=0,colorIndex=0,driverIndex=Math.max(0,Math.min(3,store.get('driver',0)|0)),mode='single',cc=store.get('class',100),state='menu',elapsed=0,countdown=3,last=0,curve,length=1,course,theme,ctx,frame=0,noticeTimer=0,toastTimer=0;
 let boxes=[],racers=[],hazards=[],flags=[],balloons=[],puffs=[],shots=[],ramps=[],pads=[],rings=[],spores=[],swingers=[],gaps=[],boostPads=[],sporeMesh=null,crowd=null,boostTex=null,foamRing=null,fireflies=null,rails=[],forks=[],raises=[],tunnels=[],agrav=[];
-let mapInfo={cx:0,cz:0,k:.6},shake=0,lastPlace=8,leadAt=-99,finishMusicAt=0,soundOn=true,autoGas=false,startPress=-1,prevDrift=false,roulette=null,camFov=62,camH=0,camRoll=0,cer=null,wrongT=0,autopilot=false;
+let mapInfo={cx:0,cz:0,k:.6},shake=0,lastPlace=8,leadAt=-99,finishMusicAt=0,soundOn=true,autoGas=false,startPress=-1,prevDrift=false,roulette=null,camFov=62,camH=0,camRoll=0,camRollPrev=0,cer=null,wrongT=0,autopilot=false;
 let gp={active:false,race:0,points:{}},stats=null,startLights=[],lightState=-1,chevrons=[];
 function setLights(n){if(n===lightState||!startLights.length)return;lightState=n;startLights.forEach((m,i)=>{const on=n===4||i<n;m.emissive.setHex(!on?0x000000:n===4?0x3dff6a:0xff2a1f);m.color.setHex(!on?0x220808:n===4?0x2bd653:0xff3b2f);m.emissiveIntensity=on?2.4:0;});}
 let obsGrid=new Map();let zones=[],bats=null;
@@ -164,12 +164,14 @@ const _tan={x:0,z:0,b:0},_sp=new T.Vector3();
 function tanAt(d){const [i,j,k]=tIdx(d);let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;_tan.x=tx/tl;_tan.z=tz/tl;_tan.b=TP.b[i]+(TP.b[j]-TP.b[i])*k;return _tan;}
 // ---------- Anti-Grav: TP.rl ist der Rollwinkel um die Fahrtrichtung.
 // Seitlich wird entlang (L*cos+U*sin) abgetragen, die Hoehe entlang der Flaechennormalen (U*cos-L*sin).
-function rollAt(d){const [i,j,k]=tIdx(d);const a=TP.rl[i],b=TP.rl[j];return a+(b-a)*k;}
+// Rolle ueber +-PI hinaus (Korkenzieher endet bei TAU~0): kuerzeste-Weg-Interpolation,
+// damit die Nahtzelle nicht rueckwaerts durch den ganzen Kreis laeuft.
+function rollAt(d){const [i,j,k]=tIdx(d);const a=TP.rl[i],b=TP.rl[j];let db=b-a;if(db>Math.PI)db-=TAU;else if(db<-Math.PI)db+=TAU;return a+db*k;}
 function liftAt(d){const [i,j,k]=tIdx(d);const a=TP.lf[i],b=TP.lf[j];return a+(b-a)*k;}
 const hasRoll=d=>Math.abs(rollAt(d))>.004;
 function posAt(d,off,h,out){const [i,j,k]=tIdx(d),x=TP.x[i]+(TP.x[j]-TP.x[i])*k,z=TP.z[i]+(TP.z[j]-TP.z[i])*k;
  let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
- const hh=TP.h[i]+(TP.h[j]-TP.h[i])*k+TP.lf[i]+(TP.lf[j]-TP.lf[i])*k,bb=TP.b[i]+(TP.b[j]-TP.b[i])*k,ph=TP.rl[i]+(TP.rl[j]-TP.rl[i])*k;
+ const hh=TP.h[i]+(TP.h[j]-TP.h[i])*k+TP.lf[i]+(TP.lf[j]-TP.lf[i])*k,bb=TP.b[i]+(TP.b[j]-TP.b[i])*k;let ph=TP.rl[j]-TP.rl[i];if(ph>Math.PI)ph-=TAU;else if(ph<-Math.PI)ph+=TAU;ph+=TP.rl[i];
  const c=Math.cos(ph),s=Math.sin(ph),lx=tz,ly=-bb,lz=-tx;
  return out.set(x+(lx*c)*off+(-lx*s)*h, hh+(ly*c+s)*off+(c-ly*s)*h, z+(lz*c)*off+(-lz*s)*h);}
 function samplePos(d,off,out,lift=0){if(hasRoll(d))return posAt(d,off,lift,out);
@@ -296,11 +298,12 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  agrav=(course.agrav||[]).map(([a,b,mode,deg])=>({s:cpDist(a),e:cpDist(b),mode:mode||'wall',deg:(deg===undefined?70:deg)*Math.PI/180}));
  for(let i=0;i<PS;i++){const d=i/PS*length;let ph=0,lift=0;
   for(const q of agrav){const span=lapDist(q.e-q.s),rel=lapDist(d-q.s);if(rel>span)continue;const u=rel/span;
-   if(q.mode==='roll')ph+=TAU*u*(q.deg<0?-1:1);
+   if(q.mode==='roll')ph+=TAU*(u*u*(3-2*u))*(q.deg<0?-1:1);
    else if(q.mode==='flip')ph+=Math.PI*(1-Math.cos(TAU*u))/2*(q.deg<0?-1:1);
    else ph+=q.deg*(1-Math.cos(TAU*u))/2;
    // Sichthub: hebt nur das Bild der Fahrbahn an, damit die gedrehte Bahn frei ueber dem Boden schwebt
-   lift+=(q.mode==='wall'?Math.abs(Math.sin(q.deg))*9.6+2:11.5)*Math.min(1,Math.sin(Math.PI*u)*1.6);}
+   // (C1-Bump mit Plateau statt min()-Klemmer, damit die Fahrbahn beim Anheben nicht stolpert)
+   lift+=(q.mode==='wall'?Math.abs(Math.sin(q.deg))*9.6+2:11.5)*smooth(0,.3,u)*(1-smooth(.7,1,u));}
   TP.rl[i]=ph;TP.lf[i]=lift;}
  buildForks();
  let minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;for(let i=0;i<PS;i+=8){minX=Math.min(minX,TP.x[i]);maxX=Math.max(maxX,TP.x[i]);minZ=Math.min(minZ,TP.z[i]);maxZ=Math.max(maxZ,TP.z[i]);}
@@ -697,7 +700,8 @@ function vertical(r,dt){const {y:ground,rh}=groundAt(r.distance,r.offset);
  const roadVy=clamp((ground-r.lastGround)/Math.max(dt,1e-3),-45,45);r.lastGround=ground;
  // Anti-Grav: die Fahrbahn haelt magnetisch fest, sonst wirft die Kuppe der Wandfahrt jeden ab
  if(agrav.length&&hasRoll(r.distance)&&!rh&&r.y<ground+2.2){if(r.air){r.air=false;r.airT=0;r.trick=0;}
-  r.y=ground;r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
+  r.y+=(ground-r.y)*Math.min(1,dt*16);if(Math.abs(ground-r.y)<.05)r.y=ground;
+  r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
  if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;if(r.y<ground-1.5&&r.vy<0&&ground>-20){respawn(r);return;}if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
  else if(!rh&&r.rampY>RAMP_H*.55){r.air=true;r.airT=0;r.vy=Math.min(16,6+Math.max(0,r.speed)*.22+(r.onGapRamp?2:0));r.y+=r.vy*dt;if(nearPlayer(r,50))SFX.ramp(r.id===0?1:.4);}
  else{const cand=r.y+r.vy*dt-.5*G_STICK*dt*dt;if(cand>ground+.06&&r.speed>12){r.air=true;r.airT=0;r.y=cand;r.vy-=G*dt;}else{r.y=ground;r.vy=roadVy;}}
@@ -946,7 +950,13 @@ function update(dt){
   let pr=project(r.x,r.z,r.distance),skipped=false;
   // Weit neben der lokalen Projektion (Kurve abgeschnitten): global neu zuordnen; grosse Abkuerzungen setzen zurueck.
   if(Math.abs(pr.off)>14&&!forkBand(pr.d,pr.off,4)){const g2=project(r.x,r.z,projectGlobal(r.x,r.z,r.y||0));if(Math.abs(g2.off)<9){const jump=wrapDiff(g2.d,lapDist(r.distance));if(jump>60){respawn(r);if(me)toast('ABKÜRZUNG ZÄHLT NICHT!',1.6,'bad');skipped=true;}else{r.distance+=jump;pr=g2;}}}
-  if(!skipped){advanceProgress(r,pr.d,length);r.offset=pr.off;railCollide(r,me);}
+  if(!skipped){advanceProgress(r,pr.d,length);r.offset=pr.off;railCollide(r,me);
+   // Anti-Grav-Seitenmagnet: in Rollzonen stehen keine Leitplanken – die Magnetbahn haelt das Kart
+   // seitlich fest (wie vertikal). Weicher exponentieller Pull statt hartem Snap: kein Ruck im Bild,
+   // denn bei ~90 Grad Roll wird seitliche Korrektur als vertikale Bewegung sichtbar.
+   if(agrav.length&&hasRoll(r.distance)&&Math.abs(r.offset)>8.6){const t=tanAt(r.distance),sg=Math.sign(r.offset),pen=(Math.abs(r.offset)-8.6)*Math.min(1,dt*12);
+    r.x-=t.z*sg*pen;r.z+=t.x*sg*pen;r.offset=sg*(Math.abs(r.offset)-pen);
+    const ox=t.z*sg,oz=-t.x*sg,vn=r.vx*ox+r.vz*oz;if(vn>0){r.vx-=ox*vn*1.05;r.vz-=oz*vn*1.05;}}}
   vertical(r,dt);
   if(!r.air&&Math.abs(r.offset)<ROAD_HALF&&!r.rampY){const toGap=gaps.find(g=>{const a=wrapDiff(g.start,r.distance);return a>0&&a<95;});if(!toGap)r.safeD=lapDist(r.distance);}
   if(r.lastMT){r.mts=(r.mts||0)+(r.lastMT==='ultra'?100:r.lastMT==='super'?10:1);if(me){stats.mt[r.lastMT]++;SFX.mt(r.lastMT);const combo=comboStep(r,elapsed);if(combo>=2){stats.maxCombo=Math.max(stats.maxCombo||0,combo);if(r.spores<MAX_SPORES)r.spores++;SFX.combo(combo);toast(`${MT_LABEL[r.lastMT]} · COMBO ×${combo}`,1,'mt-'+r.lastMT);}else toast(MT_LABEL[r.lastMT]+'!',.8,'mt-'+r.lastMT);const p=r.mesh.position;for(let i=0;i<14;i++){const a=Math.random()*TAU;emit(p.x,p.y+.4,p.z,MT_COLORS[r.lastMT],Math.sin(a)*3-Math.sin(r.h)*6,1+Math.random()*2,Math.cos(a)*3-Math.cos(r.h)*6,.5);}}r.lastMT=null;}
@@ -1090,7 +1100,12 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  const desired=tempLook.set(p.x-sx*back,py+up,p.z-cz*back),k=snap?1:1-Math.exp(-dt*9);
  if(snap)camFlat.copy(desired);else{camFlat.x+=(desired.x-camFlat.x)*k;camFlat.z+=(desired.z-camFlat.z)*k;camFlat.y+=(desired.y-camFlat.y)*(1-Math.exp(-dt*5));}
  // Anti-Grav: Kamera folgt der gedrehten Fahrbahn (Versatz und Hochachse um die Fahrtrichtung gedreht)
- const rl=agrav.length?rollAt(p.distance):0;camRoll=snap?rl:camRoll+(rl-camRoll)*Math.min(1,dt*7);
+ // Feed-Forward: das analytische Roll-Delta wird direkt uebernommen, nur der Restfehler wird geglaettet.
+ // So hinkt der Horizont bei schnellen Korkenziehern nicht (alt: dt*7-Nachlauf ~30 Grad) und die
+ // TAU/0-Naht am Ende eines Roll-Moduls loest keinen Rueckwaertssalto aus (angleDiff ist wrap-sicher).
+ const rl=agrav.length?rollAt(p.distance):0;
+ if(snap)camRoll=camRollPrev=rl;
+ else{const dRl=angleDiff(rl,camRollPrev),pred=camRoll+dRl;camRoll=angleDiff(pred+angleDiff(rl,pred)*Math.min(1,dt*10),0);camRollPrev=rl;}
  if(Math.abs(camRoll)>.004){posAt(p.distance,p.offset,(p.y??0)-groundAt(p.distance,p.offset).y,_agP);
   _agAxis.set(Math.sin(p.h),0,Math.cos(p.h));
   _agV.set(camFlat.x-p.x,camFlat.y-py,camFlat.z-p.z).applyAxisAngle(_agAxis,camRoll);
