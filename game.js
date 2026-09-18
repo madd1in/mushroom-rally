@@ -31,33 +31,33 @@ const THEMES={
 const courses=[
  {name:'Pilz-Promenade',icon:'✿',kind:'Achterbahn · Viadukt · Tunnel',medals:[85,91,102],music:'race',theme:'forest',seed:7,
   points:[[-45,-45],[-8,-8],[30,30],[72,62],[112,42],[118,-12],[82,-52],[38,-38],[-35,35],[-72,68],[-112,40],[-118,-15],[-85,-58]],
-  raise:[[6.55,8.45,8,44,1]],hills:[[3.6,4,.022],[10.6,4,.022]],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],
+  raise:[[6.55,8.45,8,44,1]],hills:[[3.6,4,.022],[10.6,4,.022]],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],agrav:[[5.0,5.9,'wall',74]],
   ramps:[[4.4,0,9],[9.7,0,8]],pads:[[3.1,-4],[10.0,4]],
   boost:[1.9,5.5,12.3],boxes:[1.6,4.9,9.3,12.0],stands:[[.2,18],[5.2,-19]]},
  {name:'Sonnen-Canyon',icon:'☀',kind:'Schnell · Schluchtsprung · Felstunnel',medals:[93,100,112],music:'sunset',theme:'canyon',seed:23,
   points:[[0,78],[95,78],[125,45],[120,-20],[85,-45],[105,-88],[50,-102],[2,-50],[-60,-98],[-115,-72],[-122,0],[-105,55],[-55,80]],
   hills:[[1.5,4,.03],[4.5,6,.04]],plateau:[9.45,11.7,7,34],gaps:[[10.5,14]],fork:[[6.25,8.75,.36]],
-  raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],
+  raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],agrav:[[1.25,2.05,'wall',68]],
   ramps:[[3.3,0,9],[6.5,3,7]],pads:[[2.4,-4],[8.4,4]],
   boost:[.5,5.2,12.2],boxes:[1.0,4.0,7.0,9.1,12.6],stands:[[.3,-18],[5.6,19]]},
  {name:'Neon-Pilzwald',icon:'✦',kind:'Technisch · Drift · Neontunnel',medals:[100,107,121],music:'night',theme:'night',seed:41,
   points:[[0,70],[50,75],[80,50],[55,25],[85,0],[95,-45],[55,-60],[30,-35],[0,-60],[-30,-95],[-80,-80],[-70,-40],[-105,-10],[-95,40],[-60,35],[-40,65]],
-  hills:[[4.6,4,.03],[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[9.3,10.0,'neon']],gaps:[[12.55,12]],agrav:[[3.0,4.5,'wall',58]],
+  hills:[[4.6,4,.03],[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[9.3,10.0,'neon']],gaps:[[12.55,12]],agrav:[[3.0,4.5,'wall',84],[11.0,11.85,'roll',1]],
   ramps:[[10.6,0,8],[14.5,-2,7]],pads:[[4.4,3],[12.4,-3]],
   boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],swing:[[2.5,5,1.3,0],[7.4,5,1.1,1.5],[13.1,5,1.4,3]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
  {name:'Geisterhaus',icon:'👻',kind:'Spuk · Villa · Gruft & Viadukt',medals:[92,99,111],music:'night',bgmRate:.9,theme:'haunted',seed:66,
   points:[[0,70],[55,78],[95,55],[105,10],[70,-16],[100,-60],[70,-95],[20,-90],[-30,-90],[-75,-95],[-112,-55],[-104,-18],[-93,12],[-104,40],[-80,70],[-40,76]],
-  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],
+  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.9,12.6,'flip',1]],
   ramps:[[5.4,0,9],[13.5,0,8]],pads:[[4.6,3],[14.6,-3]],
   boost:[.5,6,12.5],ghosts:[[1.6,5.5,.9,0],[5.3,5.5,1.1,2],[7.5,4.2,1,.5],[10.4,5.5,.8,4],[12.9,5.5,1.2,1]],boxes:[1.2,4.1,9.6,13.9],stands:[[.3,-19],[13.2,19]]},
  {name:'Lava-Feste',icon:'\u2668',kind:'Burg \u00b7 Magma \u00b7 Feuerb\u00e4lle',medals:[99,106,119],music:'sunset',bgmRate:1.06,theme:'lava',seed:88,
   points:[[-80,86],[0,90],[80,84],[118,56],[126,12],[112,-34],[92,-74],[44,-98],[-14,-94],[-62,-86],[-92,-56],[-72,-26],[-96,6],[-118,44],[-108,74]],
-  castle:1.05,hills:[[3.2,5,.03],[8.6,3,.028]],raise:[[12.4,13.4,8,32,1]],tunnel:[[4.6,5.25,'lava']],gaps:[[8.15,14]],agrav:[[10.15,11.25,'wall',56]],
+  castle:1.05,hills:[[3.2,5,.03],[8.6,3,.028]],raise:[[12.4,13.4,8,32,1]],tunnel:[[4.6,5.25,'lava']],gaps:[[8.15,14]],agrav:[[10.05,11.35,'roll',1]],
   swing:[[3.4,5,1.25,0],[7.0,5,1.05,2],[11.2,5,1.15,1]],
   ramps:[[2.4,0,9],[9.7,0,8]],pads:[[5.9,-4],[13.2,4]],
   boost:[.55,6.4,11.8],boxes:[1.6,4.4,8.0,9.9,13.6],stands:[[.4,18],[8.6,-19]]}];
 // Streckenlayouts haben sich geaendert (Viadukt, Abzweigungen, Kurvenglaettung) -> alte Rekorde/Geister einmalig verwerfen
-const LAYOUT_VER=12;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
+const LAYOUT_VER=13;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
 const KART_COLORS=[{c:0xff3b30,n:'Ruby / Rot'},{c:0xffc400,n:'Sunny / Gelb'},{c:0x00c2a8,n:'Mint / Türkis'},{c:0x8b5cff,n:'Nova / Violett'},{c:0xffc93c,n:'Goldpilz',gold:true}];
 const DRIVERS=[{k:'driver',n:'Pilzi',i:'🍄'},{k:'driver_turtle',n:'Schildi',i:'🐢'},{k:'driver_robot',n:'Volt',i:'🤖'},{k:'driver_cat',n:'Mochi',i:'🐱'}];
 const AI_DRIVERS=[0,1,2,3,1,2,3,0];
@@ -138,7 +138,7 @@ function notice(text,duration=1.3){setText('message',text);noticeTimer=duration;
 function toast(text,duration=1.4,cls=''){const el=$('toast');el.textContent=text;el.className='show '+cls;toastTimer=duration;}
 
 // ---------------------------------------------------------------- Strecke: Tabelle, Projektion, Hoehe
-const PS=2048,newTP=()=>({x:new Float32Array(PS),z:new Float32Array(PS),tx:new Float32Array(PS),tz:new Float32Array(PS),k:new Float32Array(PS),v:new Float32Array(PS),vd:new Float32Array(PS),h:new Float32Array(PS),b:new Float32Array(PS),rl:new Float32Array(PS)});let TP=newTP();
+const PS=2048,newTP=()=>({x:new Float32Array(PS),z:new Float32Array(PS),tx:new Float32Array(PS),tz:new Float32Array(PS),k:new Float32Array(PS),v:new Float32Array(PS),vd:new Float32Array(PS),h:new Float32Array(PS),b:new Float32Array(PS),rl:new Float32Array(PS),lf:new Float32Array(PS)});let TP=newTP();
 const lapDist=d=>((d%length)+length)%length;
 const wrapDiff=(a,b)=>((a-b)%length+length*1.5)%length-length/2;
 const smooth=(e0,e1,x)=>{const t=clamp((x-e0)/(e1-e0),0,1);return t*t*(3-2*t);};
@@ -151,9 +151,7 @@ function buildTable(){for(let i=0;i<PS;i++){const u=i/PS,p=curve.getPointAt(u),t
 function projectGlobal(x,z,y){let best=0,bd=1e18;const hy=y!==undefined;for(let i=0;i<PS;i+=4){const dx=x-TP.x[i],dz=z-TP.z[i];let d2=dx*dx+dz*dz;if(hy){const dy=y-TP.h[i];d2+=dy*dy*4;}if(d2<bd){bd=d2;best=i;}}
  const c=best;for(let k=-4;k<=4;k++){const i=((c+k)%PS+PS)%PS,dx=x-TP.x[i],dz=z-TP.z[i];let d2=dx*dx+dz*dz;if(hy){const dy=y-TP.h[i];d2+=dy*dy*4;}if(d2<bd){bd=d2;best=i;}}return best*length/PS;}
 function project(x,z,hintD){const ds=length/PS,i0=Math.round(lapDist(hintD)/ds);let best=i0%PS,bd=1e18;for(let k=-60;k<=60;k++){const i=((i0+k)%PS+PS)%PS,dx=x-TP.x[i],dz=z-TP.z[i],d2=dx*dx+dz*dz;if(d2<bd){bd=d2;best=i;}}
- const dx=x-TP.x[best],dz=z-TP.z[best],d=lapDist(best*ds+dx*TP.tx[best]+dz*TP.tz[best]),off=dx*TP.tz[best]-dz*TP.tx[best];
- // Anti-Grav: Der horizontale Abstand ist auf gerollter Fahrbahn um cos(roll) verkuerzt — zurueckrechnen auf wahren Querabstand.
- const cr=Math.cos(rollAt(d));return {d,off:cr>.25?off/cr:off*4};}
+ const dx=x-TP.x[best],dz=z-TP.z[best];return {d:lapDist(best*ds+dx*TP.tx[best]+dz*TP.tz[best]),off:dx*TP.tz[best]-dz*TP.tx[best]};}
 function tIdx(d){const f=lapDist(d)/length*PS,i=Math.floor(f)%PS;return [i,(i+1)%PS,f-Math.floor(f)];}
 function trackAt(d){const [i,j,k]=tIdx(d);return {h:TP.h[i]+(TP.h[j]-TP.h[i])*k,b:TP.b[i]+(TP.b[j]-TP.b[i])*k,kap:TP.k[i],v:TP.v[i],vd:TP.vd[i]};}
 function slopeAt(d){return (trackAt(d+1.5).h-trackAt(d-1.5).h)/3;}
@@ -162,10 +160,11 @@ function tanAt(d){const [i,j,k]=tIdx(d);let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz
 // ---------- Anti-Grav: TP.rl ist der Rollwinkel um die Fahrtrichtung.
 // Seitlich wird entlang (L*cos+U*sin) abgetragen, die Hoehe entlang der Flaechennormalen (U*cos-L*sin).
 function rollAt(d){const [i,j,k]=tIdx(d);const a=TP.rl[i],b=TP.rl[j];return a+(b-a)*k;}
+function liftAt(d){const [i,j,k]=tIdx(d);const a=TP.lf[i],b=TP.lf[j];return a+(b-a)*k;}
 const hasRoll=d=>Math.abs(rollAt(d))>.004;
 function posAt(d,off,h,out){const [i,j,k]=tIdx(d),x=TP.x[i]+(TP.x[j]-TP.x[i])*k,z=TP.z[i]+(TP.z[j]-TP.z[i])*k;
  let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
- const hh=TP.h[i]+(TP.h[j]-TP.h[i])*k,bb=TP.b[i]+(TP.b[j]-TP.b[i])*k,ph=TP.rl[i]+(TP.rl[j]-TP.rl[i])*k;
+ const hh=TP.h[i]+(TP.h[j]-TP.h[i])*k+TP.lf[i]+(TP.lf[j]-TP.lf[i])*k,bb=TP.b[i]+(TP.b[j]-TP.b[i])*k,ph=TP.rl[i]+(TP.rl[j]-TP.rl[i])*k;
  const c=Math.cos(ph),s=Math.sin(ph),lx=tz,ly=-bb,lz=-tx;
  return out.set(x+(lx*c)*off+(-lx*s)*h, hh+(ly*c+s)*off+(c-ly*s)*h, z+(lz*c)*off+(-lz*s)*h);}
 function samplePos(d,off,out,lift=0){if(hasRoll(d))return posAt(d,off,lift,out);
@@ -181,10 +180,10 @@ function inGap(d){const dl=lapDist(d);return gaps.some(g=>dl>g.start&&dl<g.end);
 function inRaise(q,d){return lapDist(d-q.s)<=lapDist(q.e-q.s);}
 function inBridge(d){return raises.some(q=>q.bridge&&inRaise(q,d));}
 function raiseH(d){let h=0;for(const q of raises){const span=lapDist(q.e-q.s),rel=lapDist(d-q.s);if(rel<=span)h+=q.h*smooth(0,q.r,rel)*(1-smooth(span-q.r,span,rel));}return h;}
-function groundAt(d,off){const tr=trackAt(d);const rl=rollAt(d);let base;
- if(Math.abs(rl)>.004){base=tr.h+off*Math.sin(clamp(rl-tr.b,-1.35,1.35));const edge=Math.abs(off)-8.9;if(edge>0)base=Math.max(0,base-edge*.8);if(Math.abs(off)<30&&inGap(d))base=-30;}
- else{base=tr.h-off*tr.b;const edge=Math.abs(off)-8.9;if(edge>.6&&tr.h>2.2&&inBridge(d))base=0;else if(edge>0&&base>0)base=Math.max(0,base-edge/1.5);if(Math.abs(off)<30&&inGap(d))base=-30;}
- const rh=rampAt(d,off);return {y:base+(rh?rh.y:0),rh};}
+// Anti-Grav dreht nur die Darstellung: gefahren wird weiter in der flachen Streckenebene.
+function groundAt(d,off){const tr=trackAt(d);let base=tr.h-off*tr.b;const edge=Math.abs(off)-8.9;
+ if(edge>.6&&tr.h>2.2&&inBridge(d))base=0;else if(edge>0&&base>0)base=Math.max(0,base-edge/1.5);
+ if(Math.abs(off)<30&&inGap(d))base=-30;const rh=rampAt(d,off);return {y:base+(rh?rh.y:0),rh};}
 function rampAt(d,off){const dl=lapDist(d);for(const r of ramps){if(Math.abs(off-r.off)<r.w/2&&dl>=r.start&&dl<=r.end)return {y:RAMP_H*(dl-r.start)/RAMP_LEN,ramp:r};}return null;}
 function strip(d0,d1,offset,width,lift,uvLen,steps){const n=steps+1,v=new Float32Array(n*6),uv=new Float32Array(n*4),idx=new Uint32Array(steps*6);for(let i=0;i<n;i++){const d=d0+(d1-d0)*i/steps;for(let s=0;s<2;s++){const p=samplePos(d,offset+(s?1:-1)*width/2,_sp,lift),o=i*2+s;v[o*3]=p.x;v[o*3+1]=p.y;v[o*3+2]=p.z;uv[o*2]=s;uv[o*2+1]=(d-d0)/uvLen;}if(i<steps){const a=i*2,q=i*6;idx[q]=a;idx[q+1]=a+2;idx[q+2]=a+1;idx[q+3]=a+1;idx[q+4]=a+2;idx[q+5]=a+3;}}
  const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(v,3));g.setAttribute('uv',new T.BufferAttribute(uv,2));g.setIndex(new T.BufferAttribute(idx,1));g.computeVertexNormals();return g;}
@@ -283,9 +282,9 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
    if(q.mode==='roll')ph+=TAU*u*(q.deg<0?-1:1);
    else if(q.mode==='flip')ph+=Math.PI*(1-Math.cos(TAU*u))/2*(q.deg<0?-1:1);
    else ph+=q.deg*(1-Math.cos(TAU*u))/2;
-   // Mittellinie anheben, damit die tiefere Strassenkante ueber dem Terrain bleibt (echte Wand statt Grube)
-   lift+=(Math.abs(Math.sin(q.deg))*8.9+1)*(1-Math.cos(TAU*u))/2;}
-  TP.rl[i]=ph;TP.h[i]+=lift;}
+   // Sichthub: hebt nur das Bild der Fahrbahn an, damit die gedrehte Bahn frei ueber dem Boden schwebt
+   lift+=(q.mode==='wall'?Math.abs(Math.sin(q.deg))*9.6+2:11.5)*Math.min(1,Math.sin(Math.PI*u)*1.6);}
+  TP.rl[i]=ph;TP.lf[i]=lift;}
  buildForks();
  let minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;for(let i=0;i<PS;i+=8){minX=Math.min(minX,TP.x[i]);maxX=Math.max(maxX,TP.x[i]);minZ=Math.min(minZ,TP.z[i]);maxZ=Math.max(maxZ,TP.z[i]);}
  mapInfo={cx:(minX+maxX)/2,cz:(minZ+maxZ)/2,k:Math.min(180/(maxX-minX),140/(maxZ-minZ))};
@@ -305,7 +304,24 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  const dashTex=canvasTex(8,32,(q)=>{q.fillStyle=theme.line;q.fillRect(0,0,8,16);},true);stripSegs(0,.22,.075,8,new T.MeshStandardMaterial({map:dashTex,alphaTest:.5,roughness:.8,...(glow?{emissive:0xffffff,emissiveMap:dashTex,emissiveIntensity:1}:{})}),false);
  const skirtMat=new T.MeshStandardMaterial({map:speckleTexture(hex(theme.skirt),hex(theme.grassSpot),1800),roughness:1,side:T.DoubleSide});skirt(-1,skirtMat);skirt(1,skirtMat);
  // Anti-Grav: dunkler Kiel unter der Wandfahrt, damit die gekippte Fahrbahn massiv wirkt
- if(agrav.length){const keelMat=new T.MeshStandardMaterial({color:theme.glow?0x1b1830:0x4c4640,roughness:.95,side:T.DoubleSide});for(const q of agrav)addStrip(strip(q.s-6,q.e+6,0,17.8,-1.6,6,Math.ceil((q.e-q.s+12)/1.1)),keelMat);}
+ if(agrav.length){const keelMat=new T.MeshStandardMaterial({color:theme.glow?0x1b1830:0x4c4640,roughness:.95,side:T.DoubleSide});
+  const col=theme.glow?0x7cf3ff:0x59d7ff;
+  const glowMat=new T.MeshBasicMaterial({color:col,transparent:true,opacity:.34,depthWrite:false,side:T.DoubleSide});
+  const ringMat=new T.MeshBasicMaterial({color:col,side:T.DoubleSide});
+  const postMat=mat(0x232c44,{emissive:col,emissiveIntensity:.6,roughness:.5});
+  const posts=[],_pv=new T.Vector3();
+  for(const q of agrav){const span=lapDist(q.e-q.s),steps=Math.ceil((span+12)/1.1);
+   addStrip(strip(q.s-6,q.e+6,0,17.8,-1.6,6,steps),keelMat);
+   // Energieband auf der Fahrbahn
+   addStrip(strip(q.s+1,q.e-1,0,15.2,.08,7,Math.ceil(span/1.3)),glowMat,false);
+   // Torringe an Ein- und Ausfahrt
+   for(const d of [q.s+1.5,q.e-1.5]){const s=sample(d,0),g=new T.Mesh(new T.TorusGeometry(11.8,.5,8,22),ringMat);
+    g.position.copy(s.p);g.rotation.order='YXZ';g.rotation.y=s.angle;g.rotation.z=rollAt(d);g.castShadow=false;world.add(g);}
+   // Pylonen: stehen senkrecht unter der schwebenden Bahn
+   for(let d=q.s+4;d<q.e-2;d+=11){const [i,j,k]=tIdx(d);
+    const cx=TP.x[i]+(TP.x[j]-TP.x[i])*k,cz=TP.z[i]+(TP.z[j]-TP.z[i])*k,top=TP.h[i]+(TP.h[j]-TP.h[i])*k+TP.lf[i]+(TP.lf[j]-TP.lf[i])*k;
+    if(top<2)continue;posts.push(new T.BoxGeometry(1.2,top,1.2).translate(cx,top/2,cz));}}   // rein optisch: die Fahrbahn schwebt darueber, Kollision waere mitten auf der Strecke
+  if(posts.length){const pm=new T.Mesh(mergeGeometries(posts),postMat);pm.castShadow=true;world.add(pm);}}
  bm('road+skirts');buildGaps();buildMansion();bm('gaps+mansion');
  // Start-Ziel-Tor und Schachbrett
  const start=sample(0),arch=new T.Group();arch.position.copy(start.p);arch.rotation.y=start.angle;world.add(arch);
@@ -658,7 +674,7 @@ function vertical(r,dt){const {y:ground,rh}=groundAt(r.distance,r.offset);
  if(r.y===undefined){r.y=ground;r.vy=0;r.air=false;r.airT=0;r.trick=0;r.lastGround=ground;r.rampY=0;r.padCd=0;r.ringCd=0;r.stall=0;r.driftVis=0;}
  const roadVy=clamp((ground-r.lastGround)/Math.max(dt,1e-3),-45,45);r.lastGround=ground;
  // Anti-Grav: die Fahrbahn haelt magnetisch fest, sonst wirft die Kuppe der Wandfahrt jeden ab
- if(agrav.length&&hasRoll(r.distance)&&!rh&&r.y<ground+3.2){if(r.air){r.air=false;r.airT=0;r.trick=0;if(r.id===0)SFX.whoosh();}
+ if(agrav.length&&hasRoll(r.distance)&&!rh&&r.y<ground+2.2){if(r.air){r.air=false;r.airT=0;r.trick=0;}
   r.y=ground;r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
  if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;if(r.y<ground-1.5&&r.vy<0&&ground>-20){respawn(r);return;}if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
  else if(!rh&&r.rampY>RAMP_H*.55){r.air=true;r.airT=0;r.vy=Math.min(16,6+Math.max(0,r.speed)*.22+(r.onGapRamp?2:0));r.y+=r.vy*dt;if(nearPlayer(r,50))SFX.ramp(r.id===0?1:.4);}
@@ -678,12 +694,15 @@ function collideStatic(r){const ix=Math.floor(r.x/16),iz=Math.floor(r.z/16);for(
  const R=Math.hypot(r.x,r.z);if(R>189){const nx=-r.x/R,nz=-r.z/R;r.x=-nx*189;r.z=-nz*189;bounce(r,nx,nz);}}
 function bounce(r,nx,nz,hard=false){const vn=r.vx*nx+r.vz*nz;if(vn>=0)return;r.vx-=nx*vn*1.4;r.vz-=nz*vn*1.4;const loss=Math.min(.6,-vn/40+(hard?.25:0));r.vx*=1-loss;r.vz*=1-loss;if(hard&&-vn>4)hitKart(r,.45,.9);
  if(-vn>5)r.combo=0;if(r.id===0&&-vn>5){shake=Math.max(shake,Math.min(.35,-vn*.02));SFX.bump(clamp(-vn/25,.2,1));stats.bumps++;}}
+const _agP=new T.Vector3(),_agV=new T.Vector3(),_agAxis=new T.Vector3(),_agL=new T.Vector3();
 function syncKart(r,dt){const s=tanAt(r.distance),e=r.mesh.rotation,dot=Math.sin(r.h)*s.x+Math.cos(r.h)*s.z,bank=s.b;
  r.driftVis=(r.driftVis||0)+((r.driftDir||0)*.38-(r.driftVis||0))*Math.min(1,dt*10);
  const hopY=r.hop>0?Math.sin((.2-r.hop)/.2*Math.PI)*.35:0;
- r.mesh.position.set(r.x,(r.y??0)+.1+hopY+(r.air?0:Math.sin(elapsed*22+r.id)*.03*(Math.abs(r.speed)/30)),r.z);e.order='YXZ';
+ const lift=.1+hopY+(r.air?0:Math.sin(elapsed*22+r.id)*.03*(Math.abs(r.speed)/30));
+ if(agrav.length&&hasRoll(r.distance))r.mesh.position.copy(posAt(r.distance,r.offset,(r.y??0)-groundAt(r.distance,r.offset).y+lift,_agP));
+ else r.mesh.position.set(r.x,(r.y??0)+lift,r.z);e.order='YXZ';
  const spin=r.trick>0?Math.min(1,r.trick/.42)*TAU:0;e.y=r.h+r.driftVis+(r.stun>0?elapsed*14:0)+spin;
- e.x=r.air?clamp(-r.vy*.02,-.45,.45):-Math.atan(slopeAt(r.distance)*dot);e.z=-bank*dot+(r.id===0?-(r.steerS||0)*.07:0)-r.driftVis*.12+rollAt(r.distance);
+ e.x=r.air?clamp(-r.vy*.02,-.45,.45):-Math.atan(slopeAt(r.distance)*dot);e.z=-bank*dot+(r.id===0?-(r.steerS||0)*.07:0)-r.driftVis*.12+(agrav.length?rollAt(r.distance):0);
  if(r.squash>0){r.squash=Math.max(0,r.squash-dt*1.4);const q=Math.sin(r.squash/.3*Math.PI)*r.squash*.55;r.mesh.scale.set(1+q*.6,1-q,1+q*.6);}else if(r.mesh.scale.y!==1)r.mesh.scale.set(1,1,1);
  const parts=r.mesh.userData.parts;if(parts){const st=r.steerS||0;for(const w of parts.wheels){w.wh.rotation.x+=(r.speed*dt)/w.r*w.dir;if(w.front)w.piv.rotation.y=st*.42+(r.driftDir||0)*.12;}
   const d=parts.driver;if(d){const lean=-st*.2-(r.driftVis||0)*.3,done=r.finishTime!==null;d.rotation.z+=(lean-d.rotation.z)*Math.min(1,dt*8);d.rotation.x+=((r.air?-.2:r.boost>0?.12:0)-d.rotation.x)*Math.min(1,dt*6);
@@ -710,7 +729,7 @@ function aiInput(r,dt){const sk=r.skill,sp=Math.max(0,r.speed),look=5+sp*.38;
  for(let s=4;s<=12+sp*1.4;s+=4){const tr=trackAt(r.distance+s);let vc=(r.driftDir||dcap?tr.vd:tr.v)*(.84+.16*sk);if(onFork){const fa=forkAt(r.distance+s);if(fa)vc=Math.min(vc,fa.f.vT[fa.rel]*(.88+.12*sk));}target=Math.min(target,Math.sqrt(vc*vc+2*brakeDecel*s));}
  const gapAhead=gaps.some(g=>{const a=wrapDiff(g.start,r.distance);return a>0&&a<120;});if(gapAhead)target=99;
  // Anti-Grav-Einfahrt mit Bodenkontakt anfahren: Deckel verhindert Abspruenge/Turbo am Wandeintritt
- if(agrav.some(q=>{const a=wrapDiff(q.s,r.distance);return a>4&&a<50;}))target=Math.min(target,25);
+
  const gas=sp<target-.3,brake=sp>target+2.5&&!gapAhead;
  // Drift: nur bei langen Kurven; Radius per Gegenlenken regeln; Ladestufe je Koennen, Release wenn die Kurve oeffnet
  let drift=false;r.driftCd=Math.max(0,r.driftCd-dt);
@@ -1021,7 +1040,7 @@ function drawMap(){const {cx,cz,k}=mapInfo,X=x=>100+(x-cx)*k,Y=z=>80+(z-cz)*k,ou
  for(const f of forks){q.beginPath();f.pts.forEach((p,i)=>i?q.lineTo(X(p.x),Y(p.z)):q.moveTo(X(p.x),Y(p.z)));q.lineWidth=7;q.strokeStyle='#0b1a2288';q.stroke();q.lineWidth=2;q.strokeStyle='#ffe9a8';q.stroke();}}
  const q=out;q.clearRect(0,0,200,160);q.drawImage(mapBase,0,0);
  for(let n=racers.length-1;n>=0;n--){const r=racers[n];q.fillStyle=r.id===0?'#ffe16a':'#fff';q.beginPath();q.arc(X(r.x),Y(r.z),r.id===0?5:3,0,TAU);q.fill();if(r.id===0){q.strokeStyle='#203e2f';q.lineWidth=1.5;q.stroke();}}}
-const tempLook=new T.Vector3();
+const tempLook=new T.Vector3(),camFlat=new T.Vector3();
 function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  if(state==='menu'){camera.up.set(0,1,0);const s=sample(length*.03);const angle=performance.now()*.00005;camera.position.set(s.p.x+Math.sin(angle)*50,26+s.p.y,s.p.z+Math.cos(angle)*50);camera.lookAt(s.p.x,2,s.p.z);setFov(portrait?72:58,dt,true);return;}
  if(state==='ceremony'&&cer){camera.up.set(0,1,0);const a=cer.angle+Math.sin(cer.t*.25)*.9,r=portrait?30:23;camera.position.set(cer.center.x+Math.sin(a)*r,cer.center.y+5+Math.sin(cer.t*.4),cer.center.z+Math.cos(a)*r);camera.lookAt(cer.center.x,cer.center.y+(portrait?-4.5:1.5),cer.center.z);
@@ -1031,11 +1050,19 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  // Verfolgerkamera haengt am Kart (nicht an der Strecke): man sieht, wohin man wirklich faehrt
  const targetH=p.h+(p.driftDir?-p.driftDir*.12:0);camH=snap?targetH:camH+angleDiff(targetH,camH)*Math.min(1,dt*(p.driftDir?3.2:5));
  const back=portrait?10.5:8.4,up=portrait?4.8:3.7,sx=Math.sin(camH),cz=Math.cos(camH),py=p.y??0;
- const desired=tempLook.set(p.x-sx*back,py+up,p.z-cz*back);const k=snap?1:1-Math.exp(-dt*9);camera.position.x+=(desired.x-camera.position.x)*k;camera.position.z+=(desired.z-camera.position.z)*k;camera.position.y+=(desired.y-camera.position.y)*(snap?1:1-Math.exp(-dt*5));
- // Anti-Grav: Kamera rollt bis 90 % mit der Fahrbahn mit
- const rl=rollAt(p.distance);camRoll=snap?rl:camRoll+(rl-camRoll)*Math.min(1,dt*6);const psi=camRoll*.9;
- camera.up.set(-Math.sin(psi)*cz,Math.cos(psi),Math.sin(psi)*sx);
- camera.lookAt(p.x+sx*8,py+1.3,p.z+cz*8);
+ // Die Glaettung laeuft in der flachen Ebene; die gerollte Kameraposition wird daraus abgeleitet,
+ // sonst wandert der eigene Versatz in die naechste Glaettung zurueck.
+ const desired=tempLook.set(p.x-sx*back,py+up,p.z-cz*back),k=snap?1:1-Math.exp(-dt*9);
+ if(snap)camFlat.copy(desired);else{camFlat.x+=(desired.x-camFlat.x)*k;camFlat.z+=(desired.z-camFlat.z)*k;camFlat.y+=(desired.y-camFlat.y)*(1-Math.exp(-dt*5));}
+ // Anti-Grav: Kamera folgt der gedrehten Fahrbahn (Versatz und Hochachse um die Fahrtrichtung gedreht)
+ const rl=agrav.length?rollAt(p.distance):0;camRoll=snap?rl:camRoll+(rl-camRoll)*Math.min(1,dt*7);
+ if(Math.abs(camRoll)>.004){posAt(p.distance,p.offset,(p.y??0)-groundAt(p.distance,p.offset).y,_agP);
+  _agAxis.set(Math.sin(p.h),0,Math.cos(p.h));
+  _agV.set(camFlat.x-p.x,camFlat.y-py,camFlat.z-p.z).applyAxisAngle(_agAxis,camRoll);
+  camera.position.copy(_agP).add(_agV);
+  camera.up.set(0,1,0).applyAxisAngle(_agAxis,camRoll);
+  camera.lookAt(_agL.set(sx*8,1.3,cz*8).applyAxisAngle(_agAxis,camRoll).add(_agP));}
+ else{camera.position.copy(camFlat);camera.up.set(0,1,0);camera.lookAt(p.x+sx*8,py+1.3,p.z+cz*8);}
  if(p.boost>0){camera.position.y+=Math.sin(elapsed*63)*.05;camera.position.x+=Math.sin(elapsed*49)*.04;}
  if(shake>0){shake=Math.max(0,shake-dt);camera.position.x+=(Math.random()-.5)*shake*.9;camera.position.y+=(Math.random()-.5)*shake*.7;}
  setFov((portrait?74:62)+(p.boost>0?10:0)+clamp(Math.abs(p.speed)-24,0,16)*.35,dt,snap);}
