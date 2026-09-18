@@ -453,3 +453,5 @@ body:not(.racing):not(.cer) header .brand{opacity:0;pointer-events:none}
 #menu #gfx button.selected{background:linear-gradient(180deg,#ffffff1f,#ffffff08);border-color:var(--gold);color:#fff}
 .gfx-pick{margin-left:auto}
 @media(max-width:430px){.gfx-pick{margin-left:0;width:100%}#menu #gfx button{padding:7px 10px;font-size:12px}}
+/* Item-Vorschau als gerendertes Bild */
+#item #itemIcon img,#titem #titemIcon img{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 3px 6px #0007)}

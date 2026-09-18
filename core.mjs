@@ -3,10 +3,10 @@ export const GP_POINTS=[10,8,6,5,4,3,2,1];
 export const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 export const angleDiff=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
 // Freie Fahrphysik (Meter, Sekunden). Tempo bewusst Mario-Kart-nah: ~30 m/s Spitze, Boost 40 m/s.
-export const PHYS={top:30,accel:15,brake:32,reverse:8,coast:4,offTop:12.5,offDrag:2.6,turn:2.25,grip:9,offGrip:5,driftGrip:2.6,boostTop:40,boostAccel:34,airTurn:.3,driftMin:11};
+export const PHYS={top:30,accel:15,brake:32,reverse:8,coast:4,offTop:12.5,offDrag:2.6,turn:2.25,grip:9,offGrip:5,driftGrip:4.4,boostTop:40,boostAccel:34,airTurn:.3,driftMin:9,driftSlide:.5};
 export const SPORE_BONUS=.35,MAX_SPORES=10;
 // Mini-Turbo-Stufen: [Driftzeit, Boostdauer, Name]. Lange, saubere Drifts in Kurvenrichtung laden schneller.
-export const MT_LEVELS=[[2.3,1.6,'ultra'],[1.4,1.05,'super'],[.7,.6,'mini']];
+export const MT_LEVELS=[[1.9,1.6,'ultra'],[1.15,1.05,'super'],[.55,.6,'mini']];
 // KI-Klassen: Tempo-Faktor und Fahrkoennen (Linienwahl, Bremspunkte, Drift-Nutzung, Fehlerrate).
 export const CLASSES={50:{ai:.8,skill:.4,rubber:.05},100:{ai:.91,skill:.68,rubber:.035},150:{ai:1,skill:.9,rubber:.02}};
 export function racer(id,name,color){return {id,name,color,x:0,z:0,h:0,vx:0,vz:0,speed:0,slide:0,distance:0,offset:0,boost:0,shield:0,stun:0,drift:0,driftDir:0,hop:0,lastMT:null,item:null,charges:0,spores:0,finishTime:null,cooldown:0};}
@@ -19,12 +19,12 @@ export function driveKart(k,dt,input,surf={}){
  k.boost=Math.max(0,k.boost-dt);k.shield=Math.max(0,k.shield-dt);k.stun=Math.max(0,k.stun-dt);k.cooldown=Math.max(0,k.cooldown-dt);k.hop=Math.max(0,(k.hop||0)-dt);
  const fx=Math.sin(k.h),fz=Math.cos(k.h),lx=fz,lz=-fx,air=!!surf.air,off=!air&&!!surf.offroad,boosting=k.boost>0,stunned=k.stun>0;
  let vf=k.vx*fx+k.vz*fz,vl=k.vx*lx+k.vz*lz;
- let top=(boosting?P.boostTop:P.top+(k.spores||0)*SPORE_BONUS)*(surf.speedMul||1);
+ let top=(boosting?P.boostTop:P.top+(k.spores||0)*SPORE_BONUS)*(surf.speedMul||1)*(k.mTop||1);
  if(off&&!boosting)top=Math.min(top,P.offTop);
  if(stunned)top=Math.min(top,5);
  const steer=clamp(input.steer||0,-1,1);
  if(!air){
-  if(input.gas&&!stunned){if(vf<top){const a=boosting?P.boostAccel:P.accel;vf=Math.min(top,vf+a*dt*clamp((top-vf)/(top*.3),.12,1));}}
+  if(input.gas&&!stunned){if(vf<top){const a=(boosting?P.boostAccel:P.accel)*(k.mAcc||1);vf=Math.min(top,vf+a*dt*clamp((top-vf)/(top*.3),.12,1));}}
   else if(input.brake&&!stunned){vf=vf>.5?Math.max(0,vf-P.brake*dt):Math.max(-P.reverse,vf-P.accel*.5*dt);}
   else vf-=Math.sign(vf)*Math.min(Math.abs(vf),P.coast*dt);
   if(vf>top)vf-=(vf-top)*Math.min(1,dt*(off?P.offDrag:1.8));
@@ -38,13 +38,15 @@ export function driveKart(k,dt,input,surf={}){
  }
  let yaw;
  // Drift-Radius per Lenkung steuerbar: nach aussen gegenlenken = weiter Bogen, nach innen = enger Bogen.
- if(k.driftDir){const into=steer*k.driftDir;yaw=k.driftDir*P.turn*driftFactor(into)*Math.min(1,sp/10);if(!air)k.drift+=dt*(into>.3?1.35:into<-.3?.55:1)*(off?.4:1);}
- else yaw=steer*P.turn*turnCurve(sp)*(vf<-.5?-1:1);
+ if(k.driftDir){const into=steer*k.driftDir;yaw=k.driftDir*P.turn*(k.mTurn||1)*driftFactor(into)*Math.min(1,sp/10);if(!air)k.drift+=dt*(into>.3?1.35:into<-.3?.55:1)*(off?.4:1);}
+ else yaw=steer*P.turn*(k.mTurn||1)*turnCurve(sp)*(vf<-.5?-1:1);
  if(air)yaw*=P.airTurn;if(stunned)yaw=0;
- const grip=air?.3:k.driftDir?P.driftGrip:off?P.offGrip:P.grip;
+ const grip=(air?.3:k.driftDir?P.driftGrip:off?P.offGrip:P.grip)*(air?1:(k.mGrip||1));
  // Seitliches Rutschen abbauen, dabei den Grossteil der Energie in Vorwaertstempo umlenken (Drift haelt sein Tempo).
  const vl2=vl*Math.exp(-grip*dt),lost=vl*vl-vl2*vl2;if(!air&&vf>0)vf=Math.sqrt(vf*vf+lost*(k.driftDir?.94:.72));vl=vl2;
- if(k.driftDir&&!air)vl-=k.driftDir*sp*.16*dt;
+ if(k.driftDir&&!air){vl-=k.driftDir*sp*.10*dt;
+  // Driftwinkel deckeln (ca. 27 Grad): haelt die Linie, statt ueber den Streckenrand zu tragen
+  const cap=sp*P.driftSlide;if(Math.abs(vl)>cap)vl+=(Math.sign(vl)*cap-vl)*Math.min(1,dt*7);}
  k.vx=fx*vf+lx*vl;k.vz=fz*vf+lz*vl;k.h+=yaw*dt;k.x+=k.vx*dt;k.z+=k.vz*dt;k.speed=vf;k.slide=vl;
 }
 // Hoechsttempo, mit dem eine Kurve der Kruemmung kappa (1/m) noch mit Grip bzw. im Drift fahrbar ist.

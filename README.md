@@ -4,6 +4,39 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 13 (18.09.2026): Korkenzieher, kein Haengenbleiben, vier Karts
+
+**Anti-Grav, zweite Stufe:** Die Rolle wirkt jetzt nur noch auf die Darstellung — gefahren wird
+weiter in der flachen Streckenebene, die Drehung und der Sichthub kommen erst beim Zeichnen dazu.
+Damit sind Dinge moeglich, die die physikalische Neigung nicht konnte: **volle Korkenzieher
+(360 Grad)** auf Neon-Pilzwald und Lava-Feste, eine **Ueberkopf-Passage** im Geisterhaus und
+steilere Waende (bis 84 Grad) im Wald, Canyon und Neonwald. Dazu Energieband, Torringe an Ein- und
+Ausfahrt und Pylonen unter der schwebenden Bahn. Wer sauber durchkommt, bekommt beim Ausgang einen
+**Anti-Grav-Schub**.
+
+**Kein Haengenbleiben mehr:** Die Felsen am Tunnel hatten Kollisionskoerper direkt hinter der
+Tunnelwand — die sind weg. Leitplanken laufen jetzt auch durch Tunnel, Villa und Burg (dort standen
+vorher Feuerschalen und Mauern ungeschuetzt). Aus dem Abprallen an Hindernissen ist ein
+Entlanggleiten geworden (Rueckstoss 1,06 statt 1,4, Tempoverlust hoechstens 35 statt 60 Prozent),
+und wer mit Gas laenger als 1,6 Sekunden fast steht, wird automatisch zurueckgesetzt.
+
+**Drift haelt die Linie:** Seitenhalt im Drift von 2,6 auf 4,4 erhoeht, der Driftwinkel ist bei
+etwa 27 Grad gedeckelt, der Schub nach aussen halbiert, Einstieg ab 9 statt 11 m/s und die
+Mini-Turbos laden schneller (0,55 / 1,15 / 1,9 s statt 0,7 / 1,4 / 2,3 s). Driften traegt jetzt
+nicht mehr von der Strecke, sondern zieht die Kurve enger.
+
+**Vier Karts statt einem:** Jede Figur faehrt ihr eigenes Kart mit eigenen Werten und eigenem
+Heckteil — Pilzi "Sporenflitzer" (ausgewogen), Schildi "Panzerwagen" (Hoechsttempo +9 %,
+Beschleunigung -13 %, Heckfluegel), Volt "Voltstoss" (Beschleunigung +18 %, Auspuffrohre und
+Ueberrollbuegel), Mochi "Kurvenkatze" (Lenkung +15 %, Diffusor und Seitenschweller).
+
+**Item-Fenster:** Die Symbole sind jetzt gerenderte Bilder der echten Modelle (Panzer, Banane,
+Item-Box, Bombe) bzw. extrudierte Formen fuer Blitz und Stern — kein Emoji und kein flaches Icon
+mehr.
+
+**Gemessen** (Autopilot, 150cc): alle fuenf Strecken 93,1 / 104,5 / 95,1 / 102,2 / 102,5 s,
+Medaillenzeiten neu gesetzt, alte Rekorde einmalig verworfen (`LAYOUT_VER=13`).
+
 ## Runde 12 (18.09.2026): Ruckler am Start behoben, Grafikschalter, Anti-Grav
 
 **Rennstart:** Karts, Raeder und Fahrerinstanzen bleiben zwischen Rennen stehen, solange Figur,
