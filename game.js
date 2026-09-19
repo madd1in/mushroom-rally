@@ -1327,8 +1327,26 @@ function drawMap(){const {cx,cz,k}=mapInfo,X=x=>100+(x-cx)*k,Y=z=>80+(z-cz)*k,ou
  const q=out;q.clearRect(0,0,200,160);q.drawImage(mapBase,0,0);
  for(let n=racers.length-1;n>=0;n--){const r=racers[n];q.fillStyle=r.id===0?'#ffe16a':'#fff';q.beginPath();q.arc(X(r.x),Y(r.z),r.id===0?5:3,0,TAU);q.fill();if(r.id===0){q.strokeStyle='#203e2f';q.lineWidth=1.5;q.stroke();}}}
 const tempLook=new T.Vector3(),camFlat=new T.Vector3(),camUp=new T.Vector3(0,1,0);
+// Blickpunkt fuers Menue: die Stelle der Runde mit dem groessten Abstand zu allen Bauwerken.
+// Sonst steht ein Wurzeltor oder eine Burg direkt vor der Kamera und verdeckt die Strecke.
+let menuSpotD=-1,menuSpotFor=-2;
+function menuSpot(){if(menuSpotFor===builtSel)return menuSpotD;
+ let best=length*.03,bd=-1;
+ for(let i=0;i<32;i++){const d=length*i/32,q=sample(d).p;let m=1e9;
+  for(const z of zones)m=Math.min(m,Math.hypot(q.x-z.x,q.z-z.z)-(z.r||0));
+  if(!zones.length)m=999;
+  if(m>bd){bd=m;best=d;}}
+ menuSpotFor=builtSel;menuSpotD=best;return best;}
+function updateCameraMenuSpot(){return menuSpot();}
 function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
- if(state==='menu'){camera.up.set(0,1,0);const s=sample(length*.03);const angle=performance.now()*.00005;camera.position.set(s.p.x+Math.sin(angle)*50,26+s.p.y,s.p.z+Math.cos(angle)*50);camera.lookAt(s.p.x,2,s.p.z);setFov(portrait?72:58,dt,true);return;}
+ if(state==='menu'){camera.up.set(0,1,0);const s=sample(menuSpot()),angle=performance.now()*.00004;
+  const r=portrait?58:74,hy=portrait?30:38;
+  camera.position.set(s.p.x+Math.sin(angle)*r,hy+s.p.y,s.p.z+Math.cos(angle)*r);camera.lookAt(s.p.x,4,s.p.z);
+  // Auf breiten Schirmen steht das Menue links. Den Blickpunkt nach links schieben, dann liegt
+  // die Strecke rechts daneben im Bild statt hinter dem Panel.
+  if(!portrait&&innerWidth>900){camera.updateMatrixWorld();
+   tempLook.setFromMatrixColumn(camera.matrixWorld,0).multiplyScalar(-30).add(s.p);tempLook.y=4;camera.lookAt(tempLook);}
+  setFov(portrait?72:54,dt,true);return;}
  if(state==='ceremony'&&cer){camera.up.set(0,1,0);const a=cer.angle+Math.sin(cer.t*.25)*.9,r=portrait?30:23;camera.position.set(cer.center.x+Math.sin(a)*r,cer.center.y+5+Math.sin(cer.t*.4),cer.center.z+Math.cos(a)*r);camera.lookAt(cer.center.x,cer.center.y+(portrait?-4.5:1.5),cer.center.z);
   if(!portrait&&innerWidth>900){camera.updateMatrixWorld();tempLook.setFromMatrixColumn(camera.matrixWorld,0).multiplyScalar(7).add(cer.center);tempLook.y+=1.5;camera.lookAt(tempLook);}
   setFov(portrait?70:52,dt,true);return;}
@@ -1491,7 +1509,10 @@ function buildItemThumbs(){if(!renderer||itemThumbs.done)return;
  itemThumbs.done=['empty','boost','triple','shell','banana','shield','bomb'].every(k=>itemThumbs[k]);}
 function refreshMenu(){const goldOk=store.get('gold',false);$('colors').querySelectorAll('button').forEach((b,i)=>{const locked=!!(KART_COLORS[i].gold&&!goldOk);b.classList.toggle('locked',locked);b.title=locked?'Gewinne einen Grand Prix ab 100cc':KART_COLORS[i].n;});
  const tro=[50,100,150].map(c=>{const t=store.get(`trophy-${c}`,9);return t<=3?`${['🏆','🥈','🥉'][t-1]} ${c}cc`:'';}).filter(Boolean).join('  ');const medals=courses.map((_,i)=>store.get(`medal-${i}`,3)),mc=[0,1,2].map(k=>medals.filter(x=>x===k).length);setText('trophies',[tro,mc.some(Boolean)?`🥇${mc[0]} 🥈${mc[1]} 🥉${mc[2]}`:''].filter(Boolean).join('   '));$('classes').classList.toggle('locked',mode==='tt');
- document.querySelectorAll('#classes .cls').forEach(b=>{const on=Number(b.dataset.cc)===cc;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});$('tracks').classList.toggle('locked',mode==='gp');refreshBest();}
+ document.querySelectorAll('#classes .cls').forEach(b=>{const on=Number(b.dataset.cc)===cc;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});$('tracks').classList.toggle('locked',mode==='gp');
+ // Medaille je Strecke auf die Karte
+ $('tracks').querySelectorAll('.track').forEach((b,i)=>{const m=medals[i];b.dataset.medal=String(m);const em=b.querySelector('.medal');if(em)em.textContent=m<3?['\ud83e\udd47','\ud83e\udd48','\ud83e\udd49'][m]:'';});
+ refreshBest();}
 KART_COLORS.forEach((k,i)=>{const b=document.createElement('button');b.className='swatch'+(i===0?' selected':'')+(k.gold?' gold':'');b.style.setProperty('--swatch','#'+k.c.toString(16).padStart(6,'0'));b.setAttribute('aria-label',k.n);b.setAttribute('aria-pressed',String(i===0));
  b.onclick=()=>{if(k.gold&&!store.get('gold',false)){toast('🔒 Gewinne einen Grand Prix ab 100cc',2,'bad');return;}colorIndex=i;$('colors').querySelectorAll('button').forEach((x,j)=>{x.classList.toggle('selected',i===j);x.setAttribute('aria-pressed',String(i===j));});try{driverThumbs();}catch(e){}buildCourse();};$('colors').append(b);});
 // Mini-Streckenplan fuer die Auswahlkarten: dieselbe Mittellinie wie im Spiel, nur flach gezeichnet
@@ -1508,7 +1529,7 @@ function trackThumb(cv,c){const q=cv.getContext('2d'),W=cv.width,H=cv.height,th=
  q.strokeStyle='#ffffffcc';q.lineWidth=1.6;q.stroke();}
 courses.forEach((c,i)=>{const b=document.createElement('button'),th=THEMES[c.theme];b.className='track'+(i===0?' selected':'');
  const wide=courses.length%2===1&&i===courses.length-1;   // letzte Karte einer ungeraden Anzahl geht ueber die ganze Breite
- b.innerHTML=`<canvas width="${wide?520:240}" height="${wide?150:126}"></canvas><i>${c.icon}</i><b>${c.name}</b><span class="best"></span>`;
+ b.innerHTML=`<canvas width="${wide?520:240}" height="${wide?150:126}"></canvas><i>${c.icon}</i><em class="medal"></em><b>${c.name}</b><u class="kind">${c.kind}</u><span class="best"></span>`;
  b.style.setProperty('--c1',hex(th.skyBottom));b.style.setProperty('--c2',hex(th.road));b.style.setProperty('--acc',th.curbA);
  b.title=c.kind;b.setAttribute('aria-pressed',String(i===0));b.onclick=()=>{if(mode==='gp')return;selected=i;syncTrackButtons();buildCourse();};
  $('tracks').append(b);try{trackThumb(b.querySelector('canvas'),c);}catch(e){}});

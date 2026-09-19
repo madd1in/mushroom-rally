@@ -455,3 +455,33 @@ body:not(.racing):not(.cer) header .brand{opacity:0;pointer-events:none}
 @media(max-width:430px){.gfx-pick{margin-left:0;width:100%}#menu #gfx button{padding:7px 10px;font-size:12px}}
 /* Item-Vorschau als gerendertes Bild */
 #item #itemIcon img,#titem #titemIcon img{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 3px 6px #0007)}
+
+/* ---- Menue v5: passt auf den Schirm, drei Karten je Reihe, Medaille auf der Karte ---- */
+/* Das Panel war bei niedrigen Fenstern unten abgeschnitten - Fahrerwahl und Startknopf lagen
+   ausserhalb des Bildes. Jetzt begrenzt es seine Hoehe und die Streckenliste scrollt zur Not. */
+.menu-panel{max-height:calc(100vh - 28px)}
+#menu #tracks{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#ffffff2e transparent}
+#menu #tracks::-webkit-scrollbar{width:6px}
+#menu #tracks::-webkit-scrollbar-thumb{background:#ffffff2e;border-radius:3px}
+
+@media(min-width:980px){
+ .menu-panel{width:min(742px,calc(100vw - 48px))}
+ #menu #tracks{grid-template-columns:repeat(3,1fr);gap:9px}
+ #menu #tracks .track{aspect-ratio:16/10.6}
+ #menu #tracks .track b{font-size:14px;bottom:26px}
+ .menu-picks{gap:20px}
+}
+
+/* Kurzbeschreibung unter dem Namen */
+#menu #tracks .track u{position:absolute;left:9px;right:9px;bottom:14px;z-index:2;font-size:10px;font-weight:600;
+ text-decoration:none;letter-spacing:.2px;color:#d6e6da;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.82}
+@media(max-width:979px){#menu #tracks .track u{display:none}}
+
+/* Medaille oben rechts */
+#menu #tracks .track em.medal{position:absolute;top:6px;right:7px;z-index:3;font-size:15px;font-style:normal;line-height:1;
+ filter:drop-shadow(0 2px 3px #0009)}
+#menu #tracks .track[data-medal="3"] em.medal{display:none}
+
+/* Auswahl etwas deutlicher, Hover ruhiger */
+#menu #tracks .track{transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
+#menu #tracks .track.selected{transform:translateY(-1px)}
