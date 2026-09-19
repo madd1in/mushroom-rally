@@ -4,6 +4,27 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 19 (20.09.2026): Schluesselbild aus Unreal
+
+Das Unreal-MCP war wieder erreichbar, also ist der Showcase dort nachgeholt worden. Im Projekt
+`test123 5.8` liegt jetzt ein eigenes Set unter `/Game/MushroomRally/` mit dem Level
+`L_MR_Keyart` - das vorhandene Level `L_Kristalljaeger` bleibt unberuehrt.
+
+Die GLB-Modelle des Spiels (Kart, Fahrer, Rad, Pilz, Baum, Item-Box, Wurzeltor) sind importiert
+und zu einer Szene zusammengesetzt: Fahrbahn mit Randsteinen und Mittellinie, das Wurzeltor
+darueber, Pilze und Baeume am Rand, Abendsonne mit Himmelsatmosphaere und Bodennebel.
+
+Zwei Stolpersteine dabei, beide nicht offensichtlich:
+- **Der Himmel blieb schwarz**, bis am Richtungslicht `atmosphere_sun_light` gesetzt war. Ohne
+  das beleuchtet die Sonne die Atmosphaere nicht, und damit fehlt auch das gesamte Umgebungslicht.
+- **Die Aufnahme kam fast schwarz heraus**, weil eine SceneCapture ihre eigene Nachbearbeitung
+  hat und das unbegrenzte PostProcessVolume nicht uebernimmt. Belichtung also direkt an der
+  Aufnahme setzen (Histogramm, `always_persist_rendering_state`, mehrfach aufnehmen, damit sich
+  die Belichtung einpendelt).
+
+Das Ergebnis ersetzt `assets/keyart.jpg` - das ist das Vorschaubild, das beim Teilen des Links
+angezeigt wird (`og:image`). Hochformat fuer Social-Posts liegt in `media/keyart_hoch.jpg`.
+
 ## Runde 18 (19.09.2026): Beschleunigungsstreifen, kein Tempoverlust mehr in den Spiralen
 
 **Warum man in den Spiralen haengen blieb - drei Ursachen, alle gemessen.**
