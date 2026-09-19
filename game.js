@@ -36,7 +36,7 @@ const courses=[
   boost:[1.9,5.5,12.3],boxes:[1.6,4.9,9.3,12.0],stands:[[.2,18],[5.2,-19]]},
  {name:'Sonnen-Canyon',icon:'☀',kind:'Schnell · Schluchtsprung · Felstunnel',medals:[92,99,111],music:'sunset',theme:'canyon',seed:23,
   points:[[0,78],[95,78],[125,45],[120,-20],[85,-45],[105,-88],[50,-102],[2,-50],[-60,-98],[-115,-72],[-122,0],[-105,55],[-55,80]],
-  hills:[[1.5,4,.03],[4.5,6,.04]],plateau:[9.45,11.7,7,34],gaps:[[10.5,14]],fork:[[6.25,8.75,.36]],
+  loopc:[5.5,20],hills:[[1.5,4,.03],[4.5,6,.04]],plateau:[9.45,11.7,7,34],gaps:[[10.5,14]],fork:[[6.25,8.75,.36]],
   raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],agrav:[[1.25,2.05,'wall',68]],
   ramps:[[3.3,0,9],[6.5,3,7]],pads:[[2.4,-4],[8.4,4]],
   boost:[.5,5.2,12.2],boxes:[1.0,4.0,7.0,9.1,12.6],stands:[[.3,-18],[5.6,19]]},
@@ -57,7 +57,7 @@ const courses=[
   ramps:[[2.4,0,9],[9.7,0,8]],pads:[[5.9,-4],[13.2,4]],
   boost:[.55,6.4,11.8],boxes:[1.6,4.4,8.0,9.9,13.6],stands:[[.4,18],[8.6,-19]]}];
 // Streckenlayouts haben sich geaendert (Viadukt, Abzweigungen, Kurvenglaettung) -> alte Rekorde/Geister einmalig verwerfen
-const LAYOUT_VER=13;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
+const LAYOUT_VER=14;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
 const KART_COLORS=[{c:0xff3b30,n:'Ruby / Rot'},{c:0xffc400,n:'Sunny / Gelb'},{c:0x00c2a8,n:'Mint / Türkis'},{c:0x8b5cff,n:'Nova / Violett'},{c:0xffc93c,n:'Goldpilz',gold:true}];
 // Jede Figur faehrt ihr eigenes Kart: Beschleunigung, Hoechsttempo, Grip, Lenkung und Bauform
 const DRIVERS=[
@@ -74,7 +74,7 @@ const ITEM_COL={boost:'#ffd45c',triple:'#ffd45c',shell:'#8fd8ff',banana:'#ffe45c
 const MT_COLORS={mini:0x5ad0ff,super:0xffa531,ultra:0xd36bff},MT_LABEL={mini:'MINI-TURBO',super:'SUPER-TURBO',ultra:'ULTRA-TURBO'};
 
 let selected=0,colorIndex=0,driverIndex=Math.max(0,Math.min(3,store.get('driver',0)|0)),mode='single',cc=store.get('class',100),state='menu',elapsed=0,countdown=3,last=0,curve,length=1,course,theme,ctx,frame=0,noticeTimer=0,toastTimer=0;
-let boxes=[],racers=[],hazards=[],flags=[],balloons=[],puffs=[],shots=[],ramps=[],pads=[],rings=[],spores=[],swingers=[],gaps=[],boostPads=[],sporeMesh=null,crowd=null,boostTex=null,foamRing=null,fireflies=null,rails=[],forks=[],raises=[],tunnels=[],agrav=[];
+let boxes=[],racers=[],hazards=[],flags=[],balloons=[],puffs=[],shots=[],ramps=[],pads=[],rings=[],spores=[],swingers=[],gaps=[],boostPads=[],sporeMesh=null,crowd=null,boostTex=null,foamRing=null,fireflies=null,rails=[],forks=[],raises=[],tunnels=[],agrav=[],loops=[];
 let mapInfo={cx:0,cz:0,k:.6},shake=0,lastPlace=8,leadAt=-99,finishMusicAt=0,soundOn=true,autoGas=false,startPress=-1,prevDrift=false,roulette=null,camFov=62,camH=0,camRoll=0,camRollPrev=0,cer=null,wrongT=0,autopilot=false;
 let gp={active:false,race:0,points:{}},stats=null,startLights=[],lightState=-1,chevrons=[];
 function setLights(n){if(n===lightState||!startLights.length)return;lightState=n;startLights.forEach((m,i)=>{const on=n===4||i<n;m.emissive.setHex(!on?0x000000:n===4?0x3dff6a:0xff2a1f);m.color.setHex(!on?0x220808:n===4?0x2bd653:0xff3b2f);m.emissiveIntensity=on?2.4:0;});}
@@ -166,10 +166,26 @@ function tanAt(d){const [i,j,k]=tIdx(d);let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz
 // Seitlich wird entlang (L*cos+U*sin) abgetragen, die Hoehe entlang der Flaechennormalen (U*cos-L*sin).
 // Rolle ueber +-PI hinaus (Korkenzieher endet bei TAU~0): kuerzeste-Weg-Interpolation,
 // damit die Nahtzelle nicht rueckwaerts durch den ganzen Kreis laeuft.
+function loopAt(d){if(!loops.length)return null;for(const q of loops)if(lapDist(d-q.s)<=q.span)return q;return null;}
+// Umgebung des Loopings: dort kreuzt sich die Strecke selbst, globale Projektion ist dort mehrdeutig
+function nearLoop(d){if(!loops.length)return false;for(const q of loops)if(lapDist(d-q.s+70)<=q.span+140)return true;return false;}
+// Loop-Zustand an einer Stelle: Winkel, Hochachse, Vorwaertsrichtung.
+const _loopState={q:null,th:0,a:0,b:0,nx:0,ny:1,nz:0,tx:0,ty:0,tz:1};
+function loopFrame(q,d,x,z){const rel=lapDist(d-q.s),u=rel/q.span;
+ const ax=x-q.ox,az=z-q.oz,a=ax*q.t0x+az*q.t0z,b0=ax*q.l0x+az*q.l0z;
+ const w=smooth(0,.06,u)*(1-smooth(.82,1,u)),b=b0*w;
+ const th=Math.atan2(a,Math.max(.4,q.R-b)),c=Math.cos(th),s=Math.sin(th);
+ const st=_loopState;st.q=q;st.th=th;st.a=a;st.b=b;
+ st.nx=-q.t0x*s;st.ny=c;st.nz=-q.t0z*s;            // Flaechennormale
+ st.tx=q.t0x*c;st.ty=s;st.tz=q.t0z*c;              // Fahrtrichtung im Bild
+ return st;}
 function rollAt(d){const [i,j,k]=tIdx(d);const a=TP.rl[i],b=TP.rl[j];let db=b-a;if(db>Math.PI)db-=TAU;else if(db<-Math.PI)db+=TAU;return a+db*k;}
 function liftAt(d){const [i,j,k]=tIdx(d);const a=TP.lf[i],b=TP.lf[j];return a+(b-a)*k;}
-const hasRoll=d=>Math.abs(rollAt(d))>.004;
+const hasRoll=d=>Math.abs(rollAt(d))>.004||(loops.length&&!!loopAt(d));
 function posAt(d,off,h,out){const [i,j,k]=tIdx(d),x=TP.x[i]+(TP.x[j]-TP.x[i])*k,z=TP.z[i]+(TP.z[j]-TP.z[i])*k;
+ const lq=loops.length?loopAt(d):null;
+ if(lq){const hh0=TP.h[i]+(TP.h[j]-TP.h[i])*k,st=loopFrame(lq,d,x,z);
+  return out.set(lq.ox+lq.t0x*st.a+lq.l0x*off+st.nx*h, hh0+st.b+st.ny*h, lq.oz+lq.t0z*st.a+lq.l0z*off+st.nz*h);}
  let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
  const hh=TP.h[i]+(TP.h[j]-TP.h[i])*k+TP.lf[i]+(TP.lf[j]-TP.lf[i])*k,bb=TP.b[i]+(TP.b[j]-TP.b[i])*k;let ph=TP.rl[j]-TP.rl[i];if(ph>Math.PI)ph-=TAU;else if(ph<-Math.PI)ph+=TAU;ph+=TP.rl[i];
  const c=Math.cos(ph),s=Math.sin(ph),lx=tz,ly=-bb,lz=-tx;
@@ -256,8 +272,8 @@ const bprof=[];let bprofT=0;const bm=l=>{const n=performance.now();bprof.push([l
 let builtSel=-1,worldDirty=true,boxInst=[],boxQ=null,mapBase=null;
 // Jede gebaute Strecke bleibt als eigene Szenengruppe im Speicher: Zurueckwechseln = Gruppe tauschen (kein Neubau, kein Upload)
 const worldCache=new Map();
-const courseState=()=>({world,course,theme,curve,length,TP,cpU,gaps,zones,bats,mapInfo,obsGrid,flags,balloons,ramps,pads,rings,spores,swingers,boostPads,sporeMesh,crowd,fireflies,foamRing,boostTex,startLights,boxes,boxInst,boxQ,mapBase,rails,forks,raises,tunnels,agrav,bg:scene.background,fog:scene.fog,revealed:true});
-function loadCourse(c){({world,course,theme,curve,length,TP,cpU,gaps,zones,bats,mapInfo,obsGrid,flags,balloons,ramps,pads,rings,spores,swingers,boostPads,sporeMesh,crowd,fireflies,foamRing,boostTex,startLights,boxes,boxInst,boxQ,mapBase,rails,forks,raises,tunnels,agrav}=c);scene.background=c.bg;scene.fog=c.fog;applyTheme();}
+const courseState=()=>({world,course,theme,curve,length,TP,cpU,gaps,zones,bats,mapInfo,obsGrid,flags,balloons,ramps,pads,rings,spores,swingers,boostPads,sporeMesh,crowd,fireflies,foamRing,boostTex,startLights,boxes,boxInst,boxQ,mapBase,rails,forks,raises,tunnels,agrav,loops,bg:scene.background,fog:scene.fog,revealed:true});
+function loadCourse(c){({world,course,theme,curve,length,TP,cpU,gaps,zones,bats,mapInfo,obsGrid,flags,balloons,ramps,pads,rings,spores,swingers,boostPads,sporeMesh,crowd,fireflies,foamRing,boostTex,startLights,boxes,boxInst,boxQ,mapBase,rails,forks,raises,tunnels,agrav,loops}=c);scene.background=c.bg;scene.fog=c.fog;applyTheme();}
 function disposeCourse(i){const c=worldCache.get(i);if(!c)return;if(c.world.parent)c.world.parent.remove(c.world);clearGroup(c.world);worldCache.delete(i);}
 let revealQueue=null;
 function startReveal(){const kids=world.children.slice();for(const k of kids)k.visible=false;world.visible=true;revealQueue=kids;}
@@ -278,17 +294,66 @@ function applyTheme(){renderer.toneMappingExposure=theme.exposure;
  hemi.color.setHex(theme.hemiSky);hemi.groundColor.setHex(theme.hemiGround);hemi.intensity=theme.hemiInt;sun.color.setHex(theme.sunCol);sun.intensity=theme.sunInt;sun.position.set(...theme.sunPos);fill.color.setHex(theme.fillCol);fill.intensity=theme.fillInt;headlight.intensity=theme.head!==undefined?theme.head:(theme.stars?90:0);
  stars.visible=moon.visible=theme.stars;sunGlow.visible=!theme.stars;sunGlow.position.set(theme.sunPos[0]*2.6,Math.max(80,theme.sunPos[1]*2),theme.sunPos[2]*2.6);sunGlow.material.color.setHex(course.theme==='canyon'?0xffc28a:0xffffff);}
 // Flow: enge Stellen der Mittellinie (Radius < 24 m) werden iterativ aufgeweitet, der Rest bleibt wie entworfen
-function smoothCurve(points,minR=24){const base=new T.CatmullRomCurve3(points.map(([x,z])=>new T.Vector3(x*TRACK_SCALE,0,z*TRACK_SCALE)),true,'catmullrom',.38);base.arcLengthDivisions=3000;
+// Looping: nach der Glaettung wird an der gewuenschten Stelle ein 360-Grad-Kreis in die
+// Mittellinie eingesetzt. Weil das erst danach passiert, passt die Tangente genau und die
+// Glaettung kann den Kreis nicht mehr zusammenziehen.
+function smoothCurve(points,minR=24,loopSpec=null){const base=new T.CatmullRomCurve3(points.map(([x,z])=>new T.Vector3(x*TRACK_SCALE,0,z*TRACK_SCALE)),true,'catmullrom',.38);base.arcLengthDivisions=3000;
  const n=360;let p=base.getSpacedPoints(n).slice(0,n).map(v=>[v.x,v.z]);
  const rad=(a,b,c)=>{const ab=Math.hypot(b[0]-a[0],b[1]-a[1]),bc=Math.hypot(c[0]-b[0],c[1]-b[1]),ca=Math.hypot(a[0]-c[0],a[1]-c[1]),ar=Math.abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]))/2;return ar<1e-6?1e9:ab*bc*ca/(4*ar);};
+ // Gewicht 0 im Loop, 1 ausserhalb, dazwischen weich - ein harter Rand wuerde dort einen Knick erzeugen
+
  for(let it=0;it<400;it++){let worst=1e9;const tight=new Uint8Array(n);for(let i=0;i<n;i++){const r=rad(p[(i-3+n)%n],p[i],p[(i+3)%n]);worst=Math.min(worst,r);if(r<minR*1.25)for(let k=-8;k<=8;k++)tight[(i+k+n)%n]=1;}if(worst>=minR)break;p=p.map((b,i)=>{if(!tight[i])return b;const a=p[(i-1+n)%n],c=p[(i+1)%n];return [b[0]+((a[0]+c[0])/2-b[0])*.5,b[1]+((a[1]+c[1])/2-b[1])*.5];});}
- const c=new T.CatmullRomCurve3(p.map(([x,z])=>new T.Vector3(x,0,z)),true,'centripetal');c.arcLengthDivisions=4000;return c;}
+ let loopInfo=null;
+ if(loopSpec){const [atCp,radC]=loopSpec,R=radC*TRACK_SCALE;
+  // Stelle auf der geglaetteten Linie finden, die dem Kontrollpunkt-Bruch at entspricht
+  const np=points.length,i0=Math.floor(atCp)%np,f=atCp-Math.floor(atCp);
+  const A=points[i0],B=points[(i0+1)%np];
+  const tx0=(A[0]+(B[0]-A[0])*f)*TRACK_SCALE,tz0=(A[1]+(B[1]-A[1])*f)*TRACK_SCALE;
+  let bi=0,bd=1e18;for(let i=0;i<p.length;i++){const dd=(p[i][0]-tx0)**2+(p[i][1]-tz0)**2;if(dd<bd){bd=dd;bi=i;}}
+  const m=p.length,a2=p[(bi+2)%m],a0=p[(bi-2+m)%m];
+  let tx=a2[0]-a0[0],tz=a2[1]-a0[1];const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
+  const lx=tz,lz=-tx,O=p[bi];
+  // Tropfenform statt Kreis: die Kruemmung faehrt weich hoch und wieder herunter (wie bei einem
+  // echten Achterbahn-Looping). Ein reiner Kreis beginnt zu abrupt - dort traegt es jeden nach aussen.
+  const L=Math.PI*2*R*1.18,M=Math.max(40,Math.round(L/3.2)),ds=L/M,ins=[];
+  const ramp=u=>u<.2?smooth(0,.2,u):u>.8?1-smooth(.8,1,u):1;
+  let sum=0;for(let k=0;k<M;k++)sum+=ramp((k+.5)/M);
+  const kmax=Math.PI*2/(sum*ds);
+  let hd=0,px=O[0],pz=O[1];
+  for(let k=0;k<M;k++){const u=(k+.5)/M;hd+=kmax*ramp(u)*ds;
+   const ch=Math.cos(hd),sh=Math.sin(hd);
+   px+=(tx*ch+lx*sh)*ds;pz+=(tz*ch+lz*sh)*ds;
+   if(k<M-1)ins.push([px,pz]);}
+  // Die Schleife endet ein Stueck weiter vorn als sie begann. Die Punkte der Originallinie, die
+  // dabei ueberholt wurden, muessen weg - sonst springt die Mittellinie am Ausgang zurueck.
+  const adv=(px-O[0])*tx+(pz-O[1])*tz;let drop=0;
+  while(drop<m-8){const c2=p[(bi+1+drop)%p.length];if((c2[0]-O[0])*tx+(c2[1]-O[1])*tz>adv+4)break;drop++;}
+  p.splice(bi+1,drop,...ins);
+  // Anteile an der Gesamtlaenge, damit der Bereich spaeter in Streckenmetern bekannt ist
+  let total=0,upto=0,inLoop=0;
+  for(let i=0;i<p.length;i++){const q=p[(i+1)%p.length],seg=Math.hypot(q[0]-p[i][0],q[1]-p[i][1]);total+=seg;
+   if(i<bi)upto+=seg;else if(i<bi+M)inLoop+=seg;}
+  loopInfo={f0:upto/total,fs:inLoop/total,R,ox:O[0],oz:O[1],t0x:tx,t0z:tz};}
+ const c=new T.CatmullRomCurve3(p.map(([x,z])=>new T.Vector3(x,0,z)),true,'centripetal');c.arcLengthDivisions=4000;
+ c.userData={loop:loopInfo};return c;}
 function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world=new T.Group();obsGrid=new Map();TP=newTP();swayCache=new Map();
- flags=[];balloons=[];ramps=[];pads=[];rings=[];spores=[];swingers=[];gaps=[];zones=[];bats=null;boostPads=[];sporeMesh=null;crowd=null;fireflies=null;rails=[];forks=[];raises=[];tunnels=[];agrav=[];
+ flags=[];balloons=[];ramps=[];pads=[];rings=[];spores=[];swingers=[];gaps=[];zones=[];bats=null;boostPads=[];sporeMesh=null;crowd=null;fireflies=null;rails=[];forks=[];raises=[];tunnels=[];agrav=[];loops=[];
  course=courses[selected];theme=THEMES[course.theme];
  scene.background=skyTexture(hex(theme.skyTop),hex(theme.skyBottom));scene.fog=new T.Fog(theme.fog,theme.fogNear,theme.fogFar);applyTheme();
- curve=smoothCurve(course.points);length=curve.getLength();bm('clear+theme');buildTable();bm('table');
+ curve=smoothCurve(course.points,24,course.loopc||null);length=curve.getLength();bm('clear+theme');buildTable();bm('table');
  cpU=course.points.map(([x,z])=>projectGlobal(x*TRACK_SCALE,z*TRACK_SCALE));
+ {const li=curve.userData&&curve.userData.loop;
+  if(li){loops=[{s:li.f0*length,span:li.fs*length,ox:li.ox,oz:li.oz,t0x:li.t0x,t0z:li.t0z,
+   l0x:li.t0z,l0z:-li.t0x,R:li.R,ang:Math.atan2(li.t0x,li.t0z)}];
+   // Die Kreisflaeche des Loopings bleibt frei: dort stuende sonst Deko mitten auf der Fahrbahn
+   const q=loops[0];zones.push({d:lapDist(q.s+q.span/2),half:q.span/2+55,x:q.ox+q.l0x*q.R,z:q.oz+q.l0z*q.R,r:q.R+18});
+   // Zweite Zone um die Einfahrt: dort kreuzt der Ausgang des Loopings die Anfahrt
+   zones.push({d:lapDist(q.s),half:40,x:q.ox,z:q.oz,r:26});
+   // Tempo im Looping deckeln: der Kreis ist eng, sonst traegt es jeden an den Rand.
+   // Steht im Tempo-Profil, damit die KI rechtzeitig bremst und der Spieler die Bremszone sieht.
+   const vmax=Math.sqrt(20*q.R);
+   for(let i=0;i<PS;i++){const d=i/PS*length;if(lapDist(d-q.s+16)>q.span+32)continue;
+    TP.v[i]=vmax;TP.vd[i]=vmax*1.05;}}}
  // Hoehenprofil: Huegel (Gauss) + Plateau; Ueberhoehung aus der Kruemmung
  const hills=(course.hills||[]).map(([v,a,w])=>[cpDist(v)/length,a,w]);raises=(course.raise||[]).concat(course.plateau?[[...course.plateau,0]]:[]).map(([a,b,h,r,br])=>({s:cpDist(a),e:cpDist(b),h,r,bridge:!!br}));
  for(let i=0;i<PS;i++){const u=i/PS,d=u*length;let h=0;for(const [c,a,w] of hills){let du=u-c;du-=Math.round(du);h+=a*Math.exp(-(du*du)/(w*w));}h+=raiseH(d);const b=clamp(TP.k[i]*4,-.12,.12);TP.b[i]=b;TP.h[i]=h+Math.abs(b)*9.8;}
@@ -421,7 +486,11 @@ function buildBridges(){const deckMat=mat(theme.glow?0x2c2650:0x9a948a,{roughnes
    if(pg.length){const pm=new T.Mesh(mergeGeometries(pg),pillarMat);pm.castShadow=true;pm.receiveShadow=true;world.add(pm);}}}}
 // ---------- Leitplanken: aussen an kritischen Kurven und beidseitig auf erhoehten Abschnitten. Weiche Gleit-Kollision statt Stopp.
 const RAIL_OFF=9.2,RAIL_LIMIT=8.05,RAIL_COL={forest:['#e8352e','#ffffff',0x5a6470],canyon:['#ffd23f','#2b1d24',0x5a3a2a],night:['#2de2e6','#ff3cac',0x22204a],haunted:['#8a5cff','#1a1426',0x2e2840],lava:['#ff5a1f','#1a1012',0x3a2a2a]};
-function railBlocked(d,side){if(inGap(d)||Math.abs(wrapDiff(d,0))<16)return true;if(hasRoll(d))return false;const fk=forkAt(d,14);return !!fk&&side===fk.f.side;}
+function railBlocked(d,side){if(inGap(d)||Math.abs(wrapDiff(d,0))<16)return true;
+ // Im Looping und an seiner Anfahrt keine Planken: die Bahn kreuzt sich dort selbst, die Planken
+ // der Geraden lägen quer im Kreis. Stattdessen haelt der Seitenmagnet das Kart auf der Bahn.
+ if(loops.length)for(const q of loops)if(lapDist(d-q.s+45)<q.span+90)return true;
+ if(hasRoll(d))return false;const fk=forkAt(d,14);return !!fk&&side===fk.f.side;}
 function buildRails(){const list=[],ds=2;
  const scan=(test,kind,sides)=>{let a=-1,sd=0;for(let d=0;d<=length+ds;d+=ds){const s=test(d),ok=s!==0&&!railBlocked(d,s);if(ok&&a<0){a=d;sd=s;}else if(a>=0&&(!ok||s!==sd)){if(d-a>6)for(const x of sides(sd))list.push({d0:a-8,d1:d+8,side:x,kind});a=ok?d:-1;sd=s;}}};
  scan(d=>{const k=trackAt(d).kap;return Math.abs(k)>1/48?(k>0?-1:1):0;},'corner',s=>[s]);
@@ -699,7 +768,7 @@ function vertical(r,dt){const {y:ground,rh}=groundAt(r.distance,r.offset);
  if(r.y===undefined){r.y=ground;r.vy=0;r.air=false;r.airT=0;r.trick=0;r.lastGround=ground;r.rampY=0;r.padCd=0;r.ringCd=0;r.stall=0;r.driftVis=0;}
  const roadVy=clamp((ground-r.lastGround)/Math.max(dt,1e-3),-45,45);r.lastGround=ground;
  // Anti-Grav: die Fahrbahn haelt magnetisch fest, sonst wirft die Kuppe der Wandfahrt jeden ab
- if(agrav.length&&hasRoll(r.distance)&&!rh&&r.y<ground+2.2){if(r.air){r.air=false;r.airT=0;r.trick=0;}
+ if((agrav.length||loops.length)&&hasRoll(r.distance)&&!rh&&r.y<ground+2.2){if(r.air){r.air=false;r.airT=0;r.trick=0;}
   r.y+=(ground-r.y)*Math.min(1,dt*16);if(Math.abs(ground-r.y)<.05)r.y=ground;
   r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
  if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;if(r.y<ground-1.5&&r.vy<0&&ground>-20){respawn(r);return;}if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
@@ -725,10 +794,15 @@ function syncKart(r,dt){const s=tanAt(r.distance),e=r.mesh.rotation,dot=Math.sin
  r.driftVis=(r.driftVis||0)+((r.driftDir||0)*.38-(r.driftVis||0))*Math.min(1,dt*10);
  const hopY=r.hop>0?Math.sin((.2-r.hop)/.2*Math.PI)*.35:0;
  const lift=.1+hopY+(r.air?0:Math.sin(elapsed*22+r.id)*.03*(Math.abs(r.speed)/30));
- if(agrav.length&&hasRoll(r.distance))r.mesh.position.copy(posAt(r.distance,r.offset,(r.y??0)-groundAt(r.distance,r.offset).y+lift,_agP));
+ const inLoop=loops.length?loopAt(r.distance):null;
+ if(inLoop||(agrav.length&&hasRoll(r.distance)))r.mesh.position.copy(posAt(r.distance,r.offset,(r.y??0)-groundAt(r.distance,r.offset).y+lift,_agP));
  else r.mesh.position.set(r.x,(r.y??0)+lift,r.z);e.order='YXZ';
- const spin=r.trick>0?Math.min(1,r.trick/.42)*TAU:0;e.y=r.h+r.driftVis+(r.stun>0?elapsed*14:0)+spin;
- e.x=r.air?clamp(-r.vy*.02,-.45,.45):-Math.atan(slopeAt(r.distance)*dot);e.z=-bank*dot+(r.id===0?-(r.steerS||0)*.07:0)-r.driftVis*.12+(agrav.length?rollAt(r.distance):0);
+ const spin=r.trick>0?Math.min(1,r.trick/.42)*TAU:0;
+ // Im Looping bleibt die Blickrichtung waagerecht (der Kreis wird ja aufgestellt), die Neigung macht die Runde
+ if(inLoop){const st=loopFrame(inLoop,r.distance,r.x,r.z),tt=tanAt(r.distance);
+  e.y=inLoop.ang+angleDiff(r.h,Math.atan2(tt.x,tt.z))+spin;e.x=-st.th;e.z=-r.driftVis*.12;}
+ else e.y=r.h+r.driftVis+(r.stun>0?elapsed*14:0)+spin;
+ if(!inLoop){e.x=r.air?clamp(-r.vy*.02,-.45,.45):-Math.atan(slopeAt(r.distance)*dot);e.z=-bank*dot+(r.id===0?-(r.steerS||0)*.07:0)-r.driftVis*.12+(agrav.length?rollAt(r.distance):0);}
  const ks=r.kartScale||[1,1,1];
  if(r.squash>0){r.squash=Math.max(0,r.squash-dt*1.4);const q=Math.sin(r.squash/.3*Math.PI)*r.squash*.55;r.mesh.scale.set(ks[0]*(1+q*.6),ks[1]*(1-q),ks[2]*(1+q*.6));}
  else if(r.mesh.scale.y!==ks[1])r.mesh.scale.set(ks[0],ks[1],ks[2]);
@@ -943,18 +1017,31 @@ function update(dt){
   // Mildes Gummiband: Rivalen weit vorn werden minimal langsamer, weit hinten minimal schneller (Sieg bleibt verdient)
   const rubber=me?1:1+clamp((player.distance-r.distance)/400,-1,1)*cls.rubber,speedMul=me?1:cls.ai*(.96+.04*r.skill)*rubber;
   const oldLap=lap(r,length),oldBoost=r.boost;
-  driveKart(r,dt,input,{air:r.air,offroad,slope:slopeAt(r.distance)*dot,speedMul});
+  const inLoopPhys=loops.length&&!!loopAt(r.distance);
+  driveKart(r,dt,input,{air:r.air,offroad,slope:slopeAt(r.distance)*dot,speedMul,gripMul:inLoopPhys?3.4:1});
   collideStatic(r);
   // KI haengt fest (Hindernis, Wand): nach kurzer Zeit per Rettungspilz zurueck auf die Strecke
   if((!me||autopilot)&&input.gas&&!r.air&&Math.abs(r.speed)<3&&r.stun<=0){r.stuckT=(r.stuckT||0)+dt;if(r.stuckT>1.6){r.stuckT=0;respawn(r);}}else r.stuckT=0;
   let pr=project(r.x,r.z,r.distance),skipped=false;
   // Weit neben der lokalen Projektion (Kurve abgeschnitten): global neu zuordnen; grosse Abkuerzungen setzen zurueck.
-  if(Math.abs(pr.off)>14&&!forkBand(pr.d,pr.off,4)){const g2=project(r.x,r.z,projectGlobal(r.x,r.z,r.y||0));if(Math.abs(g2.off)<9){const jump=wrapDiff(g2.d,lapDist(r.distance));if(jump>60){respawn(r);if(me)toast('ABKÜRZUNG ZÄHLT NICHT!',1.6,'bad');skipped=true;}else{r.distance+=jump;pr=g2;}}}
+  if(Math.abs(pr.off)>14&&!forkBand(pr.d,pr.off,4)&&!nearLoop(r.distance)){const g2=project(r.x,r.z,projectGlobal(r.x,r.z,r.y||0));if(Math.abs(g2.off)<9){const jump=wrapDiff(g2.d,lapDist(r.distance));if(jump>60){respawn(r);if(me)toast('ABKÜRZUNG ZÄHLT NICHT!',1.6,'bad');skipped=true;}else{r.distance+=jump;pr=g2;}}}
   if(!skipped){advanceProgress(r,pr.d,length);r.offset=pr.off;railCollide(r,me);
    // Anti-Grav-Seitenmagnet: in Rollzonen stehen keine Leitplanken – die Magnetbahn haelt das Kart
    // seitlich fest (wie vertikal). Weicher exponentieller Pull statt hartem Snap: kein Ruck im Bild,
    // denn bei ~90 Grad Roll wird seitliche Korrektur als vertikale Bewegung sichtbar.
-   if(agrav.length&&hasRoll(r.distance)&&Math.abs(r.offset)>8.6){const t=tanAt(r.distance),sg=Math.sign(r.offset),pen=(Math.abs(r.offset)-8.6)*Math.min(1,dt*12);
+   // Im Looping wird gefuehrt: seitlich sanft zur Mitte gezogen und die Fahrtrichtung nachgefuehrt.
+   // Ohne das traegt die Fliehkraft in der engen Kreisbahn jedes Kart an den Rand (Arcade-Konvention).
+   if(loops.length&&(loopAt(r.distance)||nearLoop(r.distance))){const tn=tanAt(r.distance);
+    // je weiter draussen, desto haerter zurueck: sonst pendelt sich ein Kart in einer Umlaufbahn
+    // neben der Bahn ein und kommt nie zurueck
+    const kk=Math.min(1,dt*(3.4+Math.abs(r.offset)*1.2));
+    const tgt=clamp(r.offset,-3.6,3.6),dOff=(tgt-r.offset)*kk;
+    r.x+=tn.z*dOff;r.z-=tn.x*dOff;r.offset+=dOff;
+    const sp2=Math.hypot(r.vx,r.vz);
+    if(sp2>1){const want=Math.atan2(tn.x,tn.z),cur=Math.atan2(r.vx,r.vz),na=cur+angleDiff(want,cur)*Math.min(1,dt*5);
+     r.vx=Math.sin(na)*sp2;r.vz=Math.cos(na)*sp2;}
+    r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*Math.min(1,dt*3.2);}
+   if((agrav.length||loops.length)&&hasRoll(r.distance)&&Math.abs(r.offset)>8.6){const t=tanAt(r.distance),sg=Math.sign(r.offset),pen=(Math.abs(r.offset)-8.6)*Math.min(1,dt*12);
     r.x-=t.z*sg*pen;r.z+=t.x*sg*pen;r.offset=sg*(Math.abs(r.offset)-pen);
     const ox=t.z*sg,oz=-t.x*sg,vn=r.vx*ox+r.vz*oz;if(vn>0){r.vx-=ox*vn*1.05;r.vz-=oz*vn*1.05;}}}
   vertical(r,dt);
@@ -993,7 +1080,10 @@ function update(dt){
   for(const h of hazards){if(h.life<=0||r.air||(h.owner===r.id&&h.arm>0))continue;const dx=r.x-h.x,dz=r.z-h.z;if(dx*dx+dz*dz<2.2&&Math.abs((r.y||0)-h.y)<2){h.life=0;if(r.shield>0){burst(r,0xffe263,10);continue;}hitKart(r,me?1.1:1.4,.45);hitSpores(r);burst(r,0xffd23f,12);if(me){stats.hitsTaken++;SFX.slip();say('ouch');toast('AUSGERUTSCHT!',1,'bad');shake=.35;}else{if(h.owner===0)stats.hitsDealt++;if(nearPlayer(r,45))SFX.slip(h.owner===0?.8:.4);}}}
  }
  // Kart-Kollisionen (Rempeln)
- for(let i=0;i<racers.length;i++)for(let j=i+1;j<racers.length;j++){const a=racers[i],b=racers[j];if(Math.abs(a.x-b.x)>3||Math.abs(a.z-b.z)>3||Math.abs(a.y-b.y)>1.2)continue;const rel=Math.hypot(a.vx-b.vx,a.vz-b.vz);if(collideKarts(a,b)&&(a.id===0||b.id===0)&&rel>6){SFX.bump(clamp(rel/25,.2,.8));shake=Math.max(shake,.15);}}
+ for(let i=0;i<racers.length;i++)for(let j=i+1;j<racers.length;j++){const a=racers[i],b=racers[j];if(Math.abs(a.x-b.x)>3||Math.abs(a.z-b.z)>3||Math.abs(a.y-b.y)>1.2)continue;
+  // an Kreuzungen (Looping, Acht) liegen zwei Streckenteile uebereinander: dort nicht rempeln
+  if(Math.abs(wrapDiff(lapDist(a.distance),lapDist(b.distance)))>14)continue;
+  const rel=Math.hypot(a.vx-b.vx,a.vz-b.vz);if(collideKarts(a,b)&&(a.id===0||b.id===0)&&rel>6){SFX.bump(clamp(rel/25,.2,.8));shake=Math.max(shake,.15);}}
  updateShots(dt);updateBombs(dt);
  const newOrder=ranking(racers),place=newOrder.indexOf(player)+1;
  if(place<lastPlace&&elapsed>2){stats.overtakes+=lastPlace-place;SFX.overtake();toast(`▲ PLATZ ${place}`,.9,'good');}
@@ -1103,6 +1193,18 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  // Feed-Forward: das analytische Roll-Delta wird direkt uebernommen, nur der Restfehler wird geglaettet.
  // So hinkt der Horizont bei schnellen Korkenziehern nicht (alt: dt*7-Nachlauf ~30 Grad) und die
  // TAU/0-Naht am Ende eines Roll-Moduls loest keinen Rueckwaertssalto aus (angleDiff ist wrap-sicher).
+ // Looping: Kamera haengt an der senkrecht gestellten Bahn
+ const lq=loops.length?loopAt(p.distance):null;
+ if(lq){const st=loopFrame(lq,p.distance,p.x,p.z);
+  posAt(p.distance,p.offset,(p.y??0)-groundAt(p.distance,p.offset).y,_agP);
+  const bk=portrait?11:9,uu=portrait?4.4:3.4;
+  _agV.set(_agP.x-st.tx*bk+st.nx*uu,_agP.y-st.ty*bk+st.ny*uu,_agP.z-st.tz*bk+st.nz*uu);
+  const kk=snap?1:1-Math.exp(-dt*7);
+  camera.position.lerp(_agV,kk);
+  camera.up.set(st.nx,st.ny,st.nz);
+  camera.lookAt(_agP.x+st.tx*9+st.nx*1.2,_agP.y+st.ty*9+st.ny*1.2,_agP.z+st.tz*9+st.nz*1.2);
+  if(shake>0){shake=Math.max(0,shake-dt);camera.position.x+=(Math.random()-.5)*shake*.9;camera.position.y+=(Math.random()-.5)*shake*.7;}
+  setFov((portrait?76:66)+(p.boost>0?8:0),dt,snap);camRoll=camRollPrev=0;return;}
  const rl=agrav.length?rollAt(p.distance):0;
  if(snap)camRoll=camRollPrev=rl;
  else{const dRl=angleDiff(rl,camRollPrev),pred=camRoll+dRl;camRoll=angleDiff(pred+angleDiff(rl,pred)*Math.min(1,dt*10),0);camRollPrev=rl;}
@@ -1299,6 +1401,7 @@ if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,next:nextAfterResul
  bgm:()=>({ready:bgm.ready,failed:bgm.failed,playing:bgm.current,rate:bgm.rate}),
  items:()=>({hazards:hazards.length,shots:shots.length,ramps:ramps.length,pads:pads.length,rings:rings.length,spores:spores.length,swingers:swingers.length,gaps:gaps.length,obstacles:[...obsGrid.values()].reduce((a,c)=>a+c.length,0),crowd:crowd?crowd.fans.length:0,protos:Object.fromEntries(PROTO_FILES.map(n=>[n,!!P[n]]))}),
  saveGhost:()=>{try{localStorage.setItem('mr-ghost-'+selected,JSON.stringify({...rec,next:undefined,color:0xffffff}));}catch{}return rec&&rec.x.length;},ghost:()=>ghost&&{n:ghost.data.x.length,dist:ghost.dist,visible:ghost.mesh.visible},medalOf:t=>medalOf(t),aiUse:(id,item)=>{racers[id].item=item;return useItem(racers[id]);},racers:()=>racers,world:()=>({ramps,pads,rings,spores,gaps,swingers}),keys,
+ loops:()=>loops.map(q=>({...q,s:Math.round(q.s),span:Math.round(q.span),R:Math.round(q.R)})),
  thumbs:()=>({items:Object.keys(itemThumbs),drivers:document.querySelectorAll('#drivers canvas').length}),
  dbg,gfx:m=>{if(m){gfxMode=m;applyGfx();}return {gfxMode,level:quality.level,dpr:renderer.getPixelRatio(),shadowEvery,shadows:renderer.shadowMap.enabled};},bprof:()=>bprof.slice(),three:()=>({renderer,scene,camera,sun,world,actors,headlight,T}),prof:()=>{const r=Object.fromEntries(Object.entries(prof).map(([k,v])=>[k,k==='n'?v:+(v/Math.max(1,prof.n)).toFixed(2)]));for(const k in prof)prof[k]=0;return r;},bench:(n=120)=>{const gl=renderer.getContext();let cpu=0,gpu=0,worst=0;for(let i=0;i<n;i++){const a=performance.now();frameStep(1/60,a);const b=performance.now();gl.finish();const c=performance.now();cpu+=b-a;gpu+=c-b;worst=Math.max(worst,c-a);}
   return {cpuMs:+(cpu/n).toFixed(2),finishMs:+(gpu/n).toFixed(2),worstMs:+worst.toFixed(1),calls:renderer.info.render.calls,tris:renderer.info.render.triangles,programs:renderer.info.programs.length,geos:renderer.info.memory.geometries};},

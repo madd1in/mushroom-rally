@@ -41,7 +41,8 @@ export function driveKart(k,dt,input,surf={}){
  if(k.driftDir){const into=steer*k.driftDir;yaw=k.driftDir*P.turn*(k.mTurn||1)*driftFactor(into)*Math.min(1,sp/10);if(!air)k.drift+=dt*(into>.3?1.35:into<-.3?.55:1)*(off?.4:1);}
  else yaw=steer*P.turn*(k.mTurn||1)*turnCurve(sp)*(vf<-.5?-1:1);
  if(air)yaw*=P.airTurn;if(stunned)yaw=0;
- const grip=(air?.3:k.driftDir?P.driftGrip:off?P.offGrip:P.grip)*(air?1:(k.mGrip||1));
+ // surf.gripMul: im Looping haelt die Bahn magnetisch, sonst traegt die Fliehkraft jeden nach aussen
+ const grip=(air?.3:k.driftDir?P.driftGrip:off?P.offGrip:P.grip)*(air?1:(k.mGrip||1))*(surf.gripMul||1);
  // Seitliches Rutschen abbauen, dabei den Grossteil der Energie in Vorwaertstempo umlenken (Drift haelt sein Tempo).
  const vl2=vl*Math.exp(-grip*dt),lost=vl*vl-vl2*vl2;if(!air&&vf>0)vf=Math.sqrt(vf*vf+lost*(k.driftDir?.94:.72));vl=vl2;
  if(k.driftDir&&!air){vl-=k.driftDir*sp*.10*dt;
