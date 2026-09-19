@@ -4,6 +4,55 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 17 (19.09.2026): Wurzeltor, einseitige Korkenzieher, freie Sicht, lauterer Sound
+
+**Looping mit Tropfenform.** Ein geschlossener Kreis liess Ein- und Ausfahrt uebereinanderliegen.
+Jetzt Tropfen (unten enger, oben runder) und deutlich mehr Vorlage: der Fussabdruck ist von
+R*1,26 auf R*1,85 gewachsen, Ein- und Ausfahrt laufen sichtbar auseinander.
+
+**Korkenzieher drehen nur noch in eine Richtung.** Vorher drehten sie ein und wieder zurueck -
+dieses Gegenlaufen war der Grund fuers Verkanten. Jetzt: eindrehen, den Winkel ein Stueck halten,
+in derselben Richtung bis zur vollen Umdrehung weiterdrehen. Zwei Bauarten:
+- `wall` haelt 90 Grad Wandfahrt,
+- `over` haelt kopfueber.
+
+Alle Anti-Grav-Abschnitte sind deutlich gestreckt (die Drehung war zu hastig), und im
+Neon-Pilzwald liegt der Korkenzieher jetzt **im Neontunnel** - das Gewoelbe dreht mit.
+
+**Freie Sicht in den Spiralen.** Die Fahrbahn ist ein 17,8 m breites Band, das um die Mittellinie
+schwenkt. Alles, was naeher als die halbe Bahnbreite an dieser Achse sitzt, wird davon
+ueberstrichen - und die Kamera sass 3,7 m ueber der Bahn, also mitten drin. Gemessen per
+Strahlentest: in 19-45 % der Bilder lag etwas zwischen Kamera und Kart. Jetzt rueckt die Kamera
+in Rollzonen nach aussen und dafuer naeher heran, folgt der Steigung der sichtbaren Fahrbahn und
+setzt sich auf die Bahn an ihrer eigenen Stelle. Ergebnis: **0-8,8 %**. Stuetzen stehen nur noch
+unter kaum gedrehter Fahrbahn.
+
+**Wurzeltor** (neu, in Blender gebaut): zwei Baumstaemme mit Wurzelfaechern, ein Bogen aus
+Wurzeln darueber, Laubdach, haengende Ranken, Pilze am Fuss - 95 KB. Das Bauwerk-System ist
+dafuer verallgemeinert: `BUILDINGS` beschreibt Kollider und Sperrzone je Bauart, und eine Strecke
+kann mehrere Bauwerke tragen (`course.builds`).
+
+**Ein Fehler, der lange schlummerte:** weit neben der Fahrbahn wurde die gerollte Abbildung
+benutzt. In einer Rollzone steht die Bahn senkrecht, dort zeigt die Querachse nach oben - ein
+Querversatz von 19 m landete damit senkrecht ueber der Mittellinie. Tribuene und Baeume standen
+also mitten auf der Strecke; die Pilz-Promenade brauchte dadurch 189,6 statt 99,4 s. `sample()`
+rechnet ab 10,6 m Querversatz jetzt flach.
+
+**Leichter:** 100 ccm von ai .91 / skill .68 auf .855 / .52, Aufholhilfe von .035 auf .055.
+
+**Sound:** Effekte lagen auf .6 und gingen in der Musik unter. Jetzt Effekte auf 1,25, Musik von
+.62 auf .46, und die Klangangleichung hebt auf Effektivpegel .20 statt .12 an. Neu von
+ElevenLabs: Zuschauerjubel, Turbo, Rundenglocke, Rempler und Driftquietschen.
+**Die Musik konnte nicht erzeugt werden - das ElevenLabs-Konto hat dafuer zu wenig Guthaben**
+(Effekte 50 Credits, Musik 900).
+
+**Tribuene** besteht jetzt aus drei Segmenten statt einem - rund 50 statt 16 m.
+
+**Verifikation:** Alle sechs Strecken im Autopilot bei 100 ccm durchgefahren (99,4 / 127,1 /
+98,3 / 108,0 / 95,6 / 123,9 s), Platz 1-5 statt durchweg hinten, 89-158 Draw Calls, 15/15
+Unit-Tests. Medaillenzeiten fuer Sonnen-Canyon, Neon-Pilzwald und Regenbogenpiste neu kalibriert,
+`LAYOUT_VER` auf 17.
+
 ## Runde 16 (19.09.2026): Looping neu gebaut, Anti-Grav ohne Ruckeln
 
 **Looping: von Grund auf anders.** Bisher wurde eine 360-Grad-Kehre waagerecht in die Mittellinie
