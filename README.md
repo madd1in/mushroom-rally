@@ -4,6 +4,42 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 18 (19.09.2026): Beschleunigungsstreifen, kein Tempoverlust mehr in den Spiralen
+
+**Warum man in den Spiralen haengen blieb - drei Ursachen, alle gemessen.**
+
+1. *Die Offroad-Bremse griff auf der schwebenden Bahn.* Neben einer Anti-Grav-Bahn gibt es kein
+   Gelaende - sie schwebt, daneben ist nichts. Trotzdem galt dort das Offroad-Hoechsttempo von
+   12,5 m/s. Wer einen Meter zu weit aussen fuhr, wurde also auf Schrittgeschwindigkeit gebremst.
+2. *Die Seitenhaftung war die normale.* Auf einer magnetisch haltenden Bahn schob das Kart quer
+   weg (gemessene Querbewegung bis 10 m/s) und landete damit erst recht zu weit aussen.
+3. *Der Boden fiel neben der Bahn ab.* Dadurch loeste sich der Haltemagnet, das Kart fiel heraus -
+   und der Rettungspilz setzte es auf die **Sichthoehe** der schwebenden Bahn, also 12,5 m ueber
+   dem physikalischen Boden. Von dort fiel es wieder. Auf der Lava-Feste ergab das 28
+   Zuruecksetzungen je Rennen und eine Rundenzeit von 184 statt 90 Sekunden.
+
+Dazu kam ein Feuerball mitten im Korkenzieher: in einer Rollzone bildet der Querversatz auf die
+Hoehe ab, das Pendel stand deshalb in x/z still auf der Mittellinie - genau auf der Ideallinie -
+waehrend die Kollision weiter flach rechnete. Pendel und Geister werden jetzt aus Rollzonen
+herausgeschoben.
+
+Gemessen im Korkenzieher, vorher/nachher: **10,8 -> 30,5 m/s Mindesttempo**, Lava-Feste im
+Zeitfahren **184 -> 89,9 s**, Zuruecksetzungen **28 -> 0**.
+
+**Beschleunigungsstreifen:** drei je Rollzone, breiter als die normalen (12,4 m statt 11 m) und
+mit groesserem Auffangband, weil man sie beim Drehen sonst verfehlt. Turbo liegt jetzt auf
+71-96 % der Zonenlaenge an.
+
+**Spiralen laenger:** alle Zonen noch einmal gestreckt, jetzt 85-147 m statt 59-113 m.
+
+**Tempolinien beim Turbo** waren in CSS und im Code laengst vorhanden - nur das Element fehlte im
+Markup, die Funktion war also tot. Jetzt ziehen die Striche wieder vom Bildrand nach innen.
+
+**Verifikation:** Alle sechs Strecken im Autopilot bei 100 ccm durchgefahren (89,8 / 144,9 / 83,3
+/ 106,4 / 97,6 / 117,5 s), Plaetze 1-5, keine Zuruecksetzungen, 92-157 Draw Calls, 15/15
+Unit-Tests. Medaillenzeiten fuer Neon-Pilzwald, Lava-Feste und Regenbogenpiste neu kalibriert,
+`LAYOUT_VER` auf 18.
+
 ## Runde 17 (19.09.2026): Wurzeltor, einseitige Korkenzieher, freie Sicht, lauterer Sound
 
 **Looping mit Tropfenform.** Ein geschlossener Kreis liess Ein- und Ausfahrt uebereinanderliegen.

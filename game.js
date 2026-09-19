@@ -35,39 +35,39 @@ const THEMES={
 const courses=[
  {name:'Pilz-Promenade',icon:'✿',kind:'Wurzeltor · Viadukt · Wandfahrt',medals:[85,91,102],music:'race',theme:'forest',seed:7,
   points:[[-45,-45],[-8,-8],[30,30],[72,62],[112,42],[118,-12],[82,-52],[38,-38],[-35,35],[-72,68],[-112,40],[-118,-15],[-85,-58]],
-  raise:[[6.55,8.45,8,44,1]],hills:[[3.6,4,.022],[10.6,4,.022]],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],agrav:[[4.6,6.15,'wall',90]],builds:[[.9,'roottree']],
+  raise:[[6.55,8.45,8,44,1]],hills:[[3.6,4,.022],[10.6,4,.022]],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],agrav:[[4.5,6.4,'wall',90]],builds:[[.9,'roottree']],
   ramps:[[4.4,0,9],[9.7,0,8]],pads:[[3.1,-4],[10.0,4]],
   boost:[1.9,5.5,12.3],boxes:[1.6,4.9,9.3,12.0],stands:[[.2,18],[5.2,-19]]},
  {name:'Sonnen-Canyon',icon:'☀',kind:'Schnell · Schluchtsprung · Felstunnel',medals:[112,118,129],music:'sunset',theme:'canyon',seed:23,
   points:[[0,78],[95,78],[125,45],[120,-20],[85,-45],[105,-88],[50,-102],[2,-50],[-60,-98],[-115,-72],[-122,0],[-105,55],[-55,80]],
   loopc:[5.5,20],hills:[[1.5,4,.03],[4.5,6,.04]],plateau:[9.45,11.7,7,34],gaps:[[10.5,14]],fork:[[6.25,8.75,.36]],
-  raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],agrav:[[.95,2.2,'wall',90]],
+  raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],agrav:[[.7,2.2,'wall',90]],
   ramps:[[3.3,0,9],[6.5,3,7]],pads:[[2.4,-4],[8.4,4]],
   boost:[.5,5.2,12.2],boxes:[1.0,4.0,7.0,9.1,12.6],stands:[[.3,-18],[5.6,19]]},
- {name:'Neon-Pilzwald',icon:'✦',kind:'Technisch · Korkenzieher im Neontunnel',medals:[95,101,112],music:'night',theme:'night',seed:41,
+ {name:'Neon-Pilzwald',icon:'✦',kind:'Technisch · Korkenzieher im Neontunnel',medals:[91,97,108],music:'night',theme:'night',seed:41,
   points:[[0,70],[50,75],[80,50],[55,25],[85,0],[95,-45],[55,-60],[30,-35],[0,-60],[-30,-95],[-80,-80],[-70,-40],[-105,-10],[-95,40],[-60,35],[-40,65]],
-  hills:[[4.6,4,.03],[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[9.3,10.0,'neon']],gaps:[[12.55,12]],agrav:[[2.85,4.65,'wall',90],[8.9,10.45,'roll',1]],
+  hills:[[4.6,4,.03],[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[9.3,10.0,'neon']],gaps:[[12.55,12]],agrav:[[2.65,4.95,'wall',90],[8.6,10.75,'roll',1]],
   ramps:[[10.6,0,8],[14.5,-2,7]],pads:[[4.4,3],[12.4,-3]],
   boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],swing:[[2.5,5,1.3,0],[7.4,5,1.1,1.5],[13.1,5,1.4,3]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
  {name:'Geisterhaus',icon:'👻',kind:'Spuk · Villa · Fahrt über Kopf',medals:[91,98,110],music:'night',bgmRate:.9,theme:'haunted',seed:66,
   points:[[0,70],[55,78],[95,55],[105,10],[70,-16],[100,-60],[70,-95],[20,-90],[-30,-90],[-75,-95],[-112,-55],[-104,-18],[-93,12],[-104,40],[-80,70],[-40,76]],
-  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.7,13.0,'over',1]],
+  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.4,13.4,'over',1]],
   ramps:[[5.4,0,9],[13.5,0,8]],pads:[[4.6,3],[14.6,-3]],
   boost:[.5,6,12.5],ghosts:[[1.6,5.5,.9,0],[5.3,5.5,1.1,2],[7.5,4.2,1,.5],[10.4,5.5,.8,4],[12.9,5.5,1.2,1]],boxes:[1.2,4.1,9.6,13.9],stands:[[.3,-19],[13.2,19]]},
- {name:'Lava-Feste',icon:'\u2668',kind:'Burg \u00b7 Magma \u00b7 Feuerb\u00e4lle',medals:[98,105,118],music:'sunset',bgmRate:1.06,theme:'lava',seed:88,
+ {name:'Lava-Feste',icon:'\u2668',kind:'Burg \u00b7 Magma \u00b7 Feuerb\u00e4lle',medals:[88,94,105],music:'sunset',bgmRate:1.06,theme:'lava',seed:88,
   points:[[-80,86],[0,90],[80,84],[118,56],[126,12],[112,-34],[92,-74],[44,-98],[-14,-94],[-62,-86],[-92,-56],[-72,-26],[-96,6],[-118,44],[-108,74]],
-  castle:1.05,hills:[[3.2,5,.03],[8.6,3,.028]],raise:[[12.4,13.4,8,32,1]],tunnel:[[4.6,5.25,'lava']],gaps:[[8.15,14]],agrav:[[9.8,11.6,'roll',1]],
+  castle:1.05,hills:[[3.2,5,.03],[8.6,3,.028]],raise:[[12.4,13.4,8,32,1]],tunnel:[[4.6,5.25,'lava']],gaps:[[8.15,14]],agrav:[[9.45,12.0,'roll',1]],
   swing:[[3.4,5,1.25,0],[7.0,5,1.05,2],[11.2,5,1.15,1]],
   ramps:[[2.4,0,9],[9.7,0,8]],pads:[[5.9,-4],[13.2,4]],
   boost:[.55,6.4,11.8],boxes:[1.6,4.4,8.0,9.9,13.6],stands:[[.4,18],[8.6,-19]]},
- {name:'Regenbogenpiste',icon:'\u2727',kind:'Weltall \u00b7 Looping \u00b7 Korkenzieher',medals:[103,109,120],music:'night',bgmRate:1.04,theme:'rainbow',seed:101,
+ {name:'Regenbogenpiste',icon:'\u2727',kind:'Weltall \u00b7 Looping \u00b7 Korkenzieher',medals:[101,107,118],music:'night',bgmRate:1.04,theme:'rainbow',seed:101,
   points:[[0,90],[70,88],[120,52],[108,-2],[128,-52],[96,-96],[36,-104],[-18,-78],[-8,-30],[-52,-8],[-104,-30],[-126,16],[-96,64],[-40,84]],
-  loopc:[6.45,19],agrav:[[2.3,3.8,'roll',1],[9.15,10.6,'over',1]],
+  loopc:[6.45,19],agrav:[[2.05,4.05,'roll',1],[8.85,10.8,'over',1]],
   hills:[[1.2,4,.025],[8.4,5,.03]],gaps:[[4.55,13]],
   ramps:[[1.9,0,9],[8.15,0,8]],pads:[[3.9,-4],[11.8,4]],
   boost:[.6,5.4,11.4],boxes:[1.4,4.0,7.9,10.7,12.8]}];
 // Streckenlayouts haben sich geaendert (Viadukt, Abzweigungen, Kurvenglaettung) -> alte Rekorde/Geister einmalig verwerfen
-const LAYOUT_VER=17;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
+const LAYOUT_VER=18;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
 const KART_COLORS=[{c:0xff3b30,n:'Ruby / Rot'},{c:0xffc400,n:'Sunny / Gelb'},{c:0x00c2a8,n:'Mint / Türkis'},{c:0x8b5cff,n:'Nova / Violett'},{c:0xffc93c,n:'Goldpilz',gold:true}];
 // Jede Figur faehrt ihr eigenes Kart: Beschleunigung, Hoechsttempo, Grip, Lenkung und Bauform
 const DRIVERS=[
@@ -267,6 +267,10 @@ function raiseH(d){let h=0;for(const q of raises){const span=lapDist(q.e-q.s),re
 // neben der Bahn die Boeschung mitrechnet - das Bild wuerde an der Zonengrenze springen.
 function roadRef(d,off){const [i,j,k]=tIdx(d);return TP.h[i]+(TP.h[j]-TP.h[i])*k-off*(TP.b[i]+(TP.b[j]-TP.b[i])*k);}
 function groundAt(d,off){const tr=trackAt(d);let base=tr.h-off*tr.b;const edge=Math.abs(off)-8.9;
+ // Die Anti-Grav-Bahn schwebt: daneben gibt es keine Boeschung, die abfaellt. Rechnete man sie
+ // mit, loeste sich der Haltemagnet sobald das Kart etwas weiter aussen fuhr - es fiel heraus
+ // und wurde zurueckgesetzt. Seitlich haelt die Fuehrung, nicht das Gelaende.
+ if((agrav.length||loops.length)&&hasRoll(d))return {y:base,rh:rampAt(d,off)};
  if(theme.space&&edge>1.6){const rh0=rampAt(d,off);return {y:-30,rh:rh0};}   // neben der Bahn ist Leere
  if(edge>.6&&tr.h>2.2&&inBridge(d))base=0;else if(edge>0&&base>0)base=Math.max(0,base-edge/1.5);
  if(Math.abs(off)<30&&inGap(d))base=-30;const rh=rampAt(d,off);return {y:base+(rh?rh.y:0),rh};}
@@ -499,6 +503,10 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  const padMat=new T.MeshBasicMaterial({map:boostTex});
  for(const v of course.boost){const d=straightSpot(v,10,45,60);boostPads.push(d);addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
  for(const g of gaps){const d=g.start-40;boostPads.push(lapDist(d));addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
+ // Beschleunigungsstreifen in jeder Rollzone: im Korkenzieher kostet jede Korrektur Schwung,
+ // und ohne Nachschub schleppt man sich durch. Drei Stueck, breiter als die normalen.
+ for(const q of agrav)for(const u of [.28,.52,.76]){const d=lapDist(q.s+q.span*u);
+  boostPads.push(d);addStrip(strip(d-3.6,d+3.6,0,12.4,.11,4.6,12),padMat,false);}
  bm('gate+boost');
  {const poles=[],pens=[],M4=new T.Matrix4(),col=new T.Color();for(let i=0;i<16;i++){const d=length*(i+.5)/16,fo=i%2?13:-13;if(inGap(d)||inZone(d,4)||forkBlocks(d,fo)||inBridge(d)||inTunnel(d))continue;const s=sample(d,fo);M4.makeRotationY(s.angle).setPosition(s.p.x,groundAt(d,fo).y-.1,s.p.z);addObstacle(s.p.x,s.p.z,.35);
   poles.push(new T.BoxGeometry(.12,3.1,.12).translate(0,1.55,0).applyMatrix4(M4));const pg=new T.PlaneGeometry(1.5,.7,5,1),n=pg.attributes.position.count,xn=new Float32Array(n),dx=new Float32Array(n),dz=new Float32Array(n),cc=new Float32Array(n*3);col.setHex(theme.pennants?theme.pennants[i%2]:(glow?(i%2?0xff3cac:0x2de2e6):(i%2?0xed6350:0xffd45c)));
@@ -839,13 +847,19 @@ function buildRamps(){const list=course.ramps.map(([v,off,w])=>({d:straightSpot(
   const rd=r.end+12,rs=sample(rd,off),ring=new T.Mesh(new T.TorusGeometry(3.2,.3,10,36),new T.MeshStandardMaterial({color:0xffd45c,emissive:0xff9a1f,emissiveIntensity:.9,roughness:.4}));ring.position.copy(rs.p);ring.position.y+=3.8;ring.rotation.y=rs.angle;world.add(ring);rings.push({d:lapDist(rd),off,y:ring.position.y,mesh:ring,flash:0});}}
 function buildPads(){for(const [v,off] of course.pads){const d=straightSpot(v,20,55,70),s=sample(d,off);let g;if(P.bouncepad)g=cloneProto(P.bouncepad);else{g=new T.Group();sphere(g,mat(0xed6350),0,.2,0,1.75,.34,1.75);}g.position.copy(s.p);g.rotation.y=s.angle;world.add(g);pads.push({d,off,mesh:g,squash:0});}}
 // Pendel-Pilze (Neon): schwingen quer ueber die Strecke, Timing statt Glueck.
-function buildSwingers(){for(const [v,amp,spd,ph] of course.swing||[]){const d=cpDist(v);let g;
+// Pendelnde Hindernisse gehoeren nicht in eine Rollzone: dort bildet der Querversatz auf die
+// Hoehe ab, das Pendel steht dann in x/z still auf der Mittellinie - also genau auf der
+// Ideallinie - waehrend die Kollision weiter flach rechnet. Deshalb aus der Zone schieben.
+function outOfRoll(d){if(!agrav.length)return d;
+ for(let i=0;i<40&&hasRoll(d);i++)d=lapDist(d+8);
+ return lapDist(d+14);}
+function buildSwingers(){for(const [v,amp,spd,ph] of course.swing||[]){const d=outOfRoll(cpDist(v));let g;
  if(theme.ember){g=new T.Group();g.add(new T.Mesh(new T.IcosahedronGeometry(1.15,1),new T.MeshBasicMaterial({color:0xffe08a})));
   const halo=new T.Mesh(new T.IcosahedronGeometry(1.75,0),new T.MeshBasicMaterial({color:0xff5a1f,transparent:true,opacity:.55,depthWrite:false}));g.add(halo);
   const tail=new T.Mesh(new T.ConeGeometry(.9,2.6,8),new T.MeshBasicMaterial({color:0xff8a2a,transparent:true,opacity:.35,depthWrite:false}));tail.rotation.x=Math.PI/2;tail.position.z=-1.4;g.add(tail);world.add(g);}
  else{g=P.mushroom?cloneProto(P.mushroom):new T.Group();if(P.mushroom)applyTint(g,'CapPaint',0xff3cac,{emissiveColor:0xff3cac,emissiveIntensity:1.2});else sphere(g,mat(0xff3cac),0,2.6,0,1.6,.75,1.6);world.add(g);}
  g.scale.setScalar(theme.ember?1.5:1.7);swingers.push({d,amp,spd,ph,mesh:g,x:0,z:0,fire:!!theme.ember});}
- for(const [v,amp,spd,ph] of course.ghosts||[]){let d=cpDist(v);for(const r of [...ramps,...pads])if(Math.abs(wrapDiff(d,r.d))<32)d=lapDist(r.d+42);let g;if(P.ghost){g=cloneProto(P.ghost);g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.88;}});}else{g=new T.Group();sphere(g,mat(0xeef3ff,{emissive:0x9fb4ff,emissiveIntensity:.4}),0,1.7,0,1);}
+ for(const [v,amp,spd,ph] of course.ghosts||[]){let d=outOfRoll(cpDist(v));for(const r of [...ramps,...pads])if(Math.abs(wrapDiff(d,r.d))<32)d=lapDist(r.d+42);let g;if(P.ghost){g=cloneProto(P.ghost);g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.88;}});}else{g=new T.Group();sphere(g,mat(0xeef3ff,{emissive:0x9fb4ff,emissiveIntensity:.4}),0,1.7,0,1);}
   g.scale.setScalar(1.2);world.add(g);swingers.push({d,amp,spd,ph,mesh:g,x:0,z:0,y:0,kind:'ghost'});}}
 function buildSpores(){const add=(d,off,lift)=>{if(inGap(d))return;const p=sample(d,off).p;spores.push({d:lapDist(d),off,x:p.x,z:p.z,y:p.y+lift,cd:0,ph:spores.length*.7});};
  // Sporen-Linien auf der Ideallinie der Kurven: wer sauber faehrt, sammelt sie
@@ -908,7 +922,9 @@ function land(r,ground,roadVy){const impact=r.vy-roadVy,me=r.id===0;r.y=ground;r
  if(me&&impact<-9){shake=Math.max(shake,Math.min(.3,-impact*.012));dropPuff(r);dropPuff(r);SFX.land(clamp(-impact/25,.25,1));}}
 function startTrick(r){r.trick=.001;if(r.id===0)SFX.whoosh();}
 // Rettungspilz: nach einem Sturz in die Schlucht zurueck vor die Anlaufstrecke
-function respawn(r){const me=r.id===0,d=r.safeD??0,s=sample(d,0),fell=gaps.some(g=>Math.abs(wrapDiff(g.c,lapDist(r.distance)))<40);r.x=s.p.x;r.z=s.p.z;r.h=s.angle;r.vx=r.vz=0;r.speed=0;r.distance+=wrapDiff(d,lapDist(r.distance));r.offset=0;r.y=s.p.y+2.2;r.vy=0;r.air=true;r.airT=0;r.trick=0;r.driftDir=0;r.drift=0;r.stun=.5;r.lastGround=s.p.y;
+// Die Hoehe kommt aus groundAt, nicht aus sample: in einer Rollzone schwebt die sichtbare Bahn
+// bis zu 12,5 m ueber dem Boden, und wer dort oben eingesetzt wird, faellt endlos im Kreis.
+function respawn(r){const me=r.id===0,d=r.safeD??0,s=sample(d,0),gy=groundAt(d,0).y,fell=gaps.some(g=>Math.abs(wrapDiff(g.c,lapDist(r.distance)))<40);r.x=s.p.x;r.z=s.p.z;r.h=s.angle;r.vx=r.vz=0;r.speed=0;r.distance+=wrapDiff(d,lapDist(r.distance));r.offset=0;r.y=gy+2.2;r.vy=0;r.air=true;r.airT=0;r.trick=0;r.driftDir=0;r.drift=0;r.stun=.5;r.lastGround=gy;
  if(me&&stats){stats.falls++;toast(fell?'RETTUNGSPILZ! Mit mehr Tempo über die Schanze':'RETTUNGSPILZ!',2,'bad');if(fell)SFX.splash();shake=.3;}}
 const nearPlayer=(r,range)=>racers[0]&&Math.abs(r.distance-racers[0].distance)<range;
 function collideStatic(r){const ix=Math.floor(r.x/16),iz=Math.floor(r.z/16);for(let a=-1;a<=1;a++)for(let b=-1;b<=1;b++){const cell=obsGrid.get((ix+a+500)*1000+(iz+b+500));if(!cell)continue;for(const o of cell){const dx=r.x-o.x,dz=r.z-o.z,rr=o.r+1.05,d2=dx*dx+dz*dz;if(d2<rr*rr&&r.y<o.h){const d=Math.sqrt(d2)||1,nx=dx/d,nz=dz/d;r.x=o.x+nx*rr;r.z=o.z+nz*rr;bounce(r,nx,nz);}}}
@@ -1140,7 +1156,10 @@ function update(dt){
    if(r.slowT>1.6){r.slowT=0;respawn(r);if(me)toast('ZURÜCK AUF DIE STRECKE',1.2);}}
   else r.slowT=0;
   if(!me)aiItems(r,order);
-  const offroad=!r.air&&!onRoad(r.distance,r.offset)&&!inGap(r.distance);if(TEST){r.tOff=(r.tOff||0)+(offroad?dt:0);r.tAll=(r.tAll||0)+dt;}
+  // In einer Rollzone schwebt die Bahn - daneben ist kein Gelaende, sondern nichts. Die
+  // Offroad-Bremse (Hoechsttempo 12,5) gehoert dort nicht hin; seitlich haelt die Fuehrung.
+  const inRoll=(agrav.length||loops.length)&&hasRoll(r.distance);
+  const offroad=!r.air&&!onRoad(r.distance,r.offset)&&!inGap(r.distance)&&!inRoll;if(TEST){r.tOff=(r.tOff||0)+(offroad?dt:0);r.tAll=(r.tAll||0)+dt;}
   const s=trackAt(r.distance),tan=tanAt(r.distance),dot=Math.sin(r.h)*tan.x+Math.cos(r.h)*tan.z;
   // Mildes Gummiband: Rivalen weit vorn werden minimal langsamer, weit hinten minimal schneller (Sieg bleibt verdient)
   const rubber=me?1:1+clamp((player.distance-r.distance)/400,-1,1)*cls.rubber,speedMul=me?1:cls.ai*(.96+.04*r.skill)*rubber;
@@ -1148,7 +1167,7 @@ function update(dt){
   // Im Looping wird der Vorschub auf der Fahrbahn gebremst, damit das Bild in normalem Tempo
   // durch den Kreis laeuft. Gefahren wird geradeaus, also braucht es keinen Extra-Grip.
   const lp=loops.length?loopAt(r.distance):null;
-  driveKart(r,dt,input,{air:r.air,offroad,slope:slopeAt(r.distance)*dot,speedMul,gripMul:lp?1.5:1,moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):1});
+  driveKart(r,dt,input,{air:r.air,offroad,slope:slopeAt(r.distance)*dot,speedMul,gripMul:lp?1.5:inRoll?2.3:1,moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):1});
   if(me&&r.driftDir&&!r.prevDrift)SFX.drift();
   r.prevDrift=!!r.driftDir;
   collideStatic(r);
@@ -1167,8 +1186,7 @@ function update(dt){
    // Innerhalb des freien Bands (+-6 m) bleibt das Lenken voellig frei; darueber hinaus zieht es
    // zunehmend zurueck, und zwar ueber die Geschwindigkeit statt ueber die Position - ein
    // Positions-Snap fuehlt sich beim Fahren wie Verkanten an.
-   const rollZone=(agrav.length||loops.length)&&hasRoll(r.distance);
-   if(rollZone){const tn=tanAt(r.distance),free=lp?6.2:7.8,ex=Math.abs(r.offset)-free;
+   if(inRoll){const tn=tanAt(r.distance),free=lp?6.2:7.8,ex=Math.abs(r.offset)-free;
     if(ex>0){const sg=Math.sign(r.offset),ox=tn.z*sg,oz=-tn.x*sg,vn=r.vx*ox+r.vz*oz;
      // Fahrtrichtung drehen statt Tempo wegnehmen. Daempfen kostet Schwung, und genau dieser
      // Tempoverlust fuehlt sich beim Fahren wie Anecken an.
@@ -1180,13 +1198,15 @@ function update(dt){
     // Im Looping die Blickrichtung leicht nachfuehren, aber nicht festnageln: Lenken bleibt moeglich
     if(lp)r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*(1-Math.exp(-dt*1.4));}}
   vertical(r,dt);
-  if(!r.air&&Math.abs(r.offset)<ROAD_HALF&&!r.rampY){const toGap=gaps.find(g=>{const a=wrapDiff(g.start,r.distance);return a>0&&a<95;});if(!toGap)r.safeD=lapDist(r.distance);}
+  if(!r.air&&!inRoll&&Math.abs(r.offset)<ROAD_HALF&&!r.rampY){const toGap=gaps.find(g=>{const a=wrapDiff(g.start,r.distance);return a>0&&a<95;});if(!toGap)r.safeD=lapDist(r.distance);}
   if(r.lastMT){r.mts=(r.mts||0)+(r.lastMT==='ultra'?100:r.lastMT==='super'?10:1);if(me){stats.mt[r.lastMT]++;SFX.mt(r.lastMT);const combo=comboStep(r,elapsed);if(combo>=2){stats.maxCombo=Math.max(stats.maxCombo||0,combo);if(r.spores<MAX_SPORES)r.spores++;SFX.combo(combo);toast(`${MT_LABEL[r.lastMT]} · COMBO ×${combo}`,1,'mt-'+r.lastMT);}else toast(MT_LABEL[r.lastMT]+'!',.8,'mt-'+r.lastMT);const p=r.mesh.position;for(let i=0;i<14;i++){const a=Math.random()*TAU;emit(p.x,p.y+.4,p.z,MT_COLORS[r.lastMT],Math.sin(a)*3-Math.sin(r.h)*6,1+Math.random()*2,Math.cos(a)*3-Math.cos(r.h)*6,.5);}}r.lastMT=null;}
   // Windschatten: dicht hinter einem Kart bleiben laedt einen Boost
   if(!r.air&&r.speed>17&&r.boost<=0){const sh=Math.sin(r.h),ch=Math.cos(r.h);let draft=false;for(const o of racers){if(o===r)continue;const dx=o.x-r.x,dz=o.z-r.z,f=dx*sh+dz*ch,lat=Math.abs(dx*ch-dz*sh);if(f>2.5&&f<15&&lat<1.9){draft=true;break;}}
    r.draft=draft?(r.draft||0)+dt:Math.max(0,(r.draft||0)-dt*2);if(me&&draft&&frame%3===0)for(const s of [-1,1])emit(r.x+ch*s*1.3+sh*2,r.y+1.1,r.z-sh*s*1.3+ch*2,0xe8f6ff,-sh*16,0,-ch*16,.22);
    if(r.draft>1.3){r.draft=0;r.boost=Math.max(r.boost,1);if(me){stats.drafts++;SFX.whoosh();toast('WINDSCHATTEN-BOOST!',.9,'good');}}}else if(r.air)r.draft=0;
-  if(!r.air)for(const d of boostPads)if(Math.abs(wrapDiff(r.distance,d))<2.4&&Math.abs(r.offset)<5.6)r.boost=Math.max(r.boost,1);
+  // In Rollzonen zaehlt ein breiteres Band, sonst verfehlt man den Streifen beim Drehen
+  if(!r.air){const pw=inRoll?7.4:5.6,pl=inRoll?3.7:2.4;
+   for(const d of boostPads)if(Math.abs(wrapDiff(r.distance,d))<pl&&Math.abs(r.offset)<pw)r.boost=Math.max(r.boost,1);}
   if(me&&r.boost>oldBoost&&oldBoost===0)SFX.boost();
   if(me&&r.stall>0&&frame%5===0)dropPuff(r);
   for(const pad of pads)if(!r.air&&r.padCd<=0&&Math.abs(wrapDiff(r.distance,pad.d))<1.9&&Math.abs(r.offset-pad.off)<2){r.air=true;r.airT=0;r.vy=11+Math.max(0,r.speed)*.1;r.y+=.1;r.boost=Math.max(r.boost,.5);r.padCd=.6;pad.squash=.45;if(nearPlayer(r,50))SFX.boing(me?1:.4);}
