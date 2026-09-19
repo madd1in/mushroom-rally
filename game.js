@@ -38,7 +38,7 @@ const courses=[
   raise:[[6.55,8.45,8,44,1]],hills:[[3.6,4,.022],[10.6,4,.022]],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],agrav:[[5.0,5.9,'wall',74]],
   ramps:[[4.4,0,9],[9.7,0,8]],pads:[[3.1,-4],[10.0,4]],
   boost:[1.9,5.5,12.3],boxes:[1.6,4.9,9.3,12.0],stands:[[.2,18],[5.2,-19]]},
- {name:'Sonnen-Canyon',icon:'☀',kind:'Schnell · Schluchtsprung · Felstunnel',medals:[92,99,111],music:'sunset',theme:'canyon',seed:23,
+ {name:'Sonnen-Canyon',icon:'☀',kind:'Schnell · Schluchtsprung · Felstunnel',medals:[106,112,123],music:'sunset',theme:'canyon',seed:23,
   points:[[0,78],[95,78],[125,45],[120,-20],[85,-45],[105,-88],[50,-102],[2,-50],[-60,-98],[-115,-72],[-122,0],[-105,55],[-55,80]],
   loopc:[5.5,20],hills:[[1.5,4,.03],[4.5,6,.04]],plateau:[9.45,11.7,7,34],gaps:[[10.5,14]],fork:[[6.25,8.75,.36]],
   raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],agrav:[[1.25,2.05,'wall',68]],
@@ -60,14 +60,14 @@ const courses=[
   swing:[[3.4,5,1.25,0],[7.0,5,1.05,2],[11.2,5,1.15,1]],
   ramps:[[2.4,0,9],[9.7,0,8]],pads:[[5.9,-4],[13.2,4]],
   boost:[.55,6.4,11.8],boxes:[1.6,4.4,8.0,9.9,13.6],stands:[[.4,18],[8.6,-19]]},
- {name:'Regenbogenpiste',icon:'\u2727',kind:'Weltall \u00b7 Looping \u00b7 Korkenzieher',medals:[127,136,153],music:'night',bgmRate:1.04,theme:'rainbow',seed:101,
+ {name:'Regenbogenpiste',icon:'\u2727',kind:'Weltall \u00b7 Looping \u00b7 Korkenzieher',medals:[113,119,130],music:'night',bgmRate:1.04,theme:'rainbow',seed:101,
   points:[[0,90],[70,88],[120,52],[108,-2],[128,-52],[96,-96],[36,-104],[-18,-78],[-8,-30],[-52,-8],[-104,-30],[-126,16],[-96,64],[-40,84]],
   loopc:[6.45,19],agrav:[[2.5,3.5,'roll',1],[9.4,10.3,'wall',80]],
   hills:[[1.2,4,.025],[8.4,5,.03]],gaps:[[4.55,13]],
   ramps:[[1.9,0,9],[8.15,0,8]],pads:[[3.9,-4],[11.8,4]],
   boost:[.6,5.4,11.4],boxes:[1.4,4.0,7.9,10.7,12.8]}];
 // Streckenlayouts haben sich geaendert (Viadukt, Abzweigungen, Kurvenglaettung) -> alte Rekorde/Geister einmalig verwerfen
-const LAYOUT_VER=15;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
+const LAYOUT_VER=16;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<courses.length;i++){for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}}catch(e){}store.set('layoutVer',LAYOUT_VER);}
 const KART_COLORS=[{c:0xff3b30,n:'Ruby / Rot'},{c:0xffc400,n:'Sunny / Gelb'},{c:0x00c2a8,n:'Mint / Türkis'},{c:0x8b5cff,n:'Nova / Violett'},{c:0xffc93c,n:'Goldpilz',gold:true}];
 // Jede Figur faehrt ihr eigenes Kart: Beschleunigung, Hoechsttempo, Grip, Lenkung und Bauform
 const DRIVERS=[
@@ -166,45 +166,69 @@ function buildTable(){for(let i=0;i<PS;i++){const u=i/PS,p=curve.getPointAt(u),t
 function projectGlobal(x,z,y){let best=0,bd=1e18;const hy=y!==undefined;for(let i=0;i<PS;i+=4){const dx=x-TP.x[i],dz=z-TP.z[i];let d2=dx*dx+dz*dz;if(hy){const dy=y-TP.h[i];d2+=dy*dy*4;}if(d2<bd){bd=d2;best=i;}}
  const c=best;for(let k=-4;k<=4;k++){const i=((c+k)%PS+PS)%PS,dx=x-TP.x[i],dz=z-TP.z[i];let d2=dx*dx+dz*dz;if(hy){const dy=y-TP.h[i];d2+=dy*dy*4;}if(d2<bd){bd=d2;best=i;}}return best*length/PS;}
 function project(x,z,hintD){const ds=length/PS,i0=Math.round(lapDist(hintD)/ds);let best=i0%PS,bd=1e18;for(let k=-60;k<=60;k++){const i=((i0+k)%PS+PS)%PS,dx=x-TP.x[i],dz=z-TP.z[i],d2=dx*dx+dz*dz;if(d2<bd){bd=d2;best=i;}}
- const dx=x-TP.x[best],dz=z-TP.z[best];return {d:lapDist(best*ds+dx*TP.tx[best]+dz*TP.tz[best]),off:dx*TP.tz[best]-dz*TP.tx[best]};}
+ // Auf das Segment projizieren, nicht auf die Stuetzstelle: sonst springen Streckenmeter und
+ // Querversatz bei jedem Stuetzstellenwechsel (alle ~0,5 m, bei Tempo fast jedes Bild). In einer
+ // Rollzone steht die Fahrbahn senkrecht, dort wird aus jedem Versatzsprung ein Hoehensprung.
+ let bi=best,bt=0,bq=1e18;
+ for(const i of [(best-1+PS)%PS,best]){const j=(i+1)%PS,ex=TP.x[j]-TP.x[i],ez=TP.z[j]-TP.z[i],el=ex*ex+ez*ez||1;
+  const t=clamp(((x-TP.x[i])*ex+(z-TP.z[i])*ez)/el,0,1),qx=x-TP.x[i]-ex*t,qz=z-TP.z[i]-ez*t,q=qx*qx+qz*qz;
+  if(q<bq){bq=q;bi=i;bt=t;}}
+ const j=(bi+1)%PS;let tx=TP.tx[bi]+(TP.tx[j]-TP.tx[bi])*bt,tz=TP.tz[bi]+(TP.tz[j]-TP.tz[bi])*bt;
+ const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
+ const dx=x-(TP.x[bi]+(TP.x[j]-TP.x[bi])*bt),dz=z-(TP.z[bi]+(TP.z[j]-TP.z[bi])*bt);
+ return {d:lapDist((bi+bt)*ds+dx*tx+dz*tz),off:dx*tz-dz*tx};}
 function tIdx(d){const f=lapDist(d)/length*PS,i=Math.floor(f)%PS;return [i,(i+1)%PS,f-Math.floor(f)];}
 function trackAt(d){const [i,j,k]=tIdx(d);return {h:TP.h[i]+(TP.h[j]-TP.h[i])*k,b:TP.b[i]+(TP.b[j]-TP.b[i])*k,kap:TP.k[i],v:TP.v[i],vd:TP.vd[i]};}
 function slopeAt(d){return (trackAt(d+1.5).h-trackAt(d-1.5).h)/3;}
 const _tan={x:0,z:0,b:0},_sp=new T.Vector3();
 function tanAt(d){const [i,j,k]=tIdx(d);let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;_tan.x=tx/tl;_tan.z=tz/tl;_tan.b=TP.b[i]+(TP.b[j]-TP.b[i])*k;return _tan;}
-// ---------- Anti-Grav: TP.rl ist der Rollwinkel um die Fahrtrichtung.
-// Seitlich wird entlang (L*cos+U*sin) abgetragen, die Hoehe entlang der Flaechennormalen (U*cos-L*sin).
-// Rolle ueber +-PI hinaus (Korkenzieher endet bei TAU~0): kuerzeste-Weg-Interpolation,
-// damit die Nahtzelle nicht rueckwaerts durch den ganzen Kreis laeuft.
+// ---------- Anti-Grav und Looping: beides dreht die Fahrbahn um die Fahrtrichtung bzw. die
+// Querachse. Beide Winkel werden analytisch gerechnet, nicht aus der Tabelle interpoliert: eine
+// Tabelle mit PS Stuetzstellen macht die Drehrate treppenfoermig (bei Tempo rund 60 Spruenge je
+// Sekunde) - genau das sieht man als Ruckeln. sstep ist C2-glatt, damit auch die Drehbeschleunigung
+// an den Raendern stetig ist; ein normales smoothstep hat dort noch einen Knick.
+const sstep=u=>{const t=clamp(u,0,1);return t*t*t*(t*(t*6-15)+10);};
 function loopAt(d){if(!loops.length)return null;for(const q of loops)if(lapDist(d-q.s)<=q.span)return q;return null;}
-// Umgebung des Loopings: dort kreuzt sich die Strecke selbst, globale Projektion ist dort mehrdeutig
-function nearLoop(d){if(!loops.length)return false;for(const q of loops)if(lapDist(d-q.s+70)<=q.span+140)return true;return false;}
-// Loop-Zustand an einer Stelle: Winkel, Hochachse, Vorwaertsrichtung.
-const _loopState={q:null,th:0,a:0,b:0,nx:0,ny:1,nz:0,tx:0,ty:0,tz:1};
-function loopFrame(q,d,x,z){const rel=lapDist(d-q.s),u=rel/q.span;
- const ax=x-q.ox,az=z-q.oz,a=ax*q.t0x+az*q.t0z,b0=ax*q.l0x+az*q.l0z;
- const w=smooth(0,.06,u)*(1-smooth(.82,1,u)),b=b0*w;
- const th=Math.atan2(a,Math.max(.4,q.R-b)),c=Math.cos(th),s=Math.sin(th);
- const st=_loopState;st.q=q;st.th=th;st.a=a;st.b=b;
- st.nx=-q.t0x*s;st.ny=c;st.nz=-q.t0z*s;            // Flaechennormale
- st.tx=q.t0x*c;st.ty=s;st.tz=q.t0z*c;              // Fahrtrichtung im Bild
- return st;}
-function rollAt(d){const [i,j,k]=tIdx(d);const a=TP.rl[i],b=TP.rl[j];let db=b-a;if(db>Math.PI)db-=TAU;else if(db<-Math.PI)db+=TAU;return a+db*k;}
-function liftAt(d){const [i,j,k]=tIdx(d);const a=TP.lf[i],b=TP.lf[j];return a+(b-a)*k;}
-const hasRoll=d=>Math.abs(rollAt(d))>.004||(loops.length&&!!loopAt(d));
+function nearLoop(d){if(!loops.length)return false;for(const q of loops)if(lapDist(d-q.s+25)<=q.span+50)return true;return false;}
+// Winkel im Looping: 0 an der Einfahrt, TAU an der Ausfahrt - weich an- und ausfahrend.
+// Mit gleichbleibender Winkelgeschwindigkeit waere die Bildstreckung an der Einfahrt schlagartig
+// sig+1 (hier gut sechsfach), und genau dort sprang das Bild. Bei sstep ist die Ableitung an
+// beiden Enden null, die Streckung also genau 1 - der Uebergang ist stetig.
+const _loopState={q:null,th:0,s:0,c:1,rate:0};
+const sdot=u=>{const t=clamp(u,0,1);return 30*t*t*(1-t)*(1-t);};     // Ableitung von sstep
+function loopFrame(q,d){const st=_loopState,u=clamp(lapDist(d-q.s)/q.span,0,1),th=TAU*sstep(u);
+ st.q=q;st.th=th;st.s=Math.sin(th);st.c=Math.cos(th);st.rate=sdot(u);return st;}
+// Streckung an dieser Stelle: so viele Bildmeter je Fahrbahnmeter.
+function loopStretch(q,st){const k=q.sig*st.rate;return Math.hypot(k*st.c+1,k*st.s);}
+function rollAt(d){let ph=0;
+ for(const q of agrav){const rel=lapDist(d-q.s);if(rel>q.span)continue;const u=sstep(rel/q.span);
+  if(q.mode==='roll')ph+=TAU*u*q.sgn;
+  else if(q.mode==='flip')ph+=Math.PI*(1-Math.cos(TAU*u))/2*q.sgn;
+  else ph+=q.deg*(1-Math.cos(TAU*u))/2;}
+ return ph;}
+// Sichthub: hebt nur das Bild der Fahrbahn an, damit die gedrehte Bahn frei ueber dem Boden schwebt
+function liftAt(d){let lf=0;
+ for(const q of agrav){const rel=lapDist(d-q.s);if(rel>q.span)continue;const u=rel/q.span;
+  lf+=q.lift*sstep(u/.3)*(1-sstep((u-.7)/.3));}
+ return lf;}
+const hasRoll=d=>(agrav.length&&Math.abs(rollAt(d))>.004)||(loops.length&&!!loopAt(d));
+// Ein einziger Weg von (Streckenmeter, Querversatz, Hoehe ueber der Bahn) ins Bild - flach,
+// gerollt und im Looping. Bei Rollwinkel 0 und ausserhalb des Loopings faellt alles auf die
+// flache Formel zusammen, deshalb gibt es an den Uebergaengen keinen Sprung.
 function posAt(d,off,h,out){const [i,j,k]=tIdx(d),x=TP.x[i]+(TP.x[j]-TP.x[i])*k,z=TP.z[i]+(TP.z[j]-TP.z[i])*k;
- const lq=loops.length?loopAt(d):null;
- if(lq){const hh0=TP.h[i]+(TP.h[j]-TP.h[i])*k,st=loopFrame(lq,d,x,z);
-  return out.set(lq.ox+lq.t0x*st.a+lq.l0x*off+st.nx*h, hh0+st.b+st.ny*h, lq.oz+lq.t0z*st.a+lq.l0z*off+st.nz*h);}
  let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
- const hh=TP.h[i]+(TP.h[j]-TP.h[i])*k+TP.lf[i]+(TP.lf[j]-TP.lf[i])*k,bb=TP.b[i]+(TP.b[j]-TP.b[i])*k;let ph=TP.rl[j]-TP.rl[i];if(ph>Math.PI)ph-=TAU;else if(ph<-Math.PI)ph+=TAU;ph+=TP.rl[i];
- const c=Math.cos(ph),s=Math.sin(ph),lx=tz,ly=-bb,lz=-tx;
- return out.set(x+(lx*c)*off+(-lx*s)*h, hh+(ly*c+s)*off+(c-ly*s)*h, z+(lz*c)*off+(-lz*s)*h);}
-function samplePos(d,off,out,lift=0){if(hasRoll(d))return posAt(d,off,lift,out);
- const [i,j,k]=tIdx(d),x=TP.x[i]+(TP.x[j]-TP.x[i])*k,z=TP.z[i]+(TP.z[j]-TP.z[i])*k;let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;const h=TP.h[i]+(TP.h[j]-TP.h[i])*k,b=TP.b[i]+(TP.b[j]-TP.b[i])*k;return out.set(x+tz*off,h-off*b+lift,z-tx*off);}
-function sample(d,off=0){const [i,j,k]=tIdx(d),x=TP.x[i]+(TP.x[j]-TP.x[i])*k,z=TP.z[i]+(TP.z[j]-TP.z[i])*k;let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;const h=TP.h[i]+(TP.h[j]-TP.h[i])*k,b=TP.b[i]+(TP.b[j]-TP.b[i])*k;
- const p=hasRoll(d)?posAt(d,off,0,new T.Vector3()):new T.Vector3(x+tz*off,h-off*b,z-tx*off);
- return {p,t:new T.Vector3(tx,0,tz),angle:Math.atan2(tx,tz),bank:b};}
+ const bb=TP.b[i]+(TP.b[j]-TP.b[i])*k,hh=TP.h[i]+(TP.h[j]-TP.h[i])*k+(agrav.length?liftAt(d):0);
+ const ph=agrav.length?rollAt(d):0,cr=Math.cos(ph),sr=Math.sin(ph);
+ const qx=tz*cr,qy=sr-bb*cr,qz=-tx*cr;                 // Querachse der Fahrbahn
+ let nx=-tz*sr,ny=cr+bb*sr,nz=tx*sr,ax=0,ay=0,az=0;    // Flaechennormale
+ const lq=loops.length?loopAt(d):null;
+ if(lq){const st=loopFrame(lq,d);
+  ax=tx*lq.R*st.s;ay=lq.R*(1-st.c);az=tz*lq.R*st.s;    // Mittellinie auf den senkrechten Kreis heben
+  nx=-tx*st.s;ny=st.c;nz=-tz*st.s;}                    // Normale kippt mit dem Kreis (oben kopfueber)
+ return out.set(x+ax+qx*off+nx*h, hh+ay+qy*off+ny*h, z+az+qz*off+nz*h);}
+function samplePos(d,off,out,lift=0){return posAt(d,off,lift,out);}
+function sample(d,off=0){const [i,j,k]=tIdx(d);let tx=TP.tx[i]+(TP.tx[j]-TP.tx[i])*k,tz=TP.tz[i]+(TP.tz[j]-TP.tz[i])*k;const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
+ return {p:posAt(d,off,0,new T.Vector3()),t:new T.Vector3(tx,0,tz),angle:Math.atan2(tx,tz),bank:TP.b[i]+(TP.b[j]-TP.b[i])*k};}
 let cpU=[];
 // Sucht in der Naehe eines Kontrollpunkts die geradeste Stelle (Anlauf davor, Landezone danach), damit Spruenge nie in Kurven landen.
 function straightSpot(v,before=30,after=80,search=90){const c=cpDist(v);let best=c,bs=1e9;for(let o=-search;o<=search;o+=3){const d=c+o;if(gaps.some(g=>Math.abs(wrapDiff(g.c,d))<after+30)||zones.some(z=>{const w=wrapDiff(d,z.d);return w<z.half+before+5&&w>-z.half-after-5;})||raises.some(q=>{const a0=d-before-8,al=before+after+16;return lapDist(q.s-a0)<al||lapDist(a0-q.s)<lapDist(q.e-q.s);})||forks.some(f=>{const a0=d-before-8,al=before+after+16;return lapDist(f.dA-a0)<al||lapDist(a0-f.dA)<f.span;})||tunnels.some(t=>{const a0=d-before-8,al=before+after+16;return lapDist(t.s-a0)<al||lapDist(a0-t.s)<lapDist(t.e-t.s);})||agrav.some(t=>{const a0=d-before-8,al=before+after+16;return lapDist(t.s-a0)<al||lapDist(a0-t.s)<lapDist(t.e-t.s);}))continue;let m=0;for(let s=-before;s<=after;s+=3)m=Math.max(m,Math.abs(trackAt(d+s).kap));const score=m+Math.abs(o)*.00004;if(score<bs){bs=score;best=d;}}return lapDist(best);}
@@ -214,17 +238,27 @@ function inRaise(q,d){return lapDist(d-q.s)<=lapDist(q.e-q.s);}
 function inBridge(d){return raises.some(q=>q.bridge&&inRaise(q,d));}
 function raiseH(d){let h=0;for(const q of raises){const span=lapDist(q.e-q.s),rel=lapDist(d-q.s);if(rel<=span)h+=q.h*smooth(0,q.r,rel)*(1-smooth(span-q.r,span,rel));}return h;}
 // Anti-Grav dreht nur die Darstellung: gefahren wird weiter in der flachen Streckenebene.
+// Bezugshoehe fuer posAt: die Fahrbahnebene selbst. groundAt taugt dafuer nicht, weil es
+// neben der Bahn die Boeschung mitrechnet - das Bild wuerde an der Zonengrenze springen.
+function roadRef(d,off){const [i,j,k]=tIdx(d);return TP.h[i]+(TP.h[j]-TP.h[i])*k-off*(TP.b[i]+(TP.b[j]-TP.b[i])*k);}
 function groundAt(d,off){const tr=trackAt(d);let base=tr.h-off*tr.b;const edge=Math.abs(off)-8.9;
  if(theme.space&&edge>1.6){const rh0=rampAt(d,off);return {y:-30,rh:rh0};}   // neben der Bahn ist Leere
  if(edge>.6&&tr.h>2.2&&inBridge(d))base=0;else if(edge>0&&base>0)base=Math.max(0,base-edge/1.5);
  if(Math.abs(off)<30&&inGap(d))base=-30;const rh=rampAt(d,off);return {y:base+(rh?rh.y:0),rh};}
 function rampAt(d,off){const dl=lapDist(d);for(const r of ramps){if(Math.abs(off-r.off)<r.w/2&&dl>=r.start&&dl<=r.end)return {y:RAMP_H*(dl-r.start)/RAMP_LEN,ramp:r};}return null;}
-function strip(d0,d1,offset,width,lift,uvLen,steps){const n=steps+1,v=new Float32Array(n*6),uv=new Float32Array(n*4),idx=new Uint32Array(steps*6);for(let i=0;i<n;i++){const d=d0+(d1-d0)*i/steps;for(let s=0;s<2;s++){const p=samplePos(d,offset+(s?1:-1)*width/2,_sp,lift),o=i*2+s;v[o*3]=p.x;v[o*3+1]=p.y;v[o*3+2]=p.z;uv[o*2]=s;uv[o*2+1]=(d-d0)/uvLen;}if(i<steps){const a=i*2,q=i*6;idx[q]=a;idx[q+1]=a+2;idx[q+2]=a+1;idx[q+3]=a+1;idx[q+4]=a+2;idx[q+5]=a+3;}}
+function strip(d0,d1,offset,width,lift,uvLen,steps,uvMul=1){const n=steps+1,v=new Float32Array(n*6),uv=new Float32Array(n*4),idx=new Uint32Array(steps*6);for(let i=0;i<n;i++){const d=d0+(d1-d0)*i/steps;for(let s=0;s<2;s++){const p=samplePos(d,offset+(s?1:-1)*width/2,_sp,lift),o=i*2+s;v[o*3]=p.x;v[o*3+1]=p.y;v[o*3+2]=p.z;uv[o*2]=s;uv[o*2+1]=(d-d0)*uvMul/uvLen;}if(i<steps){const a=i*2,q=i*6;idx[q]=a;idx[q+1]=a+2;idx[q+2]=a+1;idx[q+3]=a+1;idx[q+4]=a+2;idx[q+5]=a+3;}}
  const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(v,3));g.setAttribute('uv',new T.BufferAttribute(uv,2));g.setIndex(new T.BufferAttribute(idx,1));g.computeVertexNormals();return g;}
 function addStrip(geo,material,shadow=true){const m=new T.Mesh(geo,material);m.receiveShadow=shadow;world.add(m);return m;}
 // Strassenabschnitte ohne Schluchten
 function roadSegments(){const segs=[];let s=0;for(const g of [...gaps].sort((a,b)=>a.start-b.start)){segs.push([s,g.start]);s=g.end;}segs.push([s,length]);return segs.filter(([a,b])=>b-a>1);}
-function stripSegs(offset,width,lift,uvLen,material,shadow=true){for(const [a,b] of roadSegments())addStrip(strip(a,b,offset,width,lift,uvLen,Math.ceil((b-a)/1.1)),material,shadow);}
+// Im Looping steckt in einem Fahrbahnmeter ein Vielfaches an Bildmetern: dort feiner unterteilen
+// (sonst ist der Kreis ein Vieleck) und die Textur entsprechend strecken.
+function loopParts(a,b){if(!loops.length)return [[a,b,1]];const cuts=[a,b];
+ for(const q of loops)for(const e of [q.s,q.s+q.span])for(const c of [lapDist(e),lapDist(e)+length])if(c>a+.5&&c<b-.5)cuts.push(c);
+ cuts.sort((x,y)=>x-y);const out=[];
+ for(let i=0;i<cuts.length-1;i++){const q=loopAt((cuts[i]+cuts[i+1])/2);out.push([cuts[i],cuts[i+1],q?q.sig*1.9+1:1]);}
+ return out;}
+function stripSegs(offset,width,lift,uvLen,material,shadow=true){for(const [a,b] of roadSegments())for(const [a2,b2,sc] of loopParts(a,b))addStrip(strip(a2,b2,offset,width,lift,uvLen,Math.max(2,Math.ceil((b2-a2)*sc/1.1)),sc),material,shadow);}
 function skirt(side,material){const steps=520,v=[],idx=[],hs=[];for(let i=0;i<=steps;i++){const d=length*i/steps,s=sample(d,side*8.9),h=(inGap(d)||hasRoll(d)||(s.p.y>2.2&&inBridge(d)))?0:Math.max(0,s.p.y),b=sample(d,side*(8.9+h*1.5+1.2)).p;v.push(s.p.x,s.p.y+.02,s.p.z,b.x,-.5,b.z);hs.push(h);}for(let i=0;i<steps;i++){if(Math.max(hs[i],hs[i+1])<.35||hs[i]===0||hs[i+1]===0)continue;const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(v,3));g.setIndex(idx);g.computeVertexNormals();const m=new T.Mesh(g,material);m.receiveShadow=true;world.add(m);}
 // Hindernisse fuer Kollisionen (Raster 16 m)
 function addObstacle(x,z,r,h=99){const key=(Math.floor(x/16)+500)*1000+(Math.floor(z/16)+500);let c=obsGrid.get(key);if(!c)obsGrid.set(key,c=[]);c.push({x,z,r,h});}
@@ -308,79 +342,41 @@ function applyTheme(){renderer.toneMappingExposure=theme.exposure;
 // Looping: nach der Glaettung wird an der gewuenschten Stelle ein 360-Grad-Kreis in die
 // Mittellinie eingesetzt. Weil das erst danach passiert, passt die Tangente genau und die
 // Glaettung kann den Kreis nicht mehr zusammenziehen.
-function smoothCurve(points,minR=24,loopSpec=null){const base=new T.CatmullRomCurve3(points.map(([x,z])=>new T.Vector3(x*TRACK_SCALE,0,z*TRACK_SCALE)),true,'catmullrom',.38);base.arcLengthDivisions=3000;
+function smoothCurve(points,minR=24){const base=new T.CatmullRomCurve3(points.map(([x,z])=>new T.Vector3(x*TRACK_SCALE,0,z*TRACK_SCALE)),true,'catmullrom',.38);base.arcLengthDivisions=3000;
  const n=360;let p=base.getSpacedPoints(n).slice(0,n).map(v=>[v.x,v.z]);
  const rad=(a,b,c)=>{const ab=Math.hypot(b[0]-a[0],b[1]-a[1]),bc=Math.hypot(c[0]-b[0],c[1]-b[1]),ca=Math.hypot(a[0]-c[0],a[1]-c[1]),ar=Math.abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]))/2;return ar<1e-6?1e9:ab*bc*ca/(4*ar);};
- // Gewicht 0 im Loop, 1 ausserhalb, dazwischen weich - ein harter Rand wuerde dort einen Knick erzeugen
-
  for(let it=0;it<400;it++){let worst=1e9;const tight=new Uint8Array(n);for(let i=0;i<n;i++){const r=rad(p[(i-3+n)%n],p[i],p[(i+3)%n]);worst=Math.min(worst,r);if(r<minR*1.25)for(let k=-8;k<=8;k++)tight[(i+k+n)%n]=1;}if(worst>=minR)break;p=p.map((b,i)=>{if(!tight[i])return b;const a=p[(i-1+n)%n],c=p[(i+1)%n];return [b[0]+((a[0]+c[0])/2-b[0])*.5,b[1]+((a[1]+c[1])/2-b[1])*.5];});}
- let loopInfo=null;
- if(loopSpec){const [atCp,radC]=loopSpec,R=radC*TRACK_SCALE;
-  // Stelle auf der geglaetteten Linie finden, die dem Kontrollpunkt-Bruch at entspricht
-  const np=points.length,i0=Math.floor(atCp)%np,f=atCp-Math.floor(atCp);
-  const A=points[i0],B=points[(i0+1)%np];
-  const tx0=(A[0]+(B[0]-A[0])*f)*TRACK_SCALE,tz0=(A[1]+(B[1]-A[1])*f)*TRACK_SCALE;
-  let bi=0,bd=1e18;for(let i=0;i<p.length;i++){const dd=(p[i][0]-tx0)**2+(p[i][1]-tz0)**2;if(dd<bd){bd=dd;bi=i;}}
-  const m=p.length,a2=p[(bi+2)%m],a0=p[(bi-2+m)%m];
-  let tx=a2[0]-a0[0],tz=a2[1]-a0[1];const tl=Math.hypot(tx,tz)||1;tx/=tl;tz/=tl;
-  const lx=tz,lz=-tx,O=p[bi];
-  // Tropfenform statt Kreis: die Kruemmung faehrt weich hoch und wieder herunter (wie bei einem
-  // echten Achterbahn-Looping). Ein reiner Kreis beginnt zu abrupt - dort traegt es jeden nach aussen.
-  const L=Math.PI*2*R*1.18,M=Math.max(40,Math.round(L/3.2)),ds=L/M,ins=[];
-  const ramp=u=>u<.2?smooth(0,.2,u):u>.8?1-smooth(.8,1,u):1;
-  let sum=0;for(let k=0;k<M;k++)sum+=ramp((k+.5)/M);
-  const kmax=Math.PI*2/(sum*ds);
-  let hd=0,px=O[0],pz=O[1];
-  for(let k=0;k<M;k++){const u=(k+.5)/M;hd+=kmax*ramp(u)*ds;
-   const ch=Math.cos(hd),sh=Math.sin(hd);
-   px+=(tx*ch+lx*sh)*ds;pz+=(tz*ch+lz*sh)*ds;
-   if(k<M-1)ins.push([px,pz]);}
-  // Die Schleife endet ein Stueck weiter vorn als sie begann. Die Punkte der Originallinie, die
-  // dabei ueberholt wurden, muessen weg - sonst springt die Mittellinie am Ausgang zurueck.
-  const adv=(px-O[0])*tx+(pz-O[1])*tz;let drop=0;
-  while(drop<m-8){const c2=p[(bi+1+drop)%p.length];if((c2[0]-O[0])*tx+(c2[1]-O[1])*tz>adv+4)break;drop++;}
-  p.splice(bi+1,drop,...ins);
-  // Anteile an der Gesamtlaenge, damit der Bereich spaeter in Streckenmetern bekannt ist
-  let total=0,upto=0,inLoop=0;
-  for(let i=0;i<p.length;i++){const q=p[(i+1)%p.length],seg=Math.hypot(q[0]-p[i][0],q[1]-p[i][1]);total+=seg;
-   if(i<bi)upto+=seg;else if(i<bi+M)inLoop+=seg;}
-  loopInfo={f0:upto/total,fs:inLoop/total,R,ox:O[0],oz:O[1],t0x:tx,t0z:tz};}
- const c=new T.CatmullRomCurve3(p.map(([x,z])=>new T.Vector3(x,0,z)),true,'centripetal');c.arcLengthDivisions=4000;
- c.userData={loop:loopInfo};return c;}
+ const c=new T.CatmullRomCurve3(p.map(([x,z])=>new T.Vector3(x,0,z)),true,'centripetal');c.arcLengthDivisions=4000;return c;}
 function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world=new T.Group();obsGrid=new Map();TP=newTP();swayCache=new Map();
  flags=[];balloons=[];ramps=[];pads=[];rings=[];spores=[];swingers=[];gaps=[];zones=[];bats=null;boostPads=[];sporeMesh=null;crowd=null;fireflies=null;rails=[];forks=[];raises=[];tunnels=[];agrav=[];loops=[];
  course=courses[selected];theme=THEMES[course.theme];
  scene.background=skyTexture(hex(theme.skyTop),hex(theme.skyBottom));scene.fog=new T.Fog(theme.fog,theme.fogNear,theme.fogFar);applyTheme();
- curve=smoothCurve(course.points,24,course.loopc||null);length=curve.getLength();bm('clear+theme');buildTable();bm('table');
+ curve=smoothCurve(course.points,24);length=curve.getLength();bm('clear+theme');buildTable();bm('table');
  cpU=course.points.map(([x,z])=>projectGlobal(x*TRACK_SCALE,z*TRACK_SCALE));
- {const li=curve.userData&&curve.userData.loop;
-  if(li){loops=[{s:li.f0*length,span:li.fs*length,ox:li.ox,oz:li.oz,t0x:li.t0x,t0z:li.t0z,
-   l0x:li.t0z,l0z:-li.t0x,R:li.R,ang:Math.atan2(li.t0x,li.t0z)}];
-   // Die Kreisflaeche des Loopings bleibt frei: dort stuende sonst Deko mitten auf der Fahrbahn
-   const q=loops[0];zones.push({d:lapDist(q.s+q.span/2),half:q.span/2+55,x:q.ox+q.l0x*q.R,z:q.oz+q.l0z*q.R,r:q.R+18});
-   // Zweite Zone um die Einfahrt: dort kreuzt der Ausgang des Loopings die Anfahrt
-   zones.push({d:lapDist(q.s),half:40,x:q.ox,z:q.oz,r:26});
-   // Tempo im Looping deckeln: der Kreis ist eng, sonst traegt es jeden an den Rand.
-   // Steht im Tempo-Profil, damit die KI rechtzeitig bremst und der Spieler die Bremszone sieht.
-   const vmax=Math.sqrt(20*q.R);
-   for(let i=0;i<PS;i++){const d=i/PS*length;if(lapDist(d-q.s+16)>q.span+32)continue;
-    TP.v[i]=vmax;TP.vd[i]=vmax*1.05;}}}
+ // Looping: ein kurzes, moeglichst gerades Stueck Fahrbahn wird im Bild zu einem senkrechten
+ // Kreis aufgestellt (Radius R, Fussabdruck span). Gefahren wird dabei ganz normal geradeaus -
+ // deshalb gibt es keine unfahrbar enge Kurve, keine Selbstkreuzung und keinen Sprung am Ausgang.
+ // sig = Bildmeter je Fahrbahnmeter; damit wird der Vorschub gebremst, sonst liefe der Kreis im
+ // Zeitraffer. Die geradeste Stelle in der Naehe gewinnt, damit der Kreis nicht verwunden steht.
+ if(course.loopc){const [cpv,radC]=course.loopc,R=radC*TRACK_SCALE,span=Math.max(24,R*1.26);
+  const c0=cpDist(cpv);let s=c0,best=1e9;
+  for(let o=-45;o<=45;o+=3){const d=lapDist(c0+o);let m=0;
+   for(let t=-10;t<=span+10;t+=3)m=Math.max(m,Math.abs(trackAt(d+t).kap));
+   const sc=m+Math.abs(o)*2e-5;if(sc<best){best=sc;s=d;}}
+  const mid=lapDist(s+span/2),[mi,mj,mk]=tIdx(mid);
+  const mx=TP.x[mi]+(TP.x[mj]-TP.x[mi])*mk,mz=TP.z[mi]+(TP.z[mj]-TP.z[mi])*mk;
+  loops=[{s,span,R,sig:TAU*R/span}];
+  // Unter dem Kreis bleibt es frei: dort stuende Deko sonst mitten in der Anfahrt
+  zones.push({d:mid,half:span/2+26,x:mx,z:mz,r:26});}
  // Hoehenprofil: Huegel (Gauss) + Plateau; Ueberhoehung aus der Kruemmung
  const hills=(course.hills||[]).map(([v,a,w])=>[cpDist(v)/length,a,w]);raises=(course.raise||[]).concat(course.plateau?[[...course.plateau,0]]:[]).map(([a,b,h,r,br])=>({s:cpDist(a),e:cpDist(b),h,r,bridge:!!br}));
  for(let i=0;i<PS;i++){const u=i/PS,d=u*length;let h=0;for(const [c,a,w] of hills){let du=u-c;du-=Math.round(du);h+=a*Math.exp(-(du*du)/(w*w));}h+=raiseH(d);const b=clamp(TP.k[i]*4,-.12,.12);TP.b[i]=b;TP.h[i]=h+Math.abs(b)*9.8;}
  for(const [v,L] of course.gaps||(course.gap?[course.gap]:[])){const c=cpDist(v);gaps.push({start:c-L/2,end:c+L/2,c});}
  tunnels=(course.tunnel||[]).map(([a,b,style])=>({s:cpDist(a),e:cpDist(b),style:style||'rock'}));
  // Anti-Grav-Abschnitte: 'wall' kippt bis zum Winkel und zurueck, 'roll' dreht einmal ganz durch, 'flip' geht ueber Kopf
- agrav=(course.agrav||[]).map(([a,b,mode,deg])=>({s:cpDist(a),e:cpDist(b),mode:mode||'wall',deg:(deg===undefined?70:deg)*Math.PI/180}));
- for(let i=0;i<PS;i++){const d=i/PS*length;let ph=0,lift=0;
-  for(const q of agrav){const span=lapDist(q.e-q.s),rel=lapDist(d-q.s);if(rel>span)continue;const u=rel/span;
-   if(q.mode==='roll')ph+=TAU*(u*u*(3-2*u))*(q.deg<0?-1:1);
-   else if(q.mode==='flip')ph+=Math.PI*(1-Math.cos(TAU*u))/2*(q.deg<0?-1:1);
-   else ph+=q.deg*(1-Math.cos(TAU*u))/2;
-   // Sichthub: hebt nur das Bild der Fahrbahn an, damit die gedrehte Bahn frei ueber dem Boden schwebt
-   // (C1-Bump mit Plateau statt min()-Klemmer, damit die Fahrbahn beim Anheben nicht stolpert)
-   lift+=(q.mode==='wall'?Math.abs(Math.sin(q.deg))*9.6+2:11.5)*smooth(0,.3,u)*(1-smooth(.7,1,u));}
-  TP.rl[i]=ph;TP.lf[i]=lift;}
+ agrav=(course.agrav||[]).map(([a,b,mode,deg])=>{const s=cpDist(a),e=cpDist(b),m=mode||'wall',dg=(deg===undefined?70:deg)*Math.PI/180;
+  return {s,e,span:lapDist(e-s),mode:m,deg:dg,sgn:dg<0?-1:1,lift:m==='wall'?Math.abs(Math.sin(dg))*9.6+2:11.5};});
+ for(let i=0;i<PS;i++){const d=i/PS*length;TP.rl[i]=rollAt(d);TP.lf[i]=liftAt(d);}
  buildForks();
  let minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;for(let i=0;i<PS;i+=8){minX=Math.min(minX,TP.x[i]);maxX=Math.max(maxX,TP.x[i]);minZ=Math.min(minZ,TP.z[i]);maxZ=Math.max(maxZ,TP.z[i]);}
  mapInfo={cx:(minX+maxX)/2,cz:(minZ+maxZ)/2,k:Math.min(180/(maxX-minX),140/(maxZ-minZ))};
@@ -411,6 +407,9 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  // Im Weltall bekommt die Bahn eine Unterseite, damit sie von unten nicht durchsichtig ist
  else stripSegs(0,17.2,-.55,6,mat(0x1c1440,{roughness:.9,side:T.DoubleSide}));
  // Anti-Grav: dunkler Kiel unter der Wandfahrt, damit die gekippte Fahrbahn massiv wirkt
+ // Textur vor dem Strassenbau: das Energieband der Anti-Grav-Bahn und des Loopings braucht sie,
+ // und beide entstehen frueher als die Turbofelder.
+ boostTex=boostTexture();
  if(agrav.length){const keelMat=new T.MeshStandardMaterial({color:theme.glow?0x1b1830:0x4c4640,roughness:.95,side:T.DoubleSide});
   const col=theme.glow?0x7cf3ff:0x59d7ff;
   const glowMat=new T.MeshBasicMaterial({color:col,transparent:true,opacity:.34,depthWrite:false,side:T.DoubleSide});
@@ -429,6 +428,27 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
     const cx=TP.x[i]+(TP.x[j]-TP.x[i])*k,cz=TP.z[i]+(TP.z[j]-TP.z[i])*k,top=TP.h[i]+(TP.h[j]-TP.h[i])*k+TP.lf[i]+(TP.lf[j]-TP.lf[i])*k;
     if(top<2)continue;posts.push(new T.BoxGeometry(1.2,top,1.2).translate(cx,top/2,cz));}}   // rein optisch: die Fahrbahn schwebt darueber, Kollision waere mitten auf der Strecke
   if(posts.length){const pm=new T.Mesh(mergeGeometries(posts),postMat);pm.castShadow=true;world.add(pm);}}
+ // Looping: Traggeruest wie bei einer Achterbahn - zwei Holme entlang der Bahn, Querstreben
+ // dazwischen, Neonringe am Fuss. Die Holme werden ueber posAt gesetzt und folgen dem Kreis
+ // deshalb exakt, auch dort wo er nach vorn geneigt steht.
+ if(loops.length){const steel=mat(theme.glow?0x2a2150:0x59606e,{roughness:.5,metalness:.6});
+  const neon=new T.MeshBasicMaterial({color:theme.glow?0x7cf3ff:0xffc14d});
+  const _d=new T.Vector3(),_mid=new T.Vector3(),_qq=new T.Quaternion(),_mm=new T.Matrix4(),_ux=new T.Vector3(1,0,0),_sc=new T.Vector3();
+  const bar=(list,p0,p1,w)=>{const len=p0.distanceTo(p1);if(len<.05)return;
+   _d.subVectors(p1,p0).divideScalar(len);_mid.addVectors(p0,p1).multiplyScalar(.5);
+   _qq.setFromUnitVectors(_ux,_d);_mm.compose(_mid,_qq,_sc.set(len,w,w));
+   list.push(new T.BoxGeometry(1,1,1).applyMatrix4(_mm));};
+  for(const q of loops){const parts=[],N=Math.max(36,Math.round((q.span+TAU*q.R)/4.5));let pv=null;
+   for(let i=0;i<=N;i++){const d=q.s+q.span*i/N,cu=[posAt(d,-11.2,-.8,new T.Vector3()),posAt(d,11.2,-.8,new T.Vector3())];
+    if(pv){bar(parts,pv[0],cu[0],.5);bar(parts,pv[1],cu[1],.5);}
+    if(i%3===0)bar(parts,cu[0],cu[1],.34);
+    pv=cu;}
+   if(parts.length){const m=new T.Mesh(mergeGeometries(parts),steel);m.castShadow=true;m.receiveShadow=true;world.add(m);}
+   // Leuchtband auf der Fahrbahn, damit der Kreis auch von weitem als Looping lesbar ist
+   {const gm=new T.MeshBasicMaterial({color:theme.glow?0x7cf3ff:0xffc14d,transparent:true,opacity:.3,depthWrite:false,side:T.DoubleSide,map:boostTex||null});
+    const m2=addStrip(strip(q.s+.4,q.s+q.span-.4,0,14.6,.09,7,Math.ceil(q.span*(q.sig*1.9+1)/1.2),q.sig+1),gm,false);m2.castShadow=false;}
+   for(const d of [q.s+1,q.s+q.span-1]){const s=sample(d,0),g=new T.Mesh(new T.TorusGeometry(12.4,.42,8,24),neon);
+    g.position.copy(s.p);g.position.y+=1.1;g.rotation.order='YXZ';g.rotation.y=s.angle;g.castShadow=false;world.add(g);}}}
  bm('road+skirts');buildGaps();buildMansion();bm('gaps+mansion');
  // Start-Ziel-Tor und Schachbrett
  const start=sample(0),arch=new T.Group();arch.position.copy(start.p);arch.rotation.y=start.angle;world.add(arch);
@@ -438,7 +458,7 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  const checker=canvasTex(64,16,(q)=>{for(let x=0;x<16;x++)for(let y=0;y<4;y++){q.fillStyle=(x+y)%2?'#273943':'#fff1d9';q.fillRect(x*4,y*4,4,4);}});checker.magFilter=T.NearestFilter;
  {const panel=new T.Group();panel.position.set(0,5.6,-.75);arch.add(panel);box(panel,dark,0,0,0,5.2,1.5,.3);startLights=[-1.7,0,1.7].map(x=>{const m=new T.MeshStandardMaterial({color:0x220808,emissive:0x000000,roughness:.4});const l=new T.Mesh(new T.SphereGeometry(.5,16,12),m);l.position.set(x,0,-.2);panel.add(l);return m;});lightState=-1;}addStrip(strip(-1.6,1.6,0,15.2,.09,3.2,2),new T.MeshStandardMaterial({map:checker,roughness:.8}));
  // Boost-Pads
- boostTex=boostTexture();const padMat=new T.MeshBasicMaterial({map:boostTex});
+ const padMat=new T.MeshBasicMaterial({map:boostTex});
  for(const v of course.boost){const d=straightSpot(v,10,45,60);boostPads.push(d);addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
  for(const g of gaps){const d=g.start-40;boostPads.push(lapDist(d));addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
  bm('gate+boost');
@@ -511,7 +531,7 @@ const RAIL_OFF=9.2,RAIL_LIMIT=8.05,RAIL_COL={forest:['#e8352e','#ffffff',0x5a647
 function railBlocked(d,side){if(inGap(d)||Math.abs(wrapDiff(d,0))<16)return true;
  // Im Looping und an seiner Anfahrt keine Planken: die Bahn kreuzt sich dort selbst, die Planken
  // der Geraden lägen quer im Kreis. Stattdessen haelt der Seitenmagnet das Kart auf der Bahn.
- if(loops.length)for(const q of loops)if(lapDist(d-q.s+45)<q.span+90)return true;
+ if(loops.length)for(const q of loops)if(lapDist(d-q.s+20)<q.span+40)return true;
  if(hasRoll(d))return false;const fk=forkAt(d,14);return !!fk&&side===fk.f.side;}
 function buildRails(){const list=[],ds=2;
  const scan=(test,kind,sides)=>{let a=-1,sd=0;for(let d=0;d<=length+ds;d+=ds){const s=test(d),ok=s!==0&&!railBlocked(d,s);if(ok&&a<0){a=d;sd=s;}else if(a>=0&&(!ok||s!==sd)){if(d-a>6)for(const x of sides(sd))list.push({d0:a-8,d1:d+8,side:x,kind});a=ok?d:-1;sd=s;}}};
@@ -813,7 +833,7 @@ function vertical(r,dt){const {y:ground,rh}=groundAt(r.distance,r.offset);
  const roadVy=clamp((ground-r.lastGround)/Math.max(dt,1e-3),-45,45);r.lastGround=ground;
  // Anti-Grav: die Fahrbahn haelt magnetisch fest, sonst wirft die Kuppe der Wandfahrt jeden ab
  if((agrav.length||loops.length)&&hasRoll(r.distance)&&!rh&&r.y<ground+2.2){if(r.air){r.air=false;r.airT=0;r.trick=0;}
-  r.y+=(ground-r.y)*Math.min(1,dt*16);if(Math.abs(ground-r.y)<.05)r.y=ground;
+  r.y+=(ground-r.y)*(1-Math.exp(-dt*16));if(Math.abs(ground-r.y)<.05)r.y=ground;
   r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
  if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;if(r.y<ground-1.5&&r.vy<0&&ground>-20){respawn(r);return;}if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
  else if(!rh&&r.rampY>RAMP_H*.55){r.air=true;r.airT=0;r.vy=Math.min(16,6+Math.max(0,r.speed)*.22+(r.onGapRamp?2:0));r.y+=r.vy*dt;if(nearPlayer(r,50))SFX.ramp(r.id===0?1:.4);}
@@ -839,14 +859,14 @@ function syncKart(r,dt){const s=tanAt(r.distance),e=r.mesh.rotation,dot=Math.sin
  const hopY=r.hop>0?Math.sin((.2-r.hop)/.2*Math.PI)*.35:0;
  const lift=.1+hopY+(r.air?0:Math.sin(elapsed*22+r.id)*.03*(Math.abs(r.speed)/30));
  const inLoop=loops.length?loopAt(r.distance):null;
- if(inLoop||(agrav.length&&hasRoll(r.distance)))r.mesh.position.copy(posAt(r.distance,r.offset,(r.y??0)-groundAt(r.distance,r.offset).y+lift,_agP));
- else r.mesh.position.set(r.x,(r.y??0)+lift,r.z);e.order='YXZ';
+ // Immer derselbe Weg ins Bild - keine Schwelle, an der umgeschaltet wird. Ohne Rolle, Hub und
+ // Looping gibt posAt genau die physikalische Lage zurueck, flach aendert sich also nichts.
+ r.mesh.position.copy(posAt(r.distance,r.offset,(r.y??0)-roadRef(r.distance,r.offset)+lift,_agP));e.order='YXZ';
  const spin=r.trick>0?Math.min(1,r.trick/.42)*TAU:0;
- // Im Looping bleibt die Blickrichtung waagerecht (der Kreis wird ja aufgestellt), die Neigung macht die Runde
- if(inLoop){const st=loopFrame(inLoop,r.distance,r.x,r.z),tt=tanAt(r.distance);
-  e.y=inLoop.ang+angleDiff(r.h,Math.atan2(tt.x,tt.z))+spin;e.x=-st.th;e.z=-r.driftVis*.12;}
- else e.y=r.h+r.driftVis+(r.stun>0?elapsed*14:0)+spin;
- if(!inLoop){e.x=r.air?clamp(-r.vy*.02,-.45,.45):-Math.atan(slopeAt(r.distance)*dot);e.z=-bank*dot+(r.id===0?-(r.steerS||0)*.07:0)-r.driftVis*.12+(agrav.length?rollAt(r.distance):0);}
+ // Der Looping ist reine Nickbewegung um die Querachse - Lenken bleibt davon unberuehrt
+ e.y=r.h+r.driftVis+(r.stun>0?elapsed*14:0)+spin;
+ e.x=inLoop?-loopFrame(inLoop,r.distance).th:r.air?clamp(-r.vy*.02,-.45,.45):-Math.atan(slopeAt(r.distance)*dot);
+ e.z=-bank*dot+(r.id===0?-(r.steerS||0)*.07:0)-r.driftVis*.12+(agrav.length?rollAt(r.distance):0);
  const ks=r.kartScale||[1,1,1];
  if(r.squash>0){r.squash=Math.max(0,r.squash-dt*1.4);const q=Math.sin(r.squash/.3*Math.PI)*r.squash*.55;r.mesh.scale.set(ks[0]*(1+q*.6),ks[1]*(1-q),ks[2]*(1+q*.6));}
  else if(r.mesh.scale.y!==ks[1])r.mesh.scale.set(ks[0],ks[1],ks[2]);
@@ -1061,8 +1081,10 @@ function update(dt){
   // Mildes Gummiband: Rivalen weit vorn werden minimal langsamer, weit hinten minimal schneller (Sieg bleibt verdient)
   const rubber=me?1:1+clamp((player.distance-r.distance)/400,-1,1)*cls.rubber,speedMul=me?1:cls.ai*(.96+.04*r.skill)*rubber;
   const oldLap=lap(r,length),oldBoost=r.boost;
-  const inLoopPhys=loops.length&&!!loopAt(r.distance);
-  driveKart(r,dt,input,{air:r.air,offroad,slope:slopeAt(r.distance)*dot,speedMul,gripMul:inLoopPhys?3.4:1});
+  // Im Looping wird der Vorschub auf der Fahrbahn gebremst, damit das Bild in normalem Tempo
+  // durch den Kreis laeuft. Gefahren wird geradeaus, also braucht es keinen Extra-Grip.
+  const lp=loops.length?loopAt(r.distance):null;
+  driveKart(r,dt,input,{air:r.air,offroad,slope:slopeAt(r.distance)*dot,speedMul,gripMul:lp?1.5:1,moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):1});
   collideStatic(r);
   // KI haengt fest (Hindernis, Wand): nach kurzer Zeit per Rettungspilz zurueck auf die Strecke
   if((!me||autopilot)&&input.gas&&!r.air&&Math.abs(r.speed)<3&&r.stun<=0){r.stuckT=(r.stuckT||0)+dt;if(r.stuckT>1.6){r.stuckT=0;respawn(r);}}else r.stuckT=0;
@@ -1079,20 +1101,18 @@ function update(dt){
    // Innerhalb des freien Bands (+-6 m) bleibt das Lenken voellig frei; darueber hinaus zieht es
    // zunehmend zurueck, und zwar ueber die Geschwindigkeit statt ueber die Position - ein
    // Positions-Snap fuehlt sich beim Fahren wie Verkanten an.
-   const guide=loops.length&&(loopAt(r.distance)||nearLoop(r.distance)),rollZone=(agrav.length||loops.length)&&hasRoll(r.distance);
-   if(guide||rollZone){const tn=tanAt(r.distance),free=guide?6:7.4,ex=Math.abs(r.offset)-free;
-    if(ex>0){const sg=Math.sign(r.offset),ox=tn.z*sg,oz=-tn.x*sg;
-     const vn=r.vx*ox+r.vz*oz;                       // Anteil der Fahrt nach aussen
-     const damp=Math.min(1,dt*(guide?4.5:3.2)*Math.min(3,1+ex*.35));
-     if(vn>0){r.vx-=ox*vn*damp;r.vz-=oz*vn*damp;}     // nach aussen abbremsen
-     const pull=Math.min(ex,dt*(guide?7:5)*Math.min(3,1+ex*.3));
+   const rollZone=(agrav.length||loops.length)&&hasRoll(r.distance);
+   if(rollZone){const tn=tanAt(r.distance),free=lp?6.2:7.8,ex=Math.abs(r.offset)-free;
+    if(ex>0){const sg=Math.sign(r.offset),ox=tn.z*sg,oz=-tn.x*sg,vn=r.vx*ox+r.vz*oz;
+     // Fahrtrichtung drehen statt Tempo wegnehmen. Daempfen kostet Schwung, und genau dieser
+     // Tempoverlust fuehlt sich beim Fahren wie Anecken an.
+     if(vn>0){const sp0=Math.hypot(r.vx,r.vz),kk=1-Math.exp(-dt*3.4*Math.min(3,1+ex*.3));
+      r.vx-=ox*vn*kk;r.vz-=oz*vn*kk;
+      const sp1=Math.hypot(r.vx,r.vz);if(sp1>.01&&sp0>.01){const f=sp0/sp1;r.vx*=f;r.vz*=f;}}
+     const pull=Math.min(ex,dt*(lp?3:2.6)*Math.min(3,1+ex*.3));
      r.x-=ox*pull;r.z-=oz*pull;r.offset=sg*(Math.abs(r.offset)-pull);}
-    if(guide){                                        // Fahrtrichtung und Blickrichtung sanft nachfuehren
-     const want=Math.atan2(tn.x,tn.z),sp2=Math.hypot(r.vx,r.vz);
-     if(sp2>1){const cur=Math.atan2(r.vx,r.vz),na=cur+angleDiff(want,cur)*Math.min(1,dt*3.2);
-      r.vx=Math.sin(na)*sp2;r.vz=Math.cos(na)*sp2;}
-     // ohne die Blickrichtung zu fuehren schiebt das Kart quer und bleibt im Looping stehen
-     r.h+=angleDiff(want,r.h)*Math.min(1,dt*2.6);}}}
+    // Im Looping die Blickrichtung leicht nachfuehren, aber nicht festnageln: Lenken bleibt moeglich
+    if(lp)r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*(1-Math.exp(-dt*1.4));}}
   vertical(r,dt);
   if(!r.air&&Math.abs(r.offset)<ROAD_HALF&&!r.rampY){const toGap=gaps.find(g=>{const a=wrapDiff(g.start,r.distance);return a>0&&a<95;});if(!toGap)r.safeD=lapDist(r.distance);}
   if(r.lastMT){r.mts=(r.mts||0)+(r.lastMT==='ultra'?100:r.lastMT==='super'?10:1);if(me){stats.mt[r.lastMT]++;SFX.mt(r.lastMT);const combo=comboStep(r,elapsed);if(combo>=2){stats.maxCombo=Math.max(stats.maxCombo||0,combo);if(r.spores<MAX_SPORES)r.spores++;SFX.combo(combo);toast(`${MT_LABEL[r.lastMT]} · COMBO ×${combo}`,1,'mt-'+r.lastMT);}else toast(MT_LABEL[r.lastMT]+'!',.8,'mt-'+r.lastMT);const p=r.mesh.position;for(let i=0;i<14;i++){const a=Math.random()*TAU;emit(p.x,p.y+.4,p.z,MT_COLORS[r.lastMT],Math.sin(a)*3-Math.sin(r.h)*6,1+Math.random()*2,Math.cos(a)*3-Math.cos(r.h)*6,.5);}}r.lastMT=null;}
@@ -1116,6 +1136,19 @@ function update(dt){
   if(r.driftDir&&!r.air&&frame%2===0&&nearPlayer(r,90)){const lvl=r.drift>=2.3?'ultra':r.drift>=1.4?'super':r.drift>=.7?'mini':null;if(lvl)for(const side of [-1,1])emit(r.x-sx*1.3+cz*side*.9,r.y+.25,r.z-cz*1.3-sx*side*.9,MT_COLORS[lvl],-sx*3+(Math.random()-.5)*3,1.5+Math.random()*2,-cz*3+(Math.random()-.5)*3,.3);}
   if(!r.air&&(r.driftDir||Math.abs(r.slide)>2.2)&&Math.abs(r.speed)>8&&frame%3===0&&nearPlayer(r,70))for(const side of [-1,1])dropSkid(r.x-sx*.9+cz*side*.85,r.y,r.z-cz*.9-sx*side*.85,r.h);
   if(me&&offroad&&r.combo){if(r.combo>=2)toast('COMBO WEG',.7,'bad');r.combo=0;}
+ // Ueberkopf: kopfueber zieht das Kart eine Funkenspur
+ {const lq3=loops.length?loopAt(r.distance):null;
+  const upDot=lq3?Math.cos(loopFrame(lq3,r.distance).th):agrav.length?Math.cos(rollAt(r.distance)):1;
+  if(upDot<-.4){if(!r.ovh){r.ovh=1;if(me)toast('ÜBERKOPF!',1,'good');}
+   if(frame%2===0&&nearPlayer(r,90)){const pm=r.mesh.position;
+    emit(pm.x,pm.y+.2,pm.z,0x8fe8ff,(Math.random()-.5)*5,(Math.random()-.5)*5,(Math.random()-.5)*5,.4);}}
+  else r.ovh=0;}
+ // Looping sauber durchfahren gibt Schwung mit heraus
+ if(loops.length){const inLp=!!loopAt(r.distance);
+  if(inLp)r.lpT=(r.lpT||0)+dt;
+  else if(r.lpT>1.5){r.lpT=0;r.boost=Math.max(r.boost,1.15);
+   if(me){SFX.boost();toast('LOOPING-SCHWUNG!',1.2,'good');stats.boosts=(stats.boosts||0)+1;}}
+  else r.lpT=0;}
  // Anti-Grav sauber durchfahren gibt Schwung mit heraus
  if(agrav.length){const inAg=hasRoll(r.distance);
   if(inAg){r.agT=(r.agT||0)+dt;if(offroad)r.agBad=1;}
@@ -1131,7 +1164,10 @@ function update(dt){
  // Kart-Kollisionen (Rempeln)
  for(let i=0;i<racers.length;i++)for(let j=i+1;j<racers.length;j++){const a=racers[i],b=racers[j];if(Math.abs(a.x-b.x)>3||Math.abs(a.z-b.z)>3||Math.abs(a.y-b.y)>1.2)continue;
   // an Kreuzungen (Looping, Acht) liegen zwei Streckenteile uebereinander: dort nicht rempeln
-  if(Math.abs(wrapDiff(lapDist(a.distance),lapDist(b.distance)))>14)continue;
+  // Im Looping stecken in einem Fahrbahnmeter mehrere Bildmeter: zwei Karts, die im Bild weit
+  // auseinander sind, liegen auf der Fahrbahn dicht beieinander und duerfen sich nicht rempeln.
+  const lq2=loops.length&&(loopAt(a.distance)||loopAt(b.distance));
+  if(Math.abs(wrapDiff(lapDist(a.distance),lapDist(b.distance)))>(lq2?14/(lq2.sig+1):14))continue;
   const rel=Math.hypot(a.vx-b.vx,a.vz-b.vz);if(collideKarts(a,b)&&(a.id===0||b.id===0)&&rel>6){SFX.bump(clamp(rel/25,.2,.8));shake=Math.max(shake,.15);}}
  updateShots(dt);updateBombs(dt);
  const newOrder=ranking(racers),place=newOrder.indexOf(player)+1;
@@ -1245,14 +1281,16 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  const lq=loops.length?loopAt(p.distance):null;
  const rl=agrav.length?rollAt(p.distance):0;
  if(snap)camRoll=camRollPrev=rl;
- else{const dRl=angleDiff(rl,camRollPrev),pred=camRoll+dRl;camRoll=angleDiff(pred+angleDiff(rl,pred)*Math.min(1,dt*10),0);camRollPrev=rl;}
+ else{const dRl=angleDiff(rl,camRollPrev),pred=camRoll+dRl;camRoll=angleDiff(pred+angleDiff(rl,pred)*(1-Math.exp(-dt*10)),0);camRollPrev=rl;}
  let kx=p.x,ky=py,kz=p.z,fx=sx,fy=0,fz=cz,ux=0,uy=1,uz=0;
- if(lq){const st=loopFrame(lq,p.distance,p.x,p.z);
-  posAt(p.distance,p.offset,py-groundAt(p.distance,p.offset).y,_agP);kx=_agP.x;ky=_agP.y;kz=_agP.z;
-  fx=st.tx;fy=st.ty;fz=st.tz;ux=st.nx;uy=st.ny;uz=st.nz;}
- else if(Math.abs(camRoll)>.004){posAt(p.distance,p.offset,py-groundAt(p.distance,p.offset).y,_agP);kx=_agP.x;ky=_agP.y;kz=_agP.z;
-  _agAxis.set(sx,0,cz);_agV.set(0,1,0).applyAxisAngle(_agAxis,camRoll);ux=_agV.x;uy=_agV.y;uz=_agV.z;}
- const kk=snap?1:1-Math.exp(-dt*8);
+ // Im Looping wird der Kamerarahmen aus der Blickrichtung des Karts aufgebaut (nicht aus der
+ // Streckentangente): am Ein- und Ausgang ist er damit exakt die flache Kamera, also kein Ruck.
+ if(lq){const st=loopFrame(lq,p.distance);
+  posAt(p.distance,p.offset,py-roadRef(p.distance,p.offset),_agP);kx=_agP.x;ky=_agP.y;kz=_agP.z;
+  fx=sx*st.c;fy=st.s;fz=cz*st.c;ux=-sx*st.s;uy=st.c;uz=-cz*st.s;}
+ else {posAt(p.distance,p.offset,py-roadRef(p.distance,p.offset),_agP);kx=_agP.x;ky=_agP.y;kz=_agP.z;
+  if(Math.abs(camRoll)>1e-4){_agAxis.set(sx,0,cz);_agV.set(0,1,0).applyAxisAngle(_agAxis,camRoll);ux=_agV.x;uy=_agV.y;uz=_agV.z;}}
+ const kk=snap?1:1-Math.exp(-dt*15);
  camUp.x+=(ux-camUp.x)*kk;camUp.y+=(uy-camUp.y)*kk;camUp.z+=(uz-camUp.z)*kk;
  if(camUp.lengthSq()<1e-4)camUp.set(0,1,0);camUp.normalize();
  _agV.set(kx-fx*back+camUp.x*up,ky-fy*back+camUp.y*up,kz-fz*back+camUp.z*up);

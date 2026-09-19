@@ -48,7 +48,7 @@ export function driveKart(k,dt,input,surf={}){
  if(k.driftDir&&!air){vl-=k.driftDir*sp*.10*dt;
   // Driftwinkel deckeln (ca. 27 Grad): haelt die Linie, statt ueber den Streckenrand zu tragen
   const cap=sp*P.driftSlide;if(Math.abs(vl)>cap)vl+=(Math.sign(vl)*cap-vl)*Math.min(1,dt*7);}
- k.vx=fx*vf+lx*vl;k.vz=fz*vf+lz*vl;k.h+=yaw*dt;k.x+=k.vx*dt;k.z+=k.vz*dt;k.speed=vf;k.slide=vl;
+ k.vx=fx*vf+lx*vl;k.vz=fz*vf+lz*vl;k.h+=yaw*dt;const mv=surf.moveMul||1;k.x+=k.vx*dt*mv;k.z+=k.vz*dt*mv;k.speed=vf;k.slide=vl;
 }
 // Hoechsttempo, mit dem eine Kurve der Kruemmung kappa (1/m) noch mit Grip bzw. im Drift fahrbar ist.
 export function maxCornerSpeed(kappa,drift=false){if(kappa<1e-4)return 99;let lo=0,hi=60;for(let i=0;i<24;i++){const v=(lo+hi)/2,cap=drift?PHYS.turn*driftFactor(1)*Math.min(1,v/10):PHYS.turn*turnCurve(v);if(v*kappa<=cap)lo=v;else hi=v;}return lo;}

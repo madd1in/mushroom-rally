@@ -4,6 +4,56 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 16 (19.09.2026): Looping neu gebaut, Anti-Grav ohne Ruckeln
+
+**Looping: von Grund auf anders.** Bisher wurde eine 360-Grad-Kehre waagerecht in die Mittellinie
+eingesetzt und nur im Bild aufgestellt. Gefahren wurde also eine unfahrbar enge Kurve. Gemessen:
+das Kart brach zweimal je Runde von 28 auf 7,6 m/s ein, die Strecke kreuzte sich selbst, und am
+Ausgang sprang das Kart 30 m weit.
+
+Jetzt bleibt die Mittellinie unangetastet. Ein kurzes, moeglichst gerades Stueck Fahrbahn (34 m)
+wird im Bild zu einem senkrechten Kreis aufgestellt — gefahren wird geradeaus. Damit das Bild
+nicht im Zeitraffer laeuft, wird der Vorschub auf der Fahrbahn um genau den Faktor gebremst, um
+den das Bild gestreckt ist (`moveMul` in `driveKart`). Der Winkel faehrt weich an und aus, sodass
+die Bildgeschwindigkeit an beiden Enden stetig uebergeht.
+
+Messung vorher/nachher im Looping: Tempo 7,6–28 → 30–38,6 m/s, groesster Bildsprung 30 m → 0,87 m,
+Hoehe 55,6 m, Durchfahrt 7,9 s.
+
+**Anti-Grav: vier Ursachen fuer das Ruckeln.**
+
+1. *Darstellungswechsel.* Kart und Kamera schalteten erst bei Rollwinkel 0,004 auf die gehobene
+   Fahrbahnabbildung um. Der Sichthub faehrt aber viel frueher hoch — die Fahrbahn stand schon
+   4,2 m hoch, waehrend das Kart noch auf dem Boden gezeichnet wurde, und sprang dann in einem
+   Bild hinterher. Jetzt laeuft immer derselbe Weg; ohne Rolle und Hub liefert er exakt die
+   physikalische Lage, flach aendert sich also nichts.
+2. *Bezugshoehe.* Als Hoehe wurde der Abstand zu `groundAt()` eingesetzt — das rechnet neben der
+   Fahrbahn die Boeschung mit ein. Wer mit Querversatz ueber 8,9 m in eine Rollzone einfuhr,
+   sprang 1,95 m nach oben. Bezug ist jetzt die Fahrbahnebene selbst.
+3. *Tabellenraster.* Rollwinkel und Sichthub kamen aus einer Tabelle mit 2048 Stuetzstellen; linear
+   dazwischen heisst treppenfoermige Drehrate. Jetzt analytisch und C2-glatt (smootherstep), damit
+   auch die Drehbeschleunigung an den Raendern stetig ist.
+4. *Projektion.* `project()` rechnete gegen die naechstgelegene Stuetzstelle. Die wechselt bei
+   Tempo fast jedes Bild, und mit ihr springen Bezugspunkt und Tangente — gemessen bis 0,33 m
+   Querversatz von Bild zu Bild. Flach faellt das kaum auf, senkrecht wird daraus eine Hoehe.
+   Jetzt wird auf das Streckensegment projiziert und die Tangente interpoliert.
+
+Groesster Bildsprung in den sieben Rollzonen aller Strecken: 4,1 m → 0,06–0,35 m.
+
+**Fuehrung:** In Rollzonen wird die Fahrtrichtung gedreht statt das Tempo gedaempft — Daempfen
+kostet Schwung, und genau dieser Tempoverlust fuehlte sich wie Anecken an.
+
+**Grafik und neue Ideen:** Der Looping bekommt ein Traggeruest wie eine Achterbahn (zwei Holme
+entlang der Bahn, Querstreben, Neonringe am Fuss) und ein Leuchtband auf der Fahrbahn. Das
+Energieband der Anti-Grav-Bahn bekam seine Textur nie — `boostTex` entstand erst nach dem
+Strassenbau; jetzt wandert es wieder. Neu: **Looping-Schwung** (sauber durchfahren gibt Boost)
+und eine Funkenspur bei Ueberkopf-Fahrt.
+
+**Verifikation:** Alle sechs Strecken im Autopilot durchgefahren (99,4 / 122,4 / 100,2 / 93,4 /
+98,3 / 115,0 s bei 150 ccm), KI 0,5–9,3 % neben der Strecke, 49–141 Draw Calls, 15/15 Unit-Tests.
+Medaillenzeiten fuer Sonnen-Canyon und Regenbogenpiste neu kalibriert (die Rundenlaenge hat sich
+geaendert, weil der Looping keine 224 m mehr in die Mittellinie einsetzt), `LAYOUT_VER` auf 16.
+
 ## Runde 14/15 (19.09.2026): Looping, Regenbogenpiste, ruhigere Fuehrung
 
 **Looping (neu):** Der Sonnen-Canyon hat jetzt ein echtes Looping — 55 m hoch, oben faehrt man
