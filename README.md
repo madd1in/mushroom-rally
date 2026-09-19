@@ -4,6 +4,33 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 14/15 (19.09.2026): Looping, Regenbogenpiste, ruhigere Fuehrung
+
+**Looping (neu):** Der Sonnen-Canyon hat jetzt ein echtes Looping — 55 m hoch, oben faehrt man
+ueber Kopf. Technisch wird nach der Kurvenglaettung eine 360-Grad-Kehre in Tropfenform in die
+Mittellinie eingesetzt (Tropfen statt Kreis, damit der Einlauf weich ist), und beim Zeichnen wird
+diese Kehre senkrecht aufgestellt. Physik und Projektion arbeiten weiter flach, deshalb musste am
+Rest nichts geaendert werden. Punkte, die die Schleife ueberholt, werden aus der Mittellinie
+entfernt — sonst sprang die Linie am Ausgang 40 m zurueck.
+
+**Regenbogenpiste (neu, 6. Strecke):** schwebt frei im Weltall — kein Boden, keine Boeschung, wer
+herunterfaellt, faellt ins Leere. Leuchtende Farbbahn, die langsam wandert, schwebende
+Kristallinseln, Sternenstaub. Mit Korkenzieher, Wandfahrt, Sprung und eigenem Looping.
+
+**Ruhiger fahren:** Die Fuehrung in Spiralen und Looping wirkt jetzt wie Seitenhaftung statt wie
+eine Wand: innerhalb von +-6 m ist das Lenken voellig frei, darueber zieht es ueber die
+Geschwindigkeit zurueck statt die Position zu verschieben (ein Positions-Snap fuehlt sich beim
+Fahren wie Verkanten an). In Roll- und Loopzonen greifen die Leitplanken nicht mehr zusaetzlich —
+vorher korrigierten zwei Systeme gegeneinander.
+
+**Kamera:** flach, Spirale und Looping laufen jetzt ueber *eine* Kameraführung. Position,
+Hochachse und Blickpunkt kommen aus demselben Rahmen und werden durchgehend geglaettet; vorher
+waren es drei Modi mit harten Umschaltern, genau dort ruckte das Bild.
+
+**Gemessen** (Autopilot, 150cc): alle sechs Strecken fahren durch — 94,3 / 140,6 / 88,4 / 101,6 /
+100,8 / 129,4 s, KI 0,1–6,4 % neben der Strecke. Medaillenzeiten fuer Canyon und Regenbogenpiste
+neu gesetzt, alte Rekorde einmalig verworfen (`LAYOUT_VER=15`).
+
 ## Runde 13 (18.09.2026): Korkenzieher, kein Haengenbleiben, vier Karts
 
 **Anti-Grav, zweite Stufe:** Die Rolle wirkt jetzt nur noch auf die Darstellung — gefahren wird

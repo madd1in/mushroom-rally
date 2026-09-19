@@ -1,0 +1,55 @@
+- generic [active]:
+  - generic "3D Kart Rennspiel" [ref=f12e1]
+  - banner [ref=f12e2]:
+    - link "✿ MUSHROOM RALLY" [ref=f12e3] [cursor=pointer]:
+      - /url: ./
+      - generic [ref=f12e4]: ✿
+      - generic [ref=f12e5]: MUSHROOM RALLY
+    - generic [ref=f12e6]:
+      - button "Ton ausschalten" [ref=f12e7] [cursor=pointer]: ♪ AN
+      - button "Vollbild" [ref=f12e8] [cursor=pointer]: ⛶
+  - generic [ref=f12e10]:
+    - heading [level=1] [ref=f12e11]:
+      - text: Mushroom
+      - emphasis [ref=f12e12]: Rally
+    - group "Modus" [ref=f12e13]:
+      - button "Rennen" [pressed] [ref=f12e14] [cursor=pointer]
+      - button "Grand Prix" [ref=f12e16] [cursor=pointer]
+      - button "Zeitfahren" [ref=f12e18] [cursor=pointer]
+    - group "Klasse" [ref=f12e20]:
+      - button "50cc" [ref=f12e21] [cursor=pointer]
+      - button "100cc" [pressed] [ref=f12e23] [cursor=pointer]
+      - button "150cc" [ref=f12e25] [cursor=pointer]
+    - generic [ref=f12e27]:
+      - button "✿ Pilz-Promenade —" [pressed] [ref=f12e28] [cursor=pointer]:
+        - generic [ref=f12e29]: ✿
+        - generic [ref=f12e30]: Pilz-Promenade
+        - generic [ref=f12e31]: —
+      - button "☀ Sonnen-Canyon —" [ref=f12e32] [cursor=pointer]:
+        - generic [ref=f12e33]: ☀
+        - generic [ref=f12e34]: Sonnen-Canyon
+        - generic [ref=f12e35]: —
+      - button "✦ Neon-Pilzwald —" [ref=f12e36] [cursor=pointer]:
+        - generic [ref=f12e37]: ✦
+        - generic [ref=f12e38]: Neon-Pilzwald
+        - generic [ref=f12e39]: —
+      - button "👻 Geisterhaus —" [ref=f12e40] [cursor=pointer]:
+        - generic [ref=f12e41]: 👻
+        - generic [ref=f12e42]: Geisterhaus
+        - generic [ref=f12e43]: —
+    - generic "Kartfarbe" [ref=f12e44]:
+      - button "Ruby / Rot" [pressed] [ref=f12e45] [cursor=pointer]
+      - button "Sunny / Gelb" [ref=f12e46] [cursor=pointer]
+      - button "Mint / Türkis" [ref=f12e47] [cursor=pointer]
+      - button "Nova / Violett" [ref=f12e48] [cursor=pointer]
+      - button "Goldpilz" [ref=f12e49] [cursor=pointer]: 🔒
+    - button "Los geht's →" [ref=f12e50] [cursor=pointer]:
+      - text: Los geht's
+      - generic [ref=f12e51]: →
+    - paragraph [ref=f12e53]:
+      - generic [ref=f12e54]: WASD
+      - generic [ref=f12e55]: SHIFT
+      - text: Drift
+      - generic [ref=f12e56]: SPACE
+      - text: Item
+  - status

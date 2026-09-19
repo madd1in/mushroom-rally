@@ -1,0 +1,3 @@
+[    2395ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4219/assets/keyart.jpg:0
+[    4478ms] [ERROR] THREE.BufferGeometryUtils: .mergeGeometries() failed with geometry at index 13. Make sure all geometries have the same number of attributes. @ http://localhost:4219/vendor/BufferGeometryUtils.js:159
+[    4479ms] [ERROR] THREE.BufferGeometryUtils: .mergeGeometries() failed with geometry at index 1. All geometries must have compatible attributes; make sure "uv" attribute exists among all geometries, or in none of them. @ http://localhost:4219/vendor/BufferGeometryUtils.js:142

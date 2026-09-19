@@ -1,0 +1,85 @@
+- generic [active]:
+  - generic "3D Kart Rennspiel" [ref=e1]
+  - banner [ref=e2]:
+    - link "✿ MUSHROOM RALLY GRAND PRIX CLUB" [ref=e3] [cursor=pointer]:
+      - /url: ./
+      - generic [ref=e4]: ✿
+      - generic [ref=e5]: MUSHROOM RALLY
+      - generic [ref=e6]: GRAND PRIX CLUB
+    - generic [ref=e7]:
+      - button "Ton ausschalten" [ref=e8] [cursor=pointer]: ♪ AN
+      - button "Vollbild" [ref=e9] [cursor=pointer]: ⛶
+  - generic [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]: THE LITTLE BIG RACE
+      - heading [level=1] [ref=e14]:
+        - text: Kleine Karts. Großes
+        - emphasis [ref=e15]: Chaos.
+      - paragraph [ref=e16]: Über Schanzen fliegen. Tricks landen. Rivalen überholen.Und im Grand Prix den goldenen Pilzpokal holen.
+      - generic [ref=e17]:
+        - generic [ref=e18]: 8 Fahrer
+        - generic [ref=e19]: Sprungschanzen
+        - generic [ref=e20]: Grand Prix
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: "01"
+          - text: MODUS
+        - generic [ref=e24]:
+          - button "Einzelrennen Eine Strecke, 3 Runden" [pressed] [ref=e25] [cursor=pointer]:
+            - generic [ref=e26]: Einzelrennen
+            - generic [ref=e27]: Eine Strecke, 3 Runden
+          - button "Grand Prix 🏆 3 Strecken, Punkte, Siegerehrung" [ref=e28] [cursor=pointer]:
+            - generic [ref=e29]: Grand Prix 🏆
+            - generic [ref=e30]: 3 Strecken, Punkte, Siegerehrung
+        - generic [ref=e31]:
+          - generic [ref=e32]: "02"
+          - text: DEIN KART
+          - generic [ref=e33]: Ruby / Rot
+        - generic [ref=e34]:
+          - button "Ruby / Rot" [pressed] [ref=e35] [cursor=pointer]: ✓
+          - button "Sunny / Gelb" [ref=e36] [cursor=pointer]
+          - button "Mint / Türkis" [ref=e37] [cursor=pointer]
+          - button "Nova / Violett" [ref=e38] [cursor=pointer]
+        - generic [ref=e39]:
+          - generic [ref=e40]: "03"
+          - text: DEINE STRECKE
+          - generic [ref=e41]: 150 cc
+        - generic [ref=e42]:
+          - button "✿ Pilz-Promenade Klassisch —" [pressed] [ref=e43] [cursor=pointer]:
+            - generic [ref=e44]: ✿
+            - generic [ref=e45]: Pilz-Promenade
+            - generic [ref=e46]: Klassisch
+            - generic [ref=e47]: —
+          - button "☀ Sunset Valley Schnell —" [ref=e48] [cursor=pointer]:
+            - generic [ref=e49]: ☀
+            - generic [ref=e50]: Sunset Valley
+            - generic [ref=e51]: Schnell
+            - generic [ref=e52]: —
+          - button "✦ Sternen-Garten Knifflig —" [ref=e53] [cursor=pointer]:
+            - generic [ref=e54]: ✦
+            - generic [ref=e55]: Sternen-Garten
+            - generic [ref=e56]: Knifflig
+            - generic [ref=e57]: —
+        - button "Ab auf die Strecke ↗" [ref=e58] [cursor=pointer]:
+          - text: Ab auf die Strecke
+          - generic [ref=e59]: ↗
+        - paragraph [ref=e60]:
+          - generic [ref=e61]: WASD
+          - text: Fahren
+          - generic [ref=e62]: SHIFT
+          - text: Driften & Tricks
+          - generic [ref=e63]: SPACE
+          - text: Item
+        - 'button "Auto-Gas: AUS" [ref=e64] [cursor=pointer]'
+        - paragraph [ref=e65]: "Tipp: Gas genau bei „1“ drücken = Raketenstart. In der Luft Drift drücken = Trick-Turbo."
+    - generic [ref=e66]:
+      - generic [ref=e67]: POSTCARD Nº 01
+      - strong [ref=e68]: Pilz-Promenade
+      - text: Fresh air. Fast laps. Good times.
+    - generic [ref=e69]:
+      - text: HANDCRAFTED TRACKS · ARCADE RACING
+      - generic [ref=e70]: SOUND BY ELEVENLABS / V2.0
+  - status
+  - complementary [ref=e71]:
+    - 'button "Test: Turbo" [ref=e72] [cursor=pointer]'
+    - 'button "Test: Ziel" [ref=e73] [cursor=pointer]'

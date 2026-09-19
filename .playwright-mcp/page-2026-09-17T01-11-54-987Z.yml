@@ -1,0 +1,37 @@
+- generic [active]:
+  - generic "3D Kart Rennspiel" [ref=f8e1]
+  - generic [ref=f8e3]:
+    - generic [ref=f8e4]: ✿
+    - generic [ref=f8e5]: MUSHROOM RALLY
+    - generic [ref=f8e6]: Strecke wird aufgebaut …
+  - banner [ref=f8e8]:
+    - link "✿ MUSHROOM RALLY" [ref=f8e9] [cursor=pointer]:
+      - /url: ./
+      - generic [ref=f8e10]: ✿
+      - generic [ref=f8e11]: MUSHROOM RALLY
+    - generic [ref=f8e12]:
+      - button "Ton ausschalten" [ref=f8e13] [cursor=pointer]: ♪ AN
+      - button "Vollbild" [ref=f8e14] [cursor=pointer]: ⛶
+  - generic [ref=f8e16]:
+    - heading [level=1] [ref=f8e17]:
+      - text: Mushroom
+      - emphasis [ref=f8e18]: Rally
+    - group "Modus" [ref=f8e19]:
+      - button "Rennen" [pressed] [ref=f8e20] [cursor=pointer]
+      - button "Grand Prix" [ref=f8e22] [cursor=pointer]
+      - button "Zeitfahren" [ref=f8e24] [cursor=pointer]
+    - group "Klasse" [ref=f8e26]:
+      - button "50cc" [ref=f8e27] [cursor=pointer]
+      - button "100cc" [ref=f8e29] [cursor=pointer]
+      - button "150cc" [ref=f8e31] [cursor=pointer]
+    - generic "Kartfarbe"
+    - button "Los geht's →" [ref=f8e33] [cursor=pointer]:
+      - text: Los geht's
+      - generic [ref=f8e34]: →
+    - paragraph [ref=f8e36]:
+      - generic [ref=f8e37]: WASD
+      - generic [ref=f8e38]: SHIFT
+      - text: Drift
+      - generic [ref=f8e39]: SPACE
+      - text: Item
+  - status

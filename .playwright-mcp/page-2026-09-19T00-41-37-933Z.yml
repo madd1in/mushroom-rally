@@ -1,0 +1,74 @@
+- generic [active]:
+  - generic "3D Kart Rennspiel" [ref=f19e1]
+  - banner [ref=f19e2]:
+    - link "✿ MUSHROOM RALLY":
+      - /url: ./
+      - generic: ✿
+      - generic: MUSHROOM RALLY
+    - generic [ref=f19e3]:
+      - button "Ton ausschalten" [ref=f19e4] [cursor=pointer]: ♪ AN
+      - button "Vollbild" [ref=f19e5] [cursor=pointer]: ⛶
+  - generic [ref=f19e7]:
+    - generic [ref=f19e8]:
+      - generic [ref=f19e9]: 🍄
+      - heading [level=1] [ref=f19e11]:
+        - text: Mushroom
+        - emphasis [ref=f19e12]: Rally
+    - group "Modus" [ref=f19e13]:
+      - button "Rennen" [pressed] [ref=f19e14] [cursor=pointer]
+      - button "Grand Prix" [ref=f19e16] [cursor=pointer]
+      - button "Zeitfahren" [ref=f19e18] [cursor=pointer]
+    - group "Klasse" [ref=f19e20]:
+      - button "50cc" [ref=f19e21] [cursor=pointer]
+      - button "100cc" [pressed] [ref=f19e23] [cursor=pointer]
+      - button "150cc" [ref=f19e25] [cursor=pointer]
+    - generic [ref=f19e27]:
+      - button "✿ Pilz-Promenade —" [pressed] [ref=f19e28] [cursor=pointer]:
+        - generic [ref=f19e30]: ✿
+        - generic [ref=f19e31]: Pilz-Promenade
+        - generic [ref=f19e32]: —
+      - button "☀ Sonnen-Canyon —" [ref=f19e33] [cursor=pointer]:
+        - generic [ref=f19e35]: ☀
+        - generic [ref=f19e36]: Sonnen-Canyon
+        - generic [ref=f19e37]: —
+      - button "✦ Neon-Pilzwald —" [ref=f19e38] [cursor=pointer]:
+        - generic [ref=f19e40]: ✦
+        - generic [ref=f19e41]: Neon-Pilzwald
+        - generic [ref=f19e42]: —
+      - button "👻 Geisterhaus —" [ref=f19e43] [cursor=pointer]:
+        - generic [ref=f19e45]: 👻
+        - generic [ref=f19e46]: Geisterhaus
+        - generic [ref=f19e47]: —
+      - button "♨ Lava-Feste —" [ref=f19e48] [cursor=pointer]:
+        - generic [ref=f19e50]: ♨
+        - generic [ref=f19e51]: Lava-Feste
+        - generic [ref=f19e52]: —
+    - generic [ref=f19e53]:
+      - generic [ref=f19e54]:
+        - generic [ref=f19e55]: FAHRER
+        - generic "Fahrerfigur" [ref=f19e56]:
+          - 'button "Fahrer: Pilzi" [pressed] [ref=f19e57] [cursor=pointer]'
+          - 'button "Fahrer: Schildi" [ref=f19e58] [cursor=pointer]'
+          - 'button "Fahrer: Volt" [ref=f19e59] [cursor=pointer]'
+          - 'button "Fahrer: Mochi" [ref=f19e60] [cursor=pointer]'
+      - generic [ref=f19e61]:
+        - generic [ref=f19e62]: KART
+        - generic "Kartfarbe" [ref=f19e63]:
+          - button "Ruby / Rot" [pressed] [ref=f19e64] [cursor=pointer]
+          - button "Sunny / Gelb" [ref=f19e65] [cursor=pointer]
+          - button "Mint / Türkis" [ref=f19e66] [cursor=pointer]
+          - button "Nova / Violett" [ref=f19e67] [cursor=pointer]
+          - button "Goldpilz" [ref=f19e68] [cursor=pointer]: 🔒
+      - generic [ref=f19e69]:
+        - generic [ref=f19e70]: GRAFIK
+        - generic "Grafikstufe" [ref=f19e71]:
+          - button "Auto" [pressed] [ref=f19e72] [cursor=pointer]
+          - button "Mittel" [ref=f19e73] [cursor=pointer]
+          - button "Sparsam" [ref=f19e74] [cursor=pointer]
+    - button "Los geht's →" [ref=f19e75] [cursor=pointer]:
+      - generic [ref=f19e76]: Los geht's
+      - generic [ref=f19e77]: →
+  - status
+  - complementary [ref=f19e78]:
+    - 'button "Test: Turbo" [ref=f19e79] [cursor=pointer]'
+    - 'button "Test: Ziel" [ref=f19e80] [cursor=pointer]'

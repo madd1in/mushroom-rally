@@ -1,0 +1,112 @@
+- generic [active]:
+  - generic "3D Kart Rennspiel" [ref=f6e1]
+  - generic:
+    - generic:
+      - generic: ✿
+      - generic: MUSHROOM RALLY
+      - generic: Strecke wird aufgebaut …
+  - banner [ref=f6e2]:
+    - link "✿ MUSHROOM RALLY GRAND PRIX CLUB" [ref=f6e3] [cursor=pointer]:
+      - /url: ./
+      - generic [ref=f6e4]: ✿
+      - generic [ref=f6e5]: MUSHROOM RALLY
+      - generic [ref=f6e6]: GRAND PRIX CLUB
+    - generic [ref=f6e7]:
+      - button "Ton ausschalten" [ref=f6e8] [cursor=pointer]: ♪ AN
+      - button "Vollbild" [ref=f6e9] [cursor=pointer]: ⛶
+  - generic [ref=f6e10]:
+    - generic [ref=f6e11]:
+      - generic [ref=f6e12]: THE LITTLE BIG RACE
+      - heading [level=1] [ref=f6e14]:
+        - text: Kleine Karts. Großes
+        - emphasis [ref=f6e15]: Können.
+      - paragraph [ref=f6e16]: Kurven andriften, Mini-Turbos zünden, über die Schlucht fliegen.Jeder Sieg ist selbst erfahren – von 50cc bis 150cc.
+      - generic [ref=f6e17]:
+        - generic [ref=f6e18]: Drift-Turbos
+        - generic [ref=f6e19]: 4 Welten + Geisterhaus
+        - generic [ref=f6e20]: Pokale & Sterne
+      - generic [ref=f6e21]:
+        - generic [ref=f6e22]:
+          - generic [ref=f6e23]: "01"
+          - text: MODUS & KLASSE
+          - generic [ref=f6e24]: "Pokale: 50cc – · 100cc – · 150cc –"
+        - generic [ref=f6e25]:
+          - button "Einzelrennen Eine Strecke, 3 Runden" [pressed] [ref=f6e26] [cursor=pointer]:
+            - generic [ref=f6e27]: Einzelrennen
+            - generic [ref=f6e28]: Eine Strecke, 3 Runden
+          - button "Grand Prix 🏆 4 Strecken, Punkte, Pokal" [ref=f6e29] [cursor=pointer]:
+            - generic [ref=f6e30]: Grand Prix 🏆
+            - generic [ref=f6e31]: 4 Strecken, Punkte, Pokal
+          - button "Zeitfahren 👻 Gegen deinen Geist, Medaillen" [ref=f6e32] [cursor=pointer]:
+            - generic [ref=f6e33]: Zeitfahren 👻
+            - generic [ref=f6e34]: Gegen deinen Geist, Medaillen
+        - generic [ref=f6e35]:
+          - button "50cc Entspannt" [ref=f6e36] [cursor=pointer]:
+            - generic [ref=f6e37]: 50cc
+            - generic [ref=f6e38]: Entspannt
+          - button "100cc Fordernd" [pressed] [ref=f6e39] [cursor=pointer]:
+            - generic [ref=f6e40]: 100cc
+            - generic [ref=f6e41]: Fordernd
+          - button "150cc Profis" [ref=f6e42] [cursor=pointer]:
+            - generic [ref=f6e43]: 150cc
+            - generic [ref=f6e44]: Profis
+        - generic [ref=f6e45]:
+          - generic [ref=f6e46]: "02"
+          - text: DEIN KART
+          - generic [ref=f6e47]: Ruby / Rot
+        - generic [ref=f6e48]:
+          - button "Ruby / Rot" [pressed] [ref=f6e49] [cursor=pointer]: ✓
+          - button "Sunny / Gelb" [ref=f6e50] [cursor=pointer]: 🔒
+          - button "Mint / Türkis" [ref=f6e51] [cursor=pointer]: 🔒
+          - button "Nova / Violett" [ref=f6e52] [cursor=pointer]: 🔒
+          - button "Goldpilz" [ref=f6e53] [cursor=pointer]: 🔒
+        - generic [ref=f6e54]:
+          - generic [ref=f6e55]: "03"
+          - text: DEINE STRECKE
+          - generic [ref=f6e56]: 100cc
+        - generic [ref=f6e57]:
+          - button "✿ Pilz-Promenade Einsteiger · flüssig —" [pressed] [ref=f6e58] [cursor=pointer]:
+            - generic [ref=f6e59]: ✿
+            - generic [ref=f6e60]: Pilz-Promenade
+            - generic [ref=f6e61]: Einsteiger · flüssig
+            - generic [ref=f6e62]: —
+          - button "☀ Sonnen-Canyon Schnell · Schluchtsprung —" [ref=f6e63] [cursor=pointer]:
+            - generic [ref=f6e64]: ☀
+            - generic [ref=f6e65]: Sonnen-Canyon
+            - generic [ref=f6e66]: Schnell · Schluchtsprung
+            - generic [ref=f6e67]: —
+          - button "✦ Neon-Pilzwald Technisch · Drift —" [ref=f6e68] [cursor=pointer]:
+            - generic [ref=f6e69]: ✦
+            - generic [ref=f6e70]: Neon-Pilzwald
+            - generic [ref=f6e71]: Technisch · Drift
+            - generic [ref=f6e72]: —
+          - button "👻 Geisterhaus Spuk · Villa & Geister —" [ref=f6e73] [cursor=pointer]:
+            - generic [ref=f6e74]: 👻
+            - generic [ref=f6e75]: Geisterhaus
+            - generic [ref=f6e76]: Spuk · Villa & Geister
+            - generic [ref=f6e77]: —
+        - button "Ab auf die Strecke ↗" [ref=f6e78] [cursor=pointer]:
+          - text: Ab auf die Strecke
+          - generic [ref=f6e79]: ↗
+        - paragraph [ref=f6e80]:
+          - generic [ref=f6e81]: WASD
+          - text: Fahren
+          - generic [ref=f6e82]: SHIFT
+          - text: Drift & Trick
+          - generic [ref=f6e83]: SPACE
+          - text: Item
+          - generic [ref=f6e84]: R
+          - text: Zurücksetzen
+        - 'button "Auto-Gas: AUS" [ref=f6e85] [cursor=pointer]'
+        - paragraph [ref=f6e86]: "Drift halten und in die Kurve lenken: Funken werden blau → orange → lila. Loslassen = Mini-Turbo. Gas bei „1“ = Raketenstart."
+    - generic [ref=f6e87]:
+      - generic [ref=f6e88]: POSTCARD Nº 01
+      - strong [ref=f6e89]: Pilz-Promenade
+      - text: Fresh air. Fast laps. Good times.
+    - generic [ref=f6e90]:
+      - text: HANDCRAFTED TRACKS · ARCADE RACING
+      - generic [ref=f6e91]: SOUND BY ELEVENLABS / V2.0
+  - status
+  - complementary [ref=f6e92]:
+    - 'button "Test: Turbo" [ref=f6e93] [cursor=pointer]'
+    - 'button "Test: Ziel" [ref=f6e94] [cursor=pointer]'
