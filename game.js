@@ -1576,7 +1576,7 @@ Promise.race([protoAll,new Promise(r=>setTimeout(r,9000))]).finally(()=>{try{app
   Promise.all(LATE_FILES.map(loadProto)).then(()=>{for(let i=0;i<courses.length;i++){if(courses[i].mansion===undefined&&courses[i].castle===undefined&&!(courses[i].builds||[]).length)continue;if(i===builtSel){if(state==='menu')buildCourse(true);else worldDirty=true;}else disposeCourse(i);}});});});});
 
 // Testschnittstelle nur mit ?test=1
-if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,next:nextAfterResult,track:d=>({...trackAt(d),x:sample(d).p.x,z:sample(d).p.z}),zones:()=>zones,cp:v=>cpDist(v),
+if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,hud,next:nextAfterResult,track:d=>({...trackAt(d),x:sample(d).p.x,z:sample(d).p.z}),zones:()=>zones,cp:v=>cpDist(v),
  setMode:m=>document.querySelector(`#modes [data-mode="${m}"]`).click(),setClass:c=>{cc=c;refreshMenu();},setTrack:i=>{selected=i;syncTrackButtons();buildCourse();},
  autopilot:v=>{autopilot=v;},finishNow:()=>{racers[0].distance=length*LAPS+1;finish(racers[0],length,elapsed);end();},
  state:()=>({state,length,mode,cc,gp,stats,racers:racers.map(({mesh,...r})=>r)}),setItem:item=>{racers[0].item=item;racers[0].charges=item==='triple'?3:0;},
