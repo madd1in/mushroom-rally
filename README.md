@@ -4,6 +4,33 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 20 (20.09.2026): Pilzgleiter
+
+Nach einer Schanze oder einem Sprungpilz klappt jetzt ein Gleitschirm auf. Er ist **rein
+optisch**: Sprungweite, Schwerkraft und Renngleichgewicht bleiben unveraendert - die Rundenzeit
+auf der Pilz-Promenade liegt mit und ohne Schirm bei 86,3 s.
+
+Die Ausloeselogik steht als eigenes Modul `glider.mjs` neben der Darstellung, damit sie ohne
+Browser pruefbar ist:
+- Nur Schanze und Sprungpilz spannen den Schirm vor, nichts anderes.
+- Es braucht mindestens 0,12 s Flugzeit **und** 0,7 m Abstand zum Boden. Rettungssprunge,
+  Treffer-Huepfer und kleine Bodenwellen loesen dadurch nichts aus.
+- Landung, Treffer, Rollzone und Zieleinlauf falten ihn sofort wieder ein.
+- Das Auf- und Zuklappen laeuft bildratenunabhaengig (`1-exp(-rate*dt)`).
+
+Das Modell (`assets/glider.glb`, 56 KB, 2527 Dreiecke, vier Materialien) entsteht in Blender;
+die Quellen liegen in `art/r20/`. Faellt die Datei aus, baut `fallbackGlider()` einen Ersatz im
+Code - und der Schirm steht in der Signatur des Kart-Pools, damit nicht versehentlich der
+Ersatzschirm zwischengespeichert wird.
+
+Der Schirm uebernimmt die Lackfarbe des Karts. Beim ersten Aufklappen im Rennen erscheint der
+Hinweis "PILZGLEITER! DRIFT = TRICK".
+
+**Verifikation:** 20 Unit-Tests (Kern und Gleiter) plus 6 fuer die Tonmischung. Die Tonreihe lief
+bisher nie mit - sie stand in keiner Testzeile und ist jetzt in `npm test` aufgenommen. Alle
+sechs Strecken im Autopilot durchgefahren, der Schirm oeffnet auf jeder (6-18 Messpunkte je
+Runde), 95-163 Draw Calls.
+
 ## Runde 19 (20.09.2026): Schluesselbild aus Unreal
 
 Das Unreal-MCP war wieder erreichbar, also ist der Showcase dort nachgeholt worden. Im Projekt

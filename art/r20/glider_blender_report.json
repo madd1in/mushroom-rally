@@ -1,0 +1,38 @@
+{
+  "name": "Spore Sail",
+  "triangles": 2527,
+  "materials": [
+    "GliderPaint",
+    "GliderCream",
+    "GliderTrim",
+    "GliderRope"
+  ],
+  "objects": 4,
+  "blender_bounds": [
+    [
+      -2.511090040206909,
+      -0.9430000185966492,
+      0.8974833488464355
+    ],
+    [
+      2.511090040206909,
+      1.1299999952316284,
+      3.280665397644043
+    ]
+  ],
+  "gltf_bounds": [
+    [
+      -2.511090040206909,
+      0.8974833488464355,
+      -1.1299999952316284
+    ],
+    [
+      2.511090040206909,
+      3.280665397644043,
+      0.9430000185966492
+    ]
+  ],
+  "export": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\glider.glb",
+  "original_scene": "Scene",
+  "original_scene_objects": 52
+}

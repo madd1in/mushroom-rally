@@ -1,0 +1,15 @@
+{
+  "magic": "glTF",
+  "version": 2,
+  "bytes": 55676,
+  "meshes": 4,
+  "primitives": 4,
+  "materials": [
+    "GliderCream",
+    "GliderPaint",
+    "GliderRope",
+    "GliderTrim"
+  ],
+  "triangles": 2527,
+  "sha256": "7931FB2EFF8CE86123FD72B63D6038F58D52F896130381335E7D38AABB345B72"
+}
