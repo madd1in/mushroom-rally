@@ -49,7 +49,7 @@ const courses=[
   points:[[0,70],[50,75],[80,50],[55,25],[85,0],[95,-45],[55,-60],[30,-35],[0,-60],[-30,-95],[-80,-80],[-70,-40],[-105,-10],[-95,40],[-60,35],[-40,65]],
   hills:[[4.6,4,.03],[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[9.3,10.0,'neon']],gaps:[[12.55,12]],agrav:[[2.65,4.95,'wall',90],[8.6,10.75,'roll',1]],
   ramps:[[10.6,0,8],[14.5,-2,7]],pads:[[4.4,3],[12.4,-3]],
-  boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],swing:[[2.5,5,1.3,0],[7.4,5,1.1,1.5],[13.1,5,1.4,3]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
+  builds:[[11.45,'neongate']],boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],swing:[[2.5,5,1.3,0],[7.4,5,1.1,1.5],[13.1,5,1.4,3]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
  {name:'Geisterhaus',icon:'👻',kind:'Spuk · Villa · Fahrt über Kopf',medals:[91,98,110],music:'night',bgmRate:.9,theme:'haunted',seed:66,
   points:[[0,70],[55,78],[95,55],[105,10],[70,-16],[100,-60],[70,-95],[20,-90],[-30,-90],[-75,-95],[-112,-55],[-104,-18],[-93,12],[-104,40],[-80,70],[-40,76]],
   hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.4,13.4,'over',1]],
@@ -128,7 +128,7 @@ function mergeByMaterial(root){root.updateMatrixWorld(true);const groups=new Map
  const out=new T.Group();for(const e of groups.values()){const mixed=new Set(e.g.map(g=>!!g.index)).size>1;const gs=e.g.map(g=>{g=mixed&&g.index?g.toNonIndexed():g;if(!g.attributes.normal)g.computeVertexNormals();for(const k of Object.keys(g.attributes))if(k!=='position'&&k!=='normal'&&!(k==='uv'&&e.m.map)&&!(k==='color'&&e.m.vertexColors))g.deleteAttribute(k);return g;});const geo=mergeGeometries(gs,false);if(geo)out.add(new T.Mesh(geo,e.m));else for(const g of gs)out.add(new T.Mesh(g,e.m));}return out;}
 let loaded=0;const PROTO_FILES=['kart','mushroom','gate','tree','rock','balloon','itembox','banana','shell','ramp','grandstand','spectator','bouncepad','podium','trophy','ghost','gravestone','pumpkin','kartwheel','driver','driver_turtle','driver_robot','driver_cat','glider'];
 // Villa und Burg sind gross und stehen nur auf je einer Strecke: erst nach dem Start nachladen
-const LATE_FILES=['mansion','castle','roottree'];
+const LATE_FILES=['mansion','castle','roottree','neongate'];
 function loadProto(name){return new Promise(resolve=>{new GLTFLoader().load(`assets/${name}.glb`,g=>{const merged=mergeByMaterial(g.scene);markShared(merged);P[name]=merged;progress();resolve();},undefined,()=>{P[name]=null;progress();resolve();});});}
 function progress(){loaded++;const el=$('loaderBar');if(el)el.style.width=Math.round(loaded/PROTO_FILES.length*100)+'%';}
 function cloneProto(proto){const c=proto.clone(true);c.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});return c;}
@@ -733,6 +733,9 @@ const BUILDINGS={
   rows:[[12.7,-11,11,2,1.5],[25.5,-9,9,3,2.4],[10.9,-6,6,6,.95]],
   single:[[-27.5,13,5.6],[27.5,-13,5.6],[-13.6,18,1.9],[13.6,18,1.9]],
   wings:true},
+ neongate:{col:0x1a1730,half:14,zone:28,
+  rows:[[14.2,-3.2,3.2,3.2,2.5],[16.4,-2,2,4,1.5]],
+  single:[[-19.5,0,1.6],[19.5,0,1.6]]},
  roottree:{col:0x3a2a1c,half:15,zone:30,
   rows:[[15.2,-7,7,2.4,4.7],[21.5,-8,8,5.5,2.1]],
   single:[[-23,2,2.4],[23,-2.5,2.4]]}};

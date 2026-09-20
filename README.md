@@ -4,6 +4,19 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 21 (20.09.2026): Neon-Torbogen
+
+Der Neon-Pilzwald war die letzte Strecke ohne Durchfahr-Bauwerk. Jetzt steht dort ein Torbogen:
+zwei Pfeiler mit Leuchtroehren, drei gestaffelte Daecher mit hochgezogenen Traufen, ein Banner
+ueber der Fahrbahn und Laternen an den Traufen. 40 m breit, 29 m hoch, **480 Dreiecke, 46 KB**.
+
+Die Leuchtroehren bleiben als eigene Materialien stehen, weil `mergeByMaterial` emissive
+Materialien nicht zusammenfasst - alles andere faellt in einen einzigen Zeichenaufruf. Die
+Strecke kostet dadurch praktisch nichts: 151 statt 153 Draw Calls.
+
+Das Bauwerk-System aus Runde 17 hat dafuer gereicht, es brauchte nur einen Eintrag in `BUILDINGS`
+und `builds:[[11.45,'neongate']]` an der Strecke.
+
 ## Runde 20 (20.09.2026): Pilzgleiter
 
 Nach einer Schanze oder einem Sprungpilz klappt jetzt ein Gleitschirm auf. Er ist **rein
