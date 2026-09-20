@@ -113,6 +113,9 @@ const shieldMat=new T.ShaderMaterial({uniforms:{uTime:shaderTime},transparent:tr
  vertexShader:'varying vec3 vN;varying vec3 vV;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}',
  fragmentShader:'uniform float uTime;varying vec3 vN;varying vec3 vV;void main(){float f=pow(1.-abs(dot(vN,vV)),2.2);vec3 c=mix(vec3(1.,.82,.25),vec3(.5,.95,1.),f);gl_FragColor=vec4(c*(f*1.1+.12+.06*sin(uTime*9.)),1.);}'});
 const flameMat=new T.MeshBasicMaterial({color:0xffa531,transparent:true,opacity:.85,blending:T.AdditiveBlending,depthWrite:false});
+// Bremslichter am Heck - sichtbar auch an den KI-Karts
+const brakeMat=new T.MeshBasicMaterial({color:0xff2a18,transparent:true,opacity:.92,blending:T.AdditiveBlending,depthWrite:false});
+const brakeGeo=new T.BoxGeometry(.34,.16,.1);
 const shieldGeo=new T.SphereGeometry(1.75,24,16),flameGeo=new T.ConeGeometry(.28,1.3,8);flameGeo.rotateX(-Math.PI/2);flameGeo.translate(0,0,-.65);
 const persistentMats=new Set([cream,dark,white,gold,shieldMat,flameMat]);
 
@@ -231,6 +234,12 @@ function liftAt(d){let lf=0;
   lf+=q.lift*sstep(u/.3)*(1-sstep((u-.7)/.3));}
  return lf;}
 const hasRoll=d=>(agrav.length&&Math.abs(rollAt(d))>.004)||(loops.length&&!!loopAt(d));
+// Zum Ende einer Rollzone hin enger fuehren: wer dort noch weit aussen haengt, faellt beim
+// Austritt neben die Bahn - auf der Regenbogenpiste ins Leere.
+function rollFree(d,base){let f=1;
+ for(const q of agrav){const rel=lapDist(d-q.s);if(rel>q.span)continue;const u=rel/q.span;
+  if(u>.72)f=Math.min(f,1-(u-.72)/.28*.55);}
+ return base*f;}
 // Ein einziger Weg von (Streckenmeter, Querversatz, Hoehe ueber der Bahn) ins Bild - flach,
 // gerollt und im Looping. Bei Rollwinkel 0 und ausserhalb des Loopings faellt alles auf die
 // flache Formel zusammen, deshalb gibt es an den Uebergaengen keinen Sprung.
@@ -321,7 +330,15 @@ function kart(color,goldLook=false,dtype=0){let g;if(P.kart){g=new T.Group();con
   let driver=null;if(dproto){driver=cloneProto(dproto);applyTint(driver,'CapPaint',goldLook?0xffd23f:color);driver.position.set(0,.95,-.35);g.add(driver);}
   g.userData.parts={wheels,driver};}else{g=new T.Group();const body=mat(color,{roughness:.35});box(g,body,0,.68,0,1.75,.55,2.4);box(g,dark,0,.95,-.28,.9,.75,.72);sphere(g,cream,0,1.9,-.08,.45);for(const x of [-1,1])for(const z of [-.9,1]){const w=mesh(new T.CylinderGeometry(.43,.43,.38,14),dark,g,x,.44,z);w.rotation.z=Math.PI/2;}}
  const shield=new T.Mesh(shieldGeo,shieldMat);shield.position.y=1;shield.visible=false;g.add(shield);
- const flames=[-.45,.45].map(x=>{const f=new T.Mesh(flameGeo,flameMat);f.position.set(x,.72,-1.72);f.visible=false;g.add(f);return f;});g.userData={...g.userData,shield,flames};attachGlider(g,color);return g;}
+ const flames=[-.45,.45].map(x=>{const f=new T.Mesh(flameGeo,flameMat);f.position.set(x,.72,-1.72);f.visible=false;g.add(f);return f;});
+ // Bremslichter: man sieht dem Vordermann an, wann er vom Gas geht
+ const brakes=[-.62,.62].map(x=>{const b=new T.Mesh(brakeGeo,brakeMat);b.position.set(x,.62,-1.6);b.visible=false;g.add(b);return b;});
+ // Anti-Grav-Unterlicht: additive Glowflaeche unterm Kart, sichtbar nur in Rollzonen -
+ // rollt als Kind des Mesh automatisch mit und zeigt das Magnetfeld, das das Kart traegt.
+ if(!UG_MAT){UG_MAT=new T.MeshBasicMaterial({map:canvasTex(64,64,(q)=>{const r0=q.createRadialGradient(32,32,4,32,32,30);r0.addColorStop(0,'rgba(255,255,255,.95)');r0.addColorStop(.45,'rgba(140,245,255,.5)');r0.addColorStop(1,'rgba(0,0,0,0)');q.fillStyle=r0;q.fillRect(0,0,64,64);}),color:0x9feaff,transparent:true,opacity:.55,blending:T.AdditiveBlending,depthWrite:false});}
+ const ug=new T.Mesh(UG_GEO||(UG_GEO=new T.PlaneGeometry(2.7,3.7).rotateX(-Math.PI/2)),UG_MAT);
+ ug.position.y=.14;ug.visible=false;g.add(ug);
+ g.userData={...g.userData,shield,flames,brakes,underglow:ug};attachGlider(g,color);return g;}
 // KI-Karts instanziert: je Bauteil (Karosserie, Lack, Fahrer, Kappe, Raeder) ein Draw-Call fuer alle 7 Karts.
 // r.mesh bleibt ein unsichtbares Transform-Geruest (Fahrer-/Rad-Knoten), dessen Weltmatrizen jeden Frame uebertragen werden.
 const WHEEL_SLOTS=[[-1,.42,1,1,1],[1,.42,1,1,1],[-1.05,.48,-.9,1.14,1.3],[1.05,.48,-.9,1.14,1.3]];
@@ -360,7 +377,7 @@ function syncKartInstances(){if(!kartInst)return;for(const r of racers){const u=
 function boostTexture(){return canvasTex(64,128,(q,w,h)=>{q.fillStyle='#ffc93c';q.fillRect(0,0,w,h);q.strokeStyle='#ff5a1f';q.lineWidth=12;q.lineCap='round';for(let y=10;y<h;y+=64){q.beginPath();q.moveTo(8,y+34);q.lineTo(w/2,y+6);q.lineTo(w-8,y+34);q.stroke();}},true);}
 
 const bprof=[];let bprofT=0;const bm=l=>{const n=performance.now();bprof.push([l,+(n-bprofT).toFixed(1)]);bprofT=n;};
-let builtSel=-1,worldDirty=true,boxInst=[],boxQ=null,mapBase=null;
+let builtSel=-1,worldDirty=true,boxInst=[],boxQ=null,mapBase=null,agravWalls=[],agravGates=[],UG_MAT=null,UG_GEO=null;
 // Jede gebaute Strecke bleibt als eigene Szenengruppe im Speicher: Zurueckwechseln = Gruppe tauschen (kein Neubau, kein Upload)
 const worldCache=new Map();
 const courseState=()=>({world,course,theme,curve,length,TP,cpU,gaps,zones,bats,mapInfo,obsGrid,flags,balloons,ramps,pads,rings,spores,swingers,boostPads,sporeMesh,crowd,fireflies,foamRing,boostTex,startLights,boxes,boxInst,boxQ,mapBase,rails,forks,raises,tunnels,agrav,loops,bg:scene.background,fog:scene.fog,revealed:true});
@@ -430,7 +447,7 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  // hold = Winkel, der in der Mitte der Zone gehalten wird ('over' faehrt kopfueber).
  // Der Sichthub ist fuer alle Bauarten gleich: jede dreht irgendwann durch die Senkrechte,
  // und dort ragt die halbe Fahrbahnbreite nach unten.
- agrav=(course.agrav||[]).map(([a,b,mode,deg])=>{const s=cpDist(a),e=cpDist(b),m=mode||'wall',dg=(deg===undefined?90:deg)*Math.PI/180;
+ agravWalls=[];agravGates=[];agrav=(course.agrav||[]).map(([a,b,mode,deg])=>{const s=cpDist(a),e=cpDist(b),m=mode||'wall',dg=(deg===undefined?90:deg)*Math.PI/180;
   const hold=m==='over'||m==='flip'?Math.PI:clamp(Math.abs(dg),.35,TAU-.35);
   return {s,e,span:lapDist(e-s),mode:m==='flip'?'over':m,hold,sgn:dg<0?-1:1,lift:12.5};});
  for(let i=0;i<PS;i++){const d=i/PS*length;TP.rl[i]=rollAt(d);TP.lf[i]=liftAt(d);}
@@ -477,9 +494,25 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
    addStrip(strip(q.s-6,q.e+6,0,17.8,-1.6,6,steps),keelMat);
    // Energieband auf der Fahrbahn
    {const gm=glowMat.clone();gm.map=boostTex||null;const m=addStrip(strip(q.s+1,q.e-1,0,15.2,.08,7,Math.ceil(span/1.3)),gm,false);m.castShadow=false;}
-   // Torringe an Ein- und Ausfahrt
+   // Energiewaende beidseitig: machen die Magnetbande sichtbar. Ohne sie gleitet man bis an den
+   // Rand und weiss nicht, warum man dort nicht weiterkommt - das fuehlt sich abfliegen an.
+   {const wm=glowMat.clone();wm.opacity=.3;agravWalls.push(wm);const n=Math.ceil(span/1.2),v=[],idx=[];
+    for(const side of [-1,1]){const base=v.length/3;
+     for(let i=0;i<=n;i++){const u=i/n,d=q.s+(q.e-q.s)*u,hgt=1.15*Math.min(1,Math.sin(Math.PI*u)*4);
+      const a=posAt(d,side*8.75,0,_pv),b=posAt(d,side*8.75,hgt,new T.Vector3());
+      v.push(a.x,a.y,a.z,b.x,b.y,b.z);
+      if(i<n){const o=base+i*2;idx.push(o,o+2,o+1,o+1,o+2,o+3);}}}
+    const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(v,3));g.setIndex(idx);
+    const m=new T.Mesh(g,wm);m.castShadow=false;m.frustumCulled=false;world.add(m);}
+   // Torringe an Ein- und Ausfahrt (pulsiere leicht, damit das Feld lebendig wirkt)
    for(const d of [q.s+1.5,q.e-1.5]){const s=sample(d,0),g=new T.Mesh(new T.TorusGeometry(11.8,.5,8,22),ringMat);
-    g.position.copy(s.p);g.rotation.order='YXZ';g.rotation.y=s.angle;g.rotation.z=rollAt(d);g.castShadow=false;world.add(g);}
+    g.position.copy(s.p);g.rotation.order='YXZ';g.rotation.y=s.angle;g.rotation.z=rollAt(d);g.castShadow=false;world.add(g);agravGates.push(g);}
+   // Magnet-Ringe: schweben auf der Ideallinie durch die Zone. Im Korkenzieher mitnehmen
+   // (roll), in der Wandfahrt einer in der Mitte - durchfahren gibt RING-BOOST.
+   for(const u of (q.mode==='roll'?[.3,.55,.8]:[.45])){const d=lapDist(q.s+span*u),p=posAt(d,0,1.7,new T.Vector3());
+    const rg=new T.Mesh(new T.TorusGeometry(4.6,.32,10,30),new T.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:1.1,roughness:.4}));
+    rg.position.copy(p);rg.rotation.order='YXZ';const s=sample(d,0);rg.rotation.y=s.angle;rg.rotation.z=rollAt(d);
+    rg.castShadow=false;world.add(rg);rings.push({d,off:0,y:p.y,mesh:rg,flash:0,ag:1});}
    // Pylonen: stehen senkrecht unter der schwebenden Bahn
    // nur dort, wo die Bahn noch kaum gedreht ist - unter einer senkrechten oder kopfueber
    // liegenden Fahrbahn stehen Stuetzen nicht nur falsch, sie verdecken auch die Sicht
@@ -522,7 +555,7 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  for(const g of gaps){const d=g.start-40;boostPads.push(lapDist(d));addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
  // Beschleunigungsstreifen in jeder Rollzone: im Korkenzieher kostet jede Korrektur Schwung,
  // und ohne Nachschub schleppt man sich durch. Drei Stueck, breiter als die normalen.
- for(const q of agrav)for(const u of [.28,.52,.76]){const d=lapDist(q.s+q.span*u);
+ for(const q of agrav)for(const u of [.16,.33,.5,.67,.84]){const d=lapDist(q.s+q.span*u);
   boostPads.push(d);addStrip(strip(d-3.6,d+3.6,0,12.4,.11,4.6,12),padMat,false);}
  bm('gate+boost');
  {const poles=[],pens=[],M4=new T.Matrix4(),col=new T.Color();for(let i=0;i<16;i++){const d=length*(i+.5)/16,fo=i%2?13:-13;if(inGap(d)||inZone(d,4)||forkBlocks(d,fo)||inBridge(d)||inTunnel(d))continue;const s=sample(d,fo);M4.makeRotationY(s.angle).setPosition(s.p.x,groundAt(d,fo).y-.1,s.p.z);addObstacle(s.p.x,s.p.z,.35);
@@ -928,8 +961,11 @@ function dropPuff(r,color=0xdfe8e8){const i=puffIdx++%PUFFS,p=puffPool[i],s=Math
 function vertical(r,dt){const {y:ground,rh}=groundAt(r.distance,r.offset);
  if(r.y===undefined){r.y=ground;r.vy=0;r.air=false;r.airT=0;r.trick=0;r.lastGround=ground;r.rampY=0;r.padCd=0;r.ringCd=0;r.stall=0;r.driftVis=0;}
  const roadVy=clamp((ground-r.lastGround)/Math.max(dt,1e-3),-45,45);r.lastGround=ground;
- // Anti-Grav: die Fahrbahn haelt magnetisch fest, sonst wirft die Kuppe der Wandfahrt jeden ab
- if((agrav.length||loops.length)&&hasRoll(r.distance)&&!rh&&r.y<ground+2.2){if(r.air){r.air=false;r.airT=0;r.trick=0;}
+ // Anti-Grav wie in Mario Kart 8: in der Rollzone haelt die Bahn bedingungslos fest. Aus JEDER
+ // Hoehe wird das Kart eingeholt (Anflug ueber der Zone, Absprung, Treffer) - das alte Fenster
+ // (nur unter ground+3.4) liess jeden fallen, der hoch hineinflog. Einholen mit festem Zug,
+ // damit sich der Fang wie ein Magnet anfuehlt, nicht wie ein Teleport.
+ if((agrav.length||loops.length)&&hasRoll(r.distance)&&!rh){if(r.air){r.air=false;r.airT=0;r.trick=0;}
   r.y+=(ground-r.y)*(1-Math.exp(-dt*16));if(Math.abs(ground-r.y)<.05)r.y=ground;
   r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
  if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;if(r.y<ground-1.5&&r.vy<0&&ground>-20){respawn(r);return;}if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
@@ -969,10 +1005,22 @@ function syncKart(r,dt){const s=tanAt(r.distance),e=r.mesh.rotation,dot=Math.sin
  const ks=r.kartScale||[1,1,1];
  if(r.squash>0){r.squash=Math.max(0,r.squash-dt*1.4);const q=Math.sin(r.squash/.3*Math.PI)*r.squash*.55;r.mesh.scale.set(ks[0]*(1+q*.6),ks[1]*(1-q),ks[2]*(1+q*.6));}
  else if(r.mesh.scale.y!==ks[1])r.mesh.scale.set(ks[0],ks[1],ks[2]);
- const parts=r.mesh.userData.parts;if(parts){const st=r.steerS||0;for(const w of parts.wheels){w.wh.rotation.x+=(r.speed*dt)/w.r*w.dir;if(w.front)w.piv.rotation.y=st*.42+(r.driftDir||0)*.12;}
+ // Federung: Laengsbeschleunigung geglaettet, daraus Nicken und gegenlaeufiges Einfedern.
+ // Ohne das steht das Kart starr auf den Raedern und wirkt wie ein Brett.
+ {const sp=r.speed||0,a=(sp-(r.spdPrev??sp))/Math.max(dt,1e-3);
+  r.spdPrev=sp;r.accS=(r.accS||0)+(a-(r.accS||0))*Math.min(1,dt*7);}
+ const squat=clamp((r.accS||0)*.006,-.075,.075);
+ e.x-=squat*.85;                                        // beschleunigen: Nase hoch, bremsen: Nase runter
+ const parts=r.mesh.userData.parts;if(parts){const st=r.steerS||0;
+  for(const w of parts.wheels){w.wh.rotation.x+=(r.speed*dt)/w.r*w.dir;if(w.front)w.piv.rotation.y=st*.42+(r.driftDir||0)*.12;
+   if(w.y0===undefined)w.y0=w.piv.position.y;
+   const c=(w.front?-squat:squat)*1.25-(r.air?.05:0);   // in der Luft haengen die Raeder aus
+   w.piv.position.y=w.y0+c;}
   const d=parts.driver;if(d){const lean=-st*.2-(r.driftVis||0)*.3,done=r.finishTime!==null;d.rotation.z+=(lean-d.rotation.z)*Math.min(1,dt*8);d.rotation.x+=((r.air?-.2:r.boost>0?.12:0)-d.rotation.x)*Math.min(1,dt*6);
    d.position.y=.95+(r.air?.14:0)+(done?Math.abs(Math.sin(elapsed*8+r.id))*.3:0)+Math.sin(elapsed*17+r.id)*.015*Math.min(1,Math.abs(r.speed)/20);d.rotation.y=r.stun>0?Math.sin(elapsed*28)*.35:done?Math.sin(elapsed*5+r.id)*.4:0;}}
- syncGlider(r,dt,spin);r.mesh.userData.shield.visible=r.shield>0;const fl=r.boost>0;for(const f of r.mesh.userData.flames){f.visible=fl;if(fl)f.scale.set(1,1,.7+Math.random()*.7);}}
+ syncGlider(r,dt,spin);r.mesh.userData.shield.visible=r.shield>0;const fl=r.boost>0;for(const f of r.mesh.userData.flames){f.visible=fl;if(fl)f.scale.set(1,1,.7+Math.random()*.7);}
+ const ug=r.mesh.userData.underglow;if(ug)ug.visible=!r.air&&agrav.length>0&&hasRoll(r.distance)&&Math.abs(r.speed)>5;
+ for(const b of r.mesh.userData.brakes||[])b.visible=!!r.braking;}
 const keys=new Set(),tkeys=new Set(),touchPtr=new Map(),held=c=>keys.has(c)||tkeys.has(c);function steering(){return (held('ArrowLeft')||held('KeyA')?1:0)-(held('ArrowRight')||held('KeyD')?1:0);}
 
 // ---------------------------------------------------------------- KI-Fahrer: Ideallinie, Bremspunkte, Drifts (Koennen je Klasse)
@@ -1070,7 +1118,16 @@ function setAmbience(on){if(!ctx)return;
  else if(!on&&ambSrc){const s=ambSrc,g=ambGain,lfo=ambLfo;ambSrc=null;ambGain=null;ambLfo=null;g.gain.setTargetAtTime(0,ctx.currentTime,.4);setTimeout(()=>{try{s.stop();lfo?.stop();}catch(e){}},1400);}}
 function sfxNoise(dur,f0,f1,vol=.2,q=2){if(!soundOn||!ctx||state==='paused'||effectSources.size>=18)return;const t=ctx.currentTime;if(!noiseBuf){noiseBuf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}const s=trackEffect(ctx.createBufferSource());s.buffer=noiseBuf;const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.Q.value=q;bp.frequency.setValueAtTime(f0,t);bp.frequency.exponentialRampToValueAtTime(Math.max(40,f1),t+dur);const gg=ctx.createGain();gg.gain.setValueAtTime(.001,t);gg.gain.linearRampToValueAtTime(vol,t+.006);gg.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(bp);bp.connect(gg);gg.connect(sfxGain);s.start(t,Math.random()*.9,dur+.02);}
 function sfxTone(f0,f1,dur,type='square',vol=.08,delay=0){if(!soundOn||!ctx||state==='paused'||effectSources.size>=18)return;const t=ctx.currentTime+delay,o=trackEffect(ctx.createOscillator());o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(Math.max(30,f1),t+dur);const gg=ctx.createGain();gg.gain.setValueAtTime(.001,t);gg.gain.linearRampToValueAtTime(vol,t+.005);gg.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(gg);gg.connect(sfxGain);o.start(t);o.stop(t+dur+.02);}
+let agHum=null;
 const SFX={
+ // Magnetfeld-Summen des Spielers in Rollzonen: leiser Sawtooth durch Tiefpass, weich ein/ausgeblendet
+ hum(on){if(!ctx||(on?agHum:!agHum))return;if(on&&!soundOn)return;
+  if(on){const o=ctx.createOscillator(),f=ctx.createBiquadFilter(),g=ctx.createGain();
+   o.type='sawtooth';o.frequency.value=50;f.type='lowpass';f.frequency.value=240;g.gain.value=0;
+   o.connect(f);f.connect(g);g.connect(sfxGain||masterGain);o.start();
+   g.gain.linearRampToValueAtTime(.045,ctx.currentTime+.25);agHum={o,g};}
+  else{const h=agHum;agHum=null;h.g.gain.linearRampToValueAtTime(0,ctx.currentTime+.3);
+   setTimeout(()=>{try{h.o.stop()}catch(e){}},450);}},
  pickup(){if(playClip('s_pickup',sfxGain,.6))return;[880,1108,1318].forEach((f,i)=>sfxTone(f,f,.09,'square',.05,i*.07));},
  tick(){sfxTone(1500,1400,.03,'square',.018);},
  drift(){playClip('s_drift',sfxGain,.5);},
@@ -1127,7 +1184,7 @@ function start(){if(gp.active)selected=gp.race;syncTrackButtons();keys.clear();b
  for(const id of ['menu','result','ceremony','pausePanel'])$(id).hidden=true;$('hud').hidden=false;$('pause').hidden=false;$('touch').hidden=false;$('gpBadge').hidden=!gp.active;$('hud').classList.toggle('tt',isTT());$('ttGhost').hidden=$('ttMedal').hidden=!isTT();if(isTT())for(const b of boxes)b.cooldown=1e9;
  document.body.classList.add('racing');document.body.classList.remove('cer');if(soundOn)audioInit();finishMusicAt=0;playBgm(raceTrack());setBgmRate(course.bgmRate||1);stopVoice();say('start');updateCamera(1,true);
  toast(`${course.name} · ${isTT()?'Zeitfahren':cc+'cc'}`,2.2);if(isTT()&&ghost)setTimeout(()=>toast('👻 Dein Geist fährt mit – schlag ihn!',2),2300);if(coarseInput){wantFs=true;enterFs();}}
-function home(){setAmbience(false);gp.active=false;state='menu';keys.clear();buildCourse();for(const id of ['hud','touch','pause','pausePanel','result','ceremony'])$(id).hidden=true;$('menu').hidden=false;setText('message','');document.body.classList.remove('racing','cer');if(engine)engine.g.gain.value=0;stopVoice();finishMusicAt=0;playBgm('menu');refreshMenu();}
+function home(){setAmbience(false);gp.active=false;state='menu';keys.clear();buildCourse();for(const id of ['hud','touch','pause','pausePanel','result','ceremony'])$(id).hidden=true;$('menu').hidden=false;setText('message','');document.body.classList.remove('racing','cer');if(engine)engine.g.gain.value=0;SFX.hum(false);stopVoice();finishMusicAt=0;playBgm('menu');refreshMenu();}
 let beforePause='race';function pause(){if(state==='paused'){state=beforePause;$('pausePanel').hidden=true;}else if(state==='race'||state==='countdown'){beforePause=state;state='paused';keys.clear();$('pausePanel').hidden=false;stopVoice();}if(engine)engine.g.gain.value=soundOn&&state==='race'?.011:0;}
 function use(){if(state!=='race')return;useItem(racers[0]);}
 function useItem(r){if(r.itemPending)return null;const prevStun=racers.map(x=>x.stun),res=activate(r,racers);if(!res)return null;const me=r.id===0;
@@ -1196,6 +1253,16 @@ function update(dt){
   // In einer Rollzone schwebt die Bahn - daneben ist kein Gelaende, sondern nichts. Die
   // Offroad-Bremse (Hoechsttempo 12,5) gehoert dort nicht hin; seitlich haelt die Fuehrung.
   const inRoll=(agrav.length||loops.length)&&hasRoll(r.distance);
+  // Magnetfeld-Spuren: Funken unterm Kart zeigen, dass die Bahn traegt (sparsam, nur beim Spieler-Umfeld)
+  if(inRoll&&!r.air&&frame%3===0&&nearPlayer(r,60)){const p=r.mesh.position;
+   emit(p.x+(Math.random()-.5)*1.4,p.y+.15,p.z+(Math.random()-.5)*1.4,theme.glow?0x7cf3ff:0x59d7ff,(Math.random()-.5)*2,-1-Math.random()*2,(Math.random()-.5)*2,.4);}
+  // Saubere Spirale: wer die Rollzone auf der Linie durchfaehrt (nie an die Magnetbande),
+  // kriegt beim Austritt einen Mini-Turbo - belohnt Fahren statt Anecken.
+  if(inRoll){if(!r.inAgPrev)r.agMax=0;r.agMax=Math.max(r.agMax||0,Math.abs(r.offset));}
+  else if(r.inAgPrev&&r.finishTime===null&&(r.agMax||9)<5.5&&Math.abs(r.speed)>15){r.boost=Math.max(r.boost,.8);
+   if(me){toast('SAUBERE SPIRALE!',1,'good');SFX.whoosh();}}
+  r.inAgPrev=inRoll;
+  if(me)SFX.hum(inRoll);
   const offroad=!r.air&&!onRoad(r.distance,r.offset)&&!inGap(r.distance)&&!inRoll;if(TEST){r.tOff=(r.tOff||0)+(offroad?dt:0);r.tAll=(r.tAll||0)+dt;}
   const s=trackAt(r.distance),tan=tanAt(r.distance),dot=Math.sin(r.h)*tan.x+Math.cos(r.h)*tan.z;
   // Mildes Gummiband: Rivalen weit vorn werden minimal langsamer, weit hinten minimal schneller (Sieg bleibt verdient)
@@ -1204,7 +1271,10 @@ function update(dt){
   // Im Looping wird der Vorschub auf der Fahrbahn gebremst, damit das Bild in normalem Tempo
   // durch den Kreis laeuft. Gefahren wird geradeaus, also braucht es keinen Extra-Grip.
   const lp=loops.length?loopAt(r.distance):null;
-  driveKart(r,dt,input,{air:r.air,offroad,slope:slopeAt(r.distance)*dot,speedMul,gripMul:lp?1.5:inRoll?2.3:1,moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):1});
+  // In Rollzonen uebernimmt die Magnetbahn den Hoehenweg: Hang-Widerstand faellt weg, sonst
+  // fehlt genau dort der Schwung, wo die Strecke zusaetzlich noch kippt.
+  driveKart(r,dt,input,{air:r.air,offroad,slope:inRoll?0:slopeAt(r.distance)*dot,speedMul,gripMul:lp?1.5:inRoll?2.3:1,moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):1});
+  r.braking=!!input.brake&&r.speed>1.5&&!r.air;
   if(me&&r.driftDir&&!r.prevDrift)SFX.drift();
   r.prevDrift=!!r.driftDir;
   collideStatic(r);
@@ -1223,17 +1293,23 @@ function update(dt){
    // Innerhalb des freien Bands (+-6 m) bleibt das Lenken voellig frei; darueber hinaus zieht es
    // zunehmend zurueck, und zwar ueber die Geschwindigkeit statt ueber die Position - ein
    // Positions-Snap fuehlt sich beim Fahren wie Verkanten an.
-   if(inRoll){const tn=tanAt(r.distance),free=lp?6.2:7.8,ex=Math.abs(r.offset)-free;
+   if(inRoll){const tn=tanAt(r.distance),free=lp?6.2:rollFree(r.distance,7.0),ex=Math.abs(r.offset)-free;
     if(ex>0){const sg=Math.sign(r.offset),ox=tn.z*sg,oz=-tn.x*sg,vn=r.vx*ox+r.vz*oz;
-     // Fahrtrichtung drehen statt Tempo wegnehmen. Daempfen kostet Schwung, und genau dieser
-     // Tempoverlust fuehlt sich beim Fahren wie Anecken an.
-     if(vn>0){const sp0=Math.hypot(r.vx,r.vz),kk=1-Math.exp(-dt*3.4*Math.min(3,1+ex*.3));
+     // Haltekraft waechst mit dem Abstand: im freien Band null, weiter aussen wie ein Magnet.
+     // Mit fester Staerke war sie schwaecher als die Querbewegung beim Lenken - dann faellt man raus.
+     if(vn>0){const sp0=Math.hypot(r.vx,r.vz),kk=1-Math.exp(-dt*(3.5+ex*2.2));
       r.vx-=ox*vn*kk;r.vz-=oz*vn*kk;
+      // Betrag erhalten: Daempfen kostet Schwung und fuehlt sich wie Anecken an
       const sp1=Math.hypot(r.vx,r.vz);if(sp1>.01&&sp0>.01){const f=sp0/sp1;r.vx*=f;r.vz*=f;}}
-     const pull=Math.min(ex,dt*(lp?3:2.6)*Math.min(3,1+ex*.3));
-     r.x-=ox*pull;r.z-=oz*pull;r.offset=sg*(Math.abs(r.offset)-pull);}
-    // Im Looping die Blickrichtung leicht nachfuehren, aber nicht festnageln: Lenken bleibt moeglich
-    if(lp)r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*(1-Math.exp(-dt*1.4));}}
+     const pull=Math.min(ex,dt*(2.5+ex*3.4));
+     r.x-=ox*pull;r.z-=oz*pull;r.offset=sg*(Math.abs(r.offset)-pull);
+     // Harte Grenze an der sichtbaren Energiewand (8.75): bis knapp davor haengen, aber nie
+     // durch sie durch - und immer noch auf der Fahrbahn (onRoad greift unter 8.6).
+     const cap=Math.min(free+6,8.45),ab=Math.abs(r.offset);
+     if(ab>cap){const back=ab-cap;r.x-=ox*back;r.z-=oz*back;r.offset=sg*cap;}
+     // Fahrtrichtung zurueckfuehren, je weiter aussen desto deutlicher
+     r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*Math.min(1,dt*(1.0+ex*.9));}
+    else if(lp)r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*(1-Math.exp(-dt*1.4));}}
   vertical(r,dt);
   if(!r.air&&!inRoll&&Math.abs(r.offset)<ROAD_HALF&&!r.rampY){const toGap=gaps.find(g=>{const a=wrapDiff(g.start,r.distance);return a>0&&a<95;});if(!toGap)r.safeD=lapDist(r.distance);}
   if(r.lastMT){r.mts=(r.mts||0)+(r.lastMT==='ultra'?100:r.lastMT==='super'?10:1);if(me){stats.mt[r.lastMT]++;SFX.mt(r.lastMT);const combo=comboStep(r,elapsed);if(combo>=2){stats.maxCombo=Math.max(stats.maxCombo||0,combo);if(r.spores<MAX_SPORES)r.spores++;SFX.combo(combo);toast(`${MT_LABEL[r.lastMT]} · COMBO ×${combo}`,1,'mt-'+r.lastMT);}else toast(MT_LABEL[r.lastMT]+'!',.8,'mt-'+r.lastMT);const p=r.mesh.position;for(let i=0;i<14;i++){const a=Math.random()*TAU;emit(p.x,p.y+.4,p.z,MT_COLORS[r.lastMT],Math.sin(a)*3-Math.sin(r.h)*6,1+Math.random()*2,Math.cos(a)*3-Math.cos(r.h)*6,.5);}}r.lastMT=null;}
@@ -1247,7 +1323,9 @@ function update(dt){
   if(me&&r.boost>oldBoost&&oldBoost===0)SFX.boost();
   if(me&&r.stall>0&&frame%5===0)dropPuff(r);
   for(const pad of pads)if(!r.air&&r.padCd<=0&&Math.abs(wrapDiff(r.distance,pad.d))<1.9&&Math.abs(r.offset-pad.off)<2){armGlider(r,'bounce');r.air=true;r.airT=0;r.vy=11+Math.max(0,r.speed)*.1;r.y+=.1;r.boost=Math.max(r.boost,.5);r.padCd=.6;pad.squash=.45;if(nearPlayer(r,50))SFX.boing(me?1:.4);}
-  for(const ring of rings)if(r.air&&r.ringCd<=0&&Math.abs(wrapDiff(r.distance,ring.d))<2.2&&Math.abs(r.offset-ring.off)<3.1&&Math.abs(r.y+.9-ring.y)<2.9){r.boost=Math.max(r.boost,1.3);r.ringCd=.8;ring.flash=.5;if(me){stats.rings++;SFX.ring();toast('RING-BOOST!',.8,'good');burst(r,0xffd45c,16);}}
+  // Magnet-Ringe (ag) nehmen auch gebunden mit: in der Rollzone haelt die Bahn die Hoehe,
+  // deshalb prueft der Luft-Filter dort nicht, nur Streckenmeter und Linie.
+  for(const ring of rings)if(r.ringCd<=0&&(ring.ag?inRoll:r.air)&&Math.abs(wrapDiff(r.distance,ring.d))<2.2&&Math.abs(r.offset-ring.off)<3.4&&(ring.ag||Math.abs(r.y+.9-ring.y)<2.9)){r.boost=Math.max(r.boost,1.3);r.ringCd=.8;ring.flash=.5;if(me){stats.rings++;SFX.ring();toast('RING-BOOST!',.8,'good');burst(r,ring.ag?0x59d7ff:0xffd45c,16);}}
   for(const sp of spores)if(sp.cd<=0&&Math.abs(wrapDiff(r.distance,sp.d))<1.8&&Math.abs(r.offset-sp.off)<1.8&&Math.abs(r.y+.8-sp.y)<2.3){sp.cd=10;if(r.spores<MAX_SPORES){r.spores++;if(me){stats.maxSpores=Math.max(stats.maxSpores,r.spores);SFX.spore(r.spores);if(r.spores===MAX_SPORES){say('spores');toast('VOLLE SPOREN-POWER!',1.2,'good');}}}}
   if(!isTT())for(const b of boxes){if(b.cooldown<=0&&!r.item&&!r.itemPending&&Math.abs(wrapDiff(r.distance,b.distance))<2.6&&Math.abs(r.offset-b.offset)<2.2&&Math.abs(r.y+1-b.baseY)<3){b.cooldown=4;if(me){r.itemPending=true;roulette={t:.95,tick:0,final:rollItem(placeOf(r),racers.length)};}else{r.item=rollItem(placeOf(r),racers.length);r.charges=r.item==='triple'?3:0;r.cooldown=1+Math.random()*2;}}}
   if(me&&lap(r,length)>oldLap){const lt=elapsed-stats.lapStart,best=lt<stats.bestLap;stats.bestLap=Math.min(stats.bestLap,lt);stats.lapStart=elapsed;const isLast=lap(r,length)===LAPS;
@@ -1301,7 +1379,7 @@ function update(dt){
  if(engine&&ctx){const t=ctx.currentTime,sp=Math.abs(player.speed);engine.o1.frequency.setTargetAtTime(55+sp*5.2+(player.air?50:0)+(player.boost>0?30:0),t,.06);engine.o2.frequency.setTargetAtTime(28+sp*2.6,t,.06);engine.f.frequency.setTargetAtTime(480+sp*36,t,.08);engine.g.gain.setTargetAtTime(soundOn?.011:0,t,.09);engine.noise.gain.setTargetAtTime(soundOn&&(player.driftDir||Math.abs(player.slide)>2.5)&&sp>8&&!player.air?.045:0,t,.07);engine.bp.frequency.setTargetAtTime(player.driftDir?1100+player.drift*260:900,t,.1);if(raceFilter)raceFilter.frequency.setTargetAtTime(3000+sp*430,t,.18);}
  syncKartInstances();if(player.finishTime!==null)end();}
 
-function end(){elapsed=racers[0].finishTime??elapsed;if(isTT())return endTT();state='finished';keys.clear();roulette=null;burst(racers[0],0xffd452,26);burst(racers[0],0xed6350,16);burst(racers[0],0x55bdb2,16);
+function end(){elapsed=racers[0].finishTime??elapsed;if(isTT())return endTT();state='finished';keys.clear();roulette=null;SFX.hum(false);burst(racers[0],0xffd452,26);burst(racers[0],0xed6350,16);burst(racers[0],0x55bdb2,16);
  $('result').hidden=false;$('touch').hidden=true;const order=ranking(racers),place=order.indexOf(racers[0])+1,board=$('leaderboard'),rs=raceStars(place,stats.hitsTaken);
  $('resultTitle').textContent=place===1?(rs.perfect?'Perfektes Rennen!':'Der Pokal gehört dir!'):place<=3?`Platz ${place} – aufs Treppchen!`:`Platz ${place}. Da geht noch was!`;
  $('resultTime').textContent=`${course.name} · ${cc}cc · ${format(elapsed)}`;
@@ -1438,7 +1516,7 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
   posAt(p.distance+3,p.offset,0,_agB);posAt(p.distance-3,p.offset,0,_agL);
   const dy=clamp(_agB.y-_agL.y,-5,5),dxz=Math.hypot(_agB.x-_agL.x,_agB.z-_agL.z)||1,pl=Math.hypot(dxz,dy);
   fx=sx*dxz/pl;fy=dy/pl;fz=cz*dxz/pl;
-  if(Math.abs(camRoll)>1e-4){_agAxis.set(sx,0,cz);_agV.set(0,1,0).applyAxisAngle(_agAxis,camRoll);ux=_agV.x;uy=_agV.y;uz=_agV.z;}}
+  if(Math.abs(camRoll)>1e-4){const tn=tanAt(p.distance);_agAxis.set(tn.x,0,tn.z);_agV.set(0,1,0).applyAxisAngle(_agAxis,camRoll);ux=_agV.x;uy=_agV.y;uz=_agV.z;}}
  const kk=snap?1:1-Math.exp(-dt*15);
  camUp.x+=(ux-camUp.x)*kk;camUp.y+=(uy-camUp.y)*kk;camUp.z+=(uz-camUp.z)*kk;
  if(camUp.lengthSq()<1e-4)camUp.set(0,1,0);camUp.normalize();
@@ -1470,6 +1548,10 @@ function applyGfx(){const m=gfxMode;
  scene.traverse(o=>{if(o.isMesh)for(const mm of [].concat(o.material))if(mm)mm.needsUpdate=true;});
  renderer.setPixelRatio(Math.min(devicePixelRatio,quality.dprCap));resize();}
 function animateWorld(dt,now){
+ // Energiewaende der Anti-Grav-Zonen atmen leicht - macht das Magnetfeld lebendig
+ for(let i=0;i<agravWalls.length;i++)agravWalls[i].opacity=.24+.08*Math.sin(now*.0022+i*1.3);
+ for(let i=0;i<agravGates.length;i++)agravGates[i].scale.setScalar(1+.04*Math.sin(now*.0025+i*1.1));
+ if(UG_MAT)UG_MAT.opacity=.45+.15*Math.sin(now*.004);
  if(!dbg.noBoxes&&boxInst.length&&boxQ){const qa=boxQ.geometry.attributes.position.array;_e.set(0,now*.001,0);_q.setFromEuler(_e);boxes.forEach((b,i)=>{b.cooldown=Math.max(0,b.cooldown-dt);const vis=b.cooldown<=0,y=b.baseY+Math.sin(now*.003+b.distance)*.2;_m.compose(_v.set(b.x,y,b.z),_q,_s.setScalar(vis?1.05:0));for(const im of boxInst)im.setMatrixAt(i,_m);qa[i*3]=b.x;qa[i*3+1]=vis?y+1.3:-999;qa[i*3+2]=b.z;});for(const im of boxInst)im.instanceMatrix.needsUpdate=true;boxQ.geometry.attributes.position.needsUpdate=true;}
  {let dirty=false;for(let i=0;i<SPARKS;i++){const s=sparkPool[i];if(s.life<=0)continue;s.life-=dt;s.vy-=dt*8;s.x+=s.vx*dt;s.y+=s.vy*dt;s.z+=s.vz*dt;if(s.life>0){const k=s.life*2;_m.makeScale(k,k,k).setPosition(s.x,s.y,s.z);sparkMesh.setMatrixAt(i,_m);}else sparkMesh.setMatrixAt(i,_zeroM);dirty=true;}if(dirty)sparkMesh.instanceMatrix.needsUpdate=true;
   dirty=false;for(let i=0;i<PUFFS;i++){const p=puffPool[i];if(p.life<=0)continue;p.life-=dt;p.vy+=dt*1.1;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;if(p.life>0){const k=(1+(.75-p.life)*1.8)*Math.min(1,p.life*3);_m.makeScale(k,k,k).setPosition(p.x,p.y,p.z);puffMesh.setMatrixAt(i,_m);}else puffMesh.setMatrixAt(i,_zeroM);dirty=true;}if(dirty)puffMesh.instanceMatrix.needsUpdate=true;
@@ -1480,7 +1562,7 @@ function animateWorld(dt,now){
  if(foamRing)foamRing.material.opacity=.16+Math.sin(now*.0012)*.09;
  for(let i=hazards.length-1;i>=0;i--){const h=hazards[i];h.life-=dt;h.arm=Math.max(0,h.arm-dt);if(h.life<=0){actors.remove(h.mesh);hazards.splice(i,1);}}
  for(const pad of pads){pad.squash=Math.max(0,pad.squash-dt*1.6);const k=pad.squash>0?Math.sin(pad.squash*14)*pad.squash:0;pad.mesh.scale.set(1+k*.4,1-k,1+k*.4);}
- for(const ring of rings){ring.flash=Math.max(0,ring.flash-dt);ring.mesh.rotation.z=now*.0015;ring.mesh.scale.setScalar(1+ring.flash*.6);ring.mesh.material.emissiveIntensity=.9+ring.flash*4;}
+ for(const ring of rings){ring.flash=Math.max(0,ring.flash-dt);if(!ring.ag)ring.mesh.rotation.z=now*.0015;ring.mesh.scale.setScalar(1+ring.flash*.6);ring.mesh.material.emissiveIntensity=.9+ring.flash*4;}
  if(boostTex)boostTex.offset.y=-(now*.0022)%1;
  if(rainbowTex)rainbowTex.offset.y=(now*.00008)%1;
  if(state==='menu')updateSwingersMenu(now);
