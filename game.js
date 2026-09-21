@@ -200,9 +200,11 @@ function nearLoop(d){if(!loops.length)return false;for(const q of loops)if(lapDi
 // die Streckung also genau 1 - der Uebergang ist stetig.
 const sdot=u=>{const t=clamp(u,0,1);return 30*t*t*(1-t)*(1-t);};     // Ableitung von sstep
 // Form in der Ebene (vorwaerts / hoch): Tropfen statt Kreis - unten enger, oben runder, wie bei
-// einer echten Achterbahn. Zusammen mit der Vorlage laufen Ein- und Ausfahrt sichtbar auseinander.
+// einer echten Achterbahn. Der lineare Vorschub (gap) oeffnet die Spirale: Einfahrt und Ausfahrt
+// liegen sichtbar versetzt statt uebereinander (Nutzerwunsch R26) - ein geschlossener Kreis
+// liess Ein- und Ausfahrt optisch und im Fahrgefuehl zusammenfallen.
 function loopShape(q,th,out){const r=q.R*(.66+.34*(1-Math.cos(th))*.5);
- out[0]=r*Math.sin(th);out[1]=r*(1-Math.cos(th));return out;}
+ out[0]=r*Math.sin(th)+q.gap*th/TAU;out[1]=r*(1-Math.cos(th));return out;}
 const _ls0=[0,0],_ls1=[0,0],_ls2=[0,0];
 const _loopState={q:null,th:0,a:0,b:0,tf:1,tu:0,nf:0,nu:1,k:1,pitch:0};
 function loopFrame(q,d){const st=_loopState,u=clamp(lapDist(d-q.s)/q.span,0,1),th=TAU*sstep(u);
@@ -228,10 +230,13 @@ function rollAt(d){let ph=0;
   const h=q.hold,a=.7*h/TAU,b=1-.7*(TAU-h)/TAU;
   ph+=(u<a?h*sstep(u/a):u<b?h:h+(TAU-h)*sstep((u-b)/(1-b)))*q.sgn;}
  return ph;}
-// Sichthub: hebt nur das Bild der Fahrbahn an, damit die gedrehte Bahn frei ueber dem Boden schwebt
+// Sichthub: hebt nur das Bild der Fahrbahn an, damit die gedrehte Bahn frei ueber dem Boden schwebt.
+// Abbau seit R26 ueber die letzten 38 % statt 30 %: die 12,5-m-Absenkung am Zonenaustritt
+// verteilte sich vorher auf zu wenige Meter - am Uebergang mass der Fahrfluss einen
+// Geschwindigkeitswechsel von 13 m/s (sicht- und spuerbarer Ruck).
 function liftAt(d){let lf=0;
  for(const q of agrav){const rel=lapDist(d-q.s);if(rel>q.span)continue;const u=rel/q.span;
-  lf+=q.lift*sstep(u/.3)*(1-sstep((u-.7)/.3));}
+  lf+=q.lift*sstep(u/.3)*(1-sstep((u-.62)/.38));}
  return lf;}
 const hasRoll=d=>(agrav.length&&Math.abs(rollAt(d))>.004)||(loops.length&&!!loopAt(d));
 // Zum Ende einer Rollzone hin enger fuehren: wer dort noch weit aussen haengt, faellt beim
@@ -271,7 +276,10 @@ function cpDist(v){const n=course.points.length,i=Math.floor(v)%n,f=v-Math.floor
 function inGap(d){const dl=lapDist(d);return gaps.some(g=>dl>g.start&&dl<g.end);}
 function inRaise(q,d){return lapDist(d-q.s)<=lapDist(q.e-q.s);}
 function inBridge(d){return raises.some(q=>q.bridge&&inRaise(q,d));}
-function raiseH(d){let h=0;for(const q of raises){const span=lapDist(q.e-q.s),rel=lapDist(d-q.s);if(rel<=span)h+=q.h*smooth(0,q.r,rel)*(1-smooth(span-q.r,span,rel));}return h;}
+// sstep (C2-smootherstep) statt smooth: an den Rampenflanken blieb die STEIGUNG knicken -
+// bei Tempo ein spuerbarer Ruck im Fahrfluss (R26). Hoehen bleiben exakt gleich, nur die
+// Uebergaenge werden stetig.
+function raiseH(d){let h=0;for(const q of raises){const span=lapDist(q.e-q.s),rel=lapDist(d-q.s);if(rel<=span)h+=q.h*sstep(rel/q.r)*(1-sstep((rel-(span-q.r))/q.r));}return h;}
 // Anti-Grav dreht nur die Darstellung: gefahren wird weiter in der flachen Streckenebene.
 // Bezugshoehe fuer posAt: die Fahrbahnebene selbst. groundAt taugt dafuer nicht, weil es
 // neben der Bahn die Boeschung mitrechnet - das Bild wuerde an der Zonengrenze springen.
@@ -435,7 +443,7 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
    const sc=m+Math.abs(o)*2e-5;if(sc<best){best=sc;s=d;}}
   const mid=lapDist(s+span/2),[mi,mj,mk]=tIdx(mid);
   const mx=TP.x[mi]+(TP.x[mj]-TP.x[mi])*mk,mz=TP.z[mi]+(TP.z[mj]-TP.z[mi])*mk;
-  loops=[{s,span,R,sig:TAU*R/span}];
+  loops=[{s,span,R,gap:R*.34,sig:TAU*R/span}];
   // Unter dem Kreis bleibt es frei: dort stuende Deko sonst mitten in der Anfahrt
   zones.push({d:mid,half:span/2+26,x:mx,z:mz,r:26});}
  // Hoehenprofil: Huegel (Gauss) + Plateau; Ueberhoehung aus der Kruemmung
@@ -1011,7 +1019,13 @@ function vertical(r,dt){const {y:ground,rh}=groundAt(r.distance,r.offset);
  if((agrav.length||loops.length)&&(hasRoll(r.distance)||agrav.some(q=>{const a=wrapDiff(q.s,r.distance);return a>0&&a<12;}))&&!rh){if(r.air){r.air=false;r.airT=0;r.trick=0;}
   r.y+=(ground-r.y)*(1-Math.exp(-dt*16));if(Math.abs(ground-r.y)<.05)r.y=ground;
   r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
- if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;if(r.y<ground-1.5&&r.vy<0&&ground>-20){respawn(r);return;}if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
+ if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;
+  // Kanten-Gnade (R26): wer eine Landekante knapp unter Niveau kreuzt (zu kurzer Sprung),
+  // knallt auf die Fahrbahn und faehrt weiter, statt sofort am Rettungspilz zu landen.
+  // Vorher pruefte y<ground-1.5 VOR der Landung - jeder grenzwertige Sprung ueber eine
+  // Schlucht endete in einem Respawn-Zyklus (Canyon-Autopilot: 429 Respawns je Rennen).
+  if(r.y<ground-1.5&&r.vy<0&&ground>-20){if(ground-r.y<6){land(r,ground,roadVy);}else{respawn(r);return;}}
+  if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
  else if(!rh&&r.rampY>RAMP_H*.55){armGlider(r,'ramp');r.air=true;r.airT=0;r.vy=Math.min(16,6+Math.max(0,r.speed)*.22+(r.onGapRamp?2:0));r.y+=r.vy*dt;if(nearPlayer(r,50))SFX.ramp(r.id===0?1:.4);}
  else{const cand=r.y+r.vy*dt-.5*G_STICK*dt*dt;if(cand>ground+.06&&r.speed>12){r.air=true;r.airT=0;r.y=cand;r.vy-=G*dt;}else{r.y=ground;r.vy=roadVy;}}
  r.rampY=rh&&!r.air?rh.y:0;r.onGapRamp=rh?rh.ramp.gap:false;if(r.trick>0)r.trick=Math.min(.45,r.trick+dt);
@@ -1324,8 +1338,12 @@ function update(dt){
   if(me&&r.driftDir&&!r.prevDrift)SFX.drift();
   r.prevDrift=!!r.driftDir;
   collideStatic(r);
-  // KI haengt fest (Hindernis, Wand): nach kurzer Zeit per Rettungspilz zurueck auf die Strecke
-  if((!me||autopilot)&&input.gas&&!r.air&&Math.abs(r.speed)<3&&r.stun<=0){r.stuckT=(r.stuckT||0)+dt;if(r.stuckT>1.6){r.stuckT=0;respawn(r);}}else r.stuckT=0;
+  // Kart haengt fest (Hindernis, Wand, Spirale): nach kurzer Zeit per Rettungspilz zurueck auf die
+  // Strecke. Seit R26 auch fuer den Spieler - wer in einer Spirale oder an Deko festhaengt und
+  // trotz Gas nicht vorankommt, kommt ohne Handarbeit (Taste R) frei. Laengerer Limit und erst
+  // nach dem Countdown, damit der Raketenstart (Gas halten bei Tempo 0) nichts faelschlich loest.
+  const stuckLimit=me?2.6:1.6;
+  if(elapsed>4&&input.gas&&!r.air&&Math.abs(r.speed)<3&&r.stun<=0){r.stuckT=(r.stuckT||0)+dt;if(r.stuckT>stuckLimit){r.stuckT=0;respawn(r);}}else r.stuckT=0;
   let pr=project(r.x,r.z,r.distance),skipped=false;
   // Weit neben der lokalen Projektion (Kurve abgeschnitten): global neu zuordnen; grosse Abkuerzungen setzen zurueck.
   if(Math.abs(pr.off)>14&&!forkBand(pr.d,pr.off,4)&&!nearLoop(r.distance)){const g2=project(r.x,r.z,projectGlobal(r.x,r.z,r.y||0));if(Math.abs(g2.off)<9){const jump=wrapDiff(g2.d,lapDist(r.distance));if(jump>60){respawn(r);if(me)toast('ABKÜRZUNG ZÄHLT NICHT!',1.6,'bad');skipped=true;}else{r.distance+=jump;pr=g2;}}}

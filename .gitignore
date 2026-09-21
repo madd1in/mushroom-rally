@@ -6,3 +6,4 @@ node_modules/
 .playwright-mcp/
 chrome-profile/
 *.blend1
+chrome-profile*/

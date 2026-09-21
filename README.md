@@ -4,6 +4,38 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 26 (21.09.2026): Fahrflow - Kanten-Gnade, offene Looping-Spirale, glatte Rampenflanken
+
+**Die Ursache fuer haengenbleibenden Fahrflow war messbar:** Der Autopilot stuerzte auf dem
+Sonnen-Canyon 429- und auf der Regenbogenpiste 372-mal je Rennen in einen Respawn-Zyklus -
+immer an derselben Stelle. Wer eine Schlucht knapp zu kurz sprang, kreuzte die Landekante UNTER
+Kantenniveau, und die Absturzpruefung (y < ground-1.5) lief VOR der Landung: Respawn am
+Rettungspilz, wieder anrollen, wieder zu kurz - Endlosschleife. Menschen merken dasselbe als
+"bleibe haengen" und "kein smoother Flow".
+
+**Kanten-Gnade:** Wer die Landekante weniger als 6 m unter Niveau kreuzt, knallt jetzt hart auf
+die Fahrbahn und faehrt weiter (mit Squash und Kamera-Ruck - es soll weh tun, aber im Rennen
+bleiben). Canyon: **429 -> 0** Respawns, Regenbogen: **372 -> 3**, Geisterhaus und Lava-Feste
+bleiben bei 0.
+
+**Looping-Spirale geoeffnet (Nutzerwunsch):** Der Looping war ein geschlossener Tropfen -
+Einfahrt und Ausfahrt trafen sich im selben Punkt. Jetzt schiebt ein linearer Vorschub
+(gap = 34 % des Radius, ~9 m) die Ausfahrt seitlich vorbei: eine echte Achterbahn-Spirale.
+Sichtpruefung bestaetigt zwei getrennte Fahrbahnbaender am Boden; Zeiten unveraendert.
+
+**Haengenbleiben generell:** Die Stuck-Befreiung (1,6 s Gas ohne Tempo -> Rettungspilz) gilt
+jetzt auch fuer den Spieler (2,6 s, erst nach dem Countdown - der Raketenstart darf nicht
+ausloesen). Wer irgendwo an Deko oder in einer Spirale festhaengt, kommt ohne Taste R frei.
+
+**Zwei Glättungen gegen Holpern:** Der Sichthub der Anti-Grav-Bahn baut sich ueber die letzten
+38 % statt 30 % der Zone ab - der gemessene Geschwindigkeitsruck am Zonenaustritt sank von 13
+auf 9,2 m/s (Geisterhaus). Rampenflanken (Viadukte, Plateaus) steigen statt mit smoothstep
+(C1) jetzt mit smootherstep (C2) - die Steigung ist an den Flankenenden stetig, Hoehen
+unveraendert.
+
+**Verifikation:** 26/26 Unit-Tests; Autopilot-Runden auf allen sechs Strecken (0-5 Rest-Respawns,
+Rundenzeiten im Medaillenrahmen); Looping-Screenshot mit getrennter Ein-/Ausfahrt.
+
 ## Runde 25 (21.09.2026): Wehende Zielflaggen am Start-Ziel-Bereich
 
 Links und rechts neben dem Sporentor stehen jetzt zwei sieben-Meter-Masten mit grossen
