@@ -4,6 +4,29 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 27 (22.09.2026): Durchgaengige Bahnmagnetik in den Spiralen
+
+In den Anti-Grav-Spiralen gab es innerhalb eines freien Bands (+/-7 m um die Ideallinie) keinerlei
+Fuehrung - erst dahinter griff der starke Magnet. Wer in einem Korkenzieher lenkte oder getroffen
+wurde, sackte seitlich weg und klebte an der Energiebande, bis die Zone endete (Nutzerbericht;
+im deterministischen Sim-Test: Voll-Lenkung trieb das Kart auf 8,4 m Versatz, 5 von 6 Messpunkten
+klebten am Rand).
+
+Drei Aenderungen zusammen, jede allein ungenuegend:
+- **Winkel-Klemme:** Das Kart steht in Rollzonen maximal 20 Grad schraeg zur Bahn. Die Lenkrate
+  dort (Grip 2,3) schlug jede weiche Richtungsnachfuehrung - das Kart stand quer und sackte durch
+  die Kurve. Mit Klemme fuehrt die Bahn, Lenken waehlt die Linie.
+- **Freies Band von 7 auf 3,2 m verkleinert:** der bewaehrte starke Magnet greift frueher.
+- **Grundzug im Band:** proportionaler Zug zur Mitte plus Cap der Drift nach aussen (~3,2 m/s).
+
+Sim-Test (Neon-Korkenzieher, Zeitfahren, gesetzt Start, Dauer-Voll-Lenkung):
+**maximaler Versatz 8,45 -> 6,08 m, Kleben am Rand 5/6 -> 0/5 Messpunkte**, Rueckkehr nach
+Zonenende. Die Ideallinie bleibt unberuehrt (unter 0,4 m wirkt nichts): Autopilot-Regression auf
+Neon, Geisterhaus und Lava-Feste mit 0 Respawns, Geisterhaus-Mindesttempo sogar 15,8 -> 26 m/s.
+
+**Verifikation:** 26/26 Unit-Tests; deterministischer Zone-Sim (art/r27_sim.mjs) vorher/nachher;
+Autopilot-Runden Neon/Geisterhaus/Lava ohne Zuruecksetzungen.
+
 ## Runde 26 (21.09.2026): Fahrflow - Kanten-Gnade, offene Looping-Spirale, glatte Rampenflanken
 
 **Die Ursache fuer haengenbleibenden Fahrflow war messbar:** Der Autopilot stuerzte auf dem

@@ -1357,10 +1357,12 @@ function update(dt){
    // Innerhalb des freien Bands (+-6 m) bleibt das Lenken voellig frei; darueber hinaus zieht es
    // zunehmend zurueck, und zwar ueber die Geschwindigkeit statt ueber die Position - ein
    // Positions-Snap fuehlt sich beim Fahren wie Verkanten an.
-   if(inRoll){const tn=tanAt(r.distance),free=lp?6.2:rollFree(r.distance,7.0),ex=Math.abs(r.offset)-free;
-    if(ex>0){const sg=Math.sign(r.offset),ox=tn.z*sg,oz=-tn.x*sg,vn=r.vx*ox+r.vz*oz;
-     // Haltekraft waechst mit dem Abstand: im freien Band null, weiter aussen wie ein Magnet.
-     // Mit fester Staerke war sie schwaecher als die Querbewegung beim Lenken - dann faellt man raus.
+   if(inRoll){const tn=tanAt(r.distance),free=lp?6.2:rollFree(r.distance,3.2),ao=Math.abs(r.offset),ex=ao-free;
+    const sg=Math.sign(r.offset)||1,ox=tn.z*sg,oz=-tn.x*sg,vn=r.vx*ox+r.vz*oz;
+    if(ex>0){
+     // Haltekraft waechst mit dem Abstand: im freien Band nur der sanfte Grundzug (siehe unten),
+     // weiter aussen wie ein Magnet. Mit fester Staerke war sie schwaecher als die Querbewegung
+     // beim Lenken - dann faellt man raus.
      if(vn>0){const sp0=Math.hypot(r.vx,r.vz),kk=1-Math.exp(-dt*(3.5+ex*2.2));
       r.vx-=ox*vn*kk;r.vz-=oz*vn*kk;
       // Betrag erhalten: Daempfen kostet Schwung und fuehlt sich wie Anecken an
@@ -1373,7 +1375,28 @@ function update(dt){
      if(ab>cap){const back=ab-cap;r.x-=ox*back;r.z-=oz*back;r.offset=sg*cap;}
      // Fahrtrichtung zurueckfuehren, je weiter aussen desto deutlicher
      r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*Math.min(1,dt*(1.0+ex*.9));}
-    else if(lp)r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*(1-Math.exp(-dt*1.4));}}
+    else{
+     // Durchgaengige Bahnmagnetik (R27): auch innerhalb des freien Bands haelt die Bahn das
+     // Kart wie auf Schienen. Vorher gab es dort keine Fuehrung - in Spiralen sackte das Kart
+     // seitlich weg und klebte an der Leitplanke (Neon-Korkenzieher, Voll-Lenkung: Sitzt bei
+     // 8,4 m Versatz bis die Zone endet). Zwei Kraefte: die Abdrift nach aussen wird weich auf
+     // ~3,2 m/s begrenzt (bewusstes Ausscheren bleibt moeglich, Durchsacken nicht), und ein
+     // proportionaler Zug zur Mitte. Auf der Ideallinie (unter 0,4 m) bleibt alles unberuehrt.
+     if(!lp&&ao>.4){const g=Math.min(ao/free,1),vcap=3.2+g*1.6;
+      // Harter Cap der Aussen-Komponente pro Frame (Schiene): weiche Daempfung verlor gegen
+      // die staendig erneuerte Lenkrate - Voll-Lenkung drueckte trotzdem bis zur Bande durch.
+      if(vn>vcap){const exv=vn-vcap,sp0=Math.hypot(r.vx,r.vz);
+       r.vx-=ox*exv;r.vz-=oz*exv;
+       const sp1=Math.hypot(r.vx,r.vz);if(sp1>.01&&sp0>.01){const f=sp0/sp1;r.vx*=f;r.vz*=f;}}
+      const pull=Math.min(ao*.5,dt*(2.2+g*2.6));
+      r.x-=ox*pull;r.z-=oz*pull;r.offset=sg*(ao-pull);
+      // Winkel-Klemme: maximal ~20 Grad schraeg zur Bahn. Die Lenkrate einer Rollzone
+      // (Grip 2,3) schlaegt jede weiche Nachfuehrung - ohne Klemme stand das Kart quer zur
+      // Spirale und sackte durch die Kurve bis zur Leitplanke durch. 0.35 rad Slip bleiben
+      // deutlich spuerbare Linienwahl, die Bahn fuehrt.
+      const th=Math.atan2(tn.x,tn.z),dh=angleDiff(r.h,th);
+      if(Math.abs(dh)>.35)r.h=th+Math.sign(dh)*.35;}
+     if(lp)r.h+=angleDiff(Math.atan2(tn.x,tn.z),r.h)*(1-Math.exp(-dt*1.4));}}}
   vertical(r,dt);
   if(!r.air&&!inRoll&&Math.abs(r.offset)<ROAD_HALF&&!r.rampY){const toGap=gaps.find(g=>{const a=wrapDiff(g.start,r.distance);return a>0&&a<95;});if(!toGap)r.safeD=lapDist(r.distance);}
   if(r.lastMT){r.mts=(r.mts||0)+(r.lastMT==='ultra'?100:r.lastMT==='super'?10:1);if(me){stats.mt[r.lastMT]++;SFX.mt(r.lastMT);const combo=comboStep(r,elapsed);if(combo>=2){stats.maxCombo=Math.max(stats.maxCombo||0,combo);if(r.spores<MAX_SPORES)r.spores++;SFX.combo(combo);toast(`${MT_LABEL[r.lastMT]} · COMBO ×${combo}`,1,'mt-'+r.lastMT);}else toast(MT_LABEL[r.lastMT]+'!',.8,'mt-'+r.lastMT);const p=r.mesh.position;for(let i=0;i<14;i++){const a=Math.random()*TAU;emit(p.x,p.y+.4,p.z,MT_COLORS[r.lastMT],Math.sin(a)*3-Math.sin(r.h)*6,1+Math.random()*2,Math.cos(a)*3-Math.cos(r.h)*6,.5);}}r.lastMT=null;}
