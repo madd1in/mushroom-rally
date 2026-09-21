@@ -492,6 +492,8 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
   const ringMat=new T.MeshBasicMaterial({color:col,side:T.DoubleSide});
   const postMat=mat(0x232c44,{emissive:col,emissiveIntensity:.6,roughness:.5});
   const posts=[],_pv=new T.Vector3();
+  // Kristall-Farbton je Strecken-Theme (Material "CrystalPaint" wird getönt, wie Pilzhüte)
+  const CTINT={forest:0x8ef0c9,canyon:0xffd98a,night:0x7cf3ff,haunted:0xc09aff,lava:0xffab5e,rainbow:0xb09aff};
   for(const q of agrav){const span=lapDist(q.e-q.s),steps=Math.ceil((span+12)/1.1);
    addStrip(strip(q.s-6,q.e+6,0,17.8,-1.6,6,steps),keelMat);
    // Energieband auf der Fahrbahn
@@ -525,7 +527,8 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
    // drehen sich langsam und schweben - gibt der Zone Tiefe ohne Draw-Call-Orgie (3 pro Zone).
    for(let ci=0;ci<3;ci++){const d=q.s+span*(.22+.28*ci),below=rollAt(d)>1.4?-4.2:-2.6,p=posAt(d,(ci%2?1:-1)*6.2,below,new T.Vector3());
     let cm=null;
-    if(P.crystal){cm=cloneProto(P.crystal);cm.scale.setScalar(.85+ci*.12);}
+    if(P.crystal){cm=cloneProto(P.crystal);cm.scale.setScalar(.85+ci*.12);
+     const tc=CTINT[course.theme]||col;applyTint(cm,'CrystalPaint',tc,{emissiveColor:tc,emissiveIntensity:1.4});}
     else{cm=new T.Mesh(new T.OctahedronGeometry(1.1),new T.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:1.3,roughness:.3}));cm.scale.y=1.8;}
     cm.position.copy(p);cm.rotation.y=ci*2.1;cm.castShadow=false;world.add(cm);crystals.push({m:cm,base:p.y,ph:ci*2.1});}}
   if(posts.length){const pm=new T.Mesh(mergeGeometries(posts),postMat);pm.castShadow=true;world.add(pm);}}
