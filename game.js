@@ -480,7 +480,10 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
    ['#ff3b6b','#ff9a3c','#ffe45c','#5cff9a','#4fd8ff','#8a5cff','#ff4fd8','#ff3b6b'].forEach((c,i,a)=>g.addColorStop(i/(a.length-1),c));
    q.fillStyle=g;q.fillRect(0,0,w,h);},true);
   rb.repeat.set(1,1);
-  const rbMat=new T.MeshStandardMaterial({map:rb,emissive:0xffffff,emissiveMap:rb,emissiveIntensity:.85,roughness:.5,metalness:.1});
+  // Glasbahn (R28): halbtransparent und beidseitig - der Sternenhimmel scheint durch die
+  // Regenbogenpiste, wie bei der Regenbogenstrasse ueber dem Kosmos. depthWrite aus, sonst
+  // verdeckte die eigene Flaeche die transparenten Nachbarn an Looping und Kuppen.
+  const rbMat=new T.MeshStandardMaterial({map:rb,emissive:0xffffff,emissiveMap:rb,emissiveIntensity:.85,roughness:.5,metalness:.1,transparent:true,opacity:.8,depthWrite:false,side:T.DoubleSide});
   rainbowTex=rb;stripSegs(0,15.2,.065,6,rbMat);}
  else stripSegs(0,15.2,.065,6,new T.MeshStandardMaterial({map:speckleTexture(hex(theme.road),hex(theme.roadSpot),900),roughness:.9}));
  const curbTex=canvasTex(8,64,(q)=>{q.fillStyle=theme.curbA;q.fillRect(0,0,8,32);q.fillStyle=theme.curbB;q.fillRect(0,32,8,32);},true);curbTex.magFilter=T.NearestFilter;
@@ -488,8 +491,8 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  const dashTex=canvasTex(8,32,(q)=>{q.fillStyle=theme.line;q.fillRect(0,0,8,16);},true);stripSegs(0,.22,.075,8,new T.MeshStandardMaterial({map:dashTex,alphaTest:.5,roughness:.8,...(glow?{emissive:0xffffff,emissiveMap:dashTex,emissiveIntensity:1}:{})}),false);
  const skirtMat=new T.MeshStandardMaterial({map:speckleTexture(hex(theme.skirt),hex(theme.grassSpot),1800),roughness:1,side:T.DoubleSide});
  if(!theme.space){skirt(-1,skirtMat);skirt(1,skirtMat);}
- // Im Weltall bekommt die Bahn eine Unterseite, damit sie von unten nicht durchsichtig ist
- else stripSegs(0,17.2,-.55,6,mat(0x1c1440,{roughness:.9,side:T.DoubleSide}));
+ // Im Weltall ist die Bahn seit R28 die Glasbahn selbst (DoubleSide, halbtransparent) -
+ // die fruehere blickdichte Unterseite haette genau den Blick auf die Sterne verbaut.
  // Anti-Grav: dunkler Kiel unter der Wandfahrt, damit die gekippte Fahrbahn massiv wirkt
  // Textur vor dem Strassenbau: das Energieband der Anti-Grav-Bahn und des Loopings braucht sie,
  // und beide entstehen frueher als die Turbofelder.

@@ -4,6 +4,21 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 28 (22.09.2026): Regenbogenpiste als Glasbahn
+
+Die Regenbogenpiste ist jetzt halbtransparent: Das Farbband bekommt `transparent:true` bei 80 %
+Deckkraft, doppelte Seite und kein Tiefenschreiben - der Sternenhimmel (700 Punkte) scheint
+durch die Fahrbahn, besonders in Kurven, an Kuppen und im Looping (Nutzerwunsch R28). Die
+blickdichte dunkle Unterseite aus frueheren Runden entfiel dafuer; sie haette genau den Blick
+auf die Sterne verbaut. Randsteine, Mittellinie und Energiebander bleiben opak, damit die Spur
+lesbar bleibt. Sichtpruefung: Sterne durch die Bahn sichtbar, Farben kraeftig, keine
+Transparenz-Artefakte.
+
+**Verifikation:** 26/26 Unit-Tests; Regenbogen-Rennen im Kopflos-Chrome mehrfach ohne Spiel-
+fehler durchlaufen (ein isVector3-Fehler erwies sich als Artefakt des alten Verify-Ablaufs,
+vier unabhaengige saubere Laeufe blieben fehlerfrei; das Verify-Skript wartet jetzt auf
+rallyTest.ready nach der Streckenwahl).
+
 ## Runde 27 (22.09.2026): Durchgaengige Bahnmagnetik in den Spiralen
 
 In den Anti-Grav-Spiralen gab es innerhalb eines freien Bands (+/-7 m um die Ideallinie) keinerlei

@@ -84,7 +84,8 @@ async function shot(tag) {
 if (TRACK > 0) {
   const picked = await evalPage(`(()=>{const b=document.querySelectorAll('#tracks button')[${TRACK}];if(!b)return null;b.click();return b.textContent.trim()})()`);
   log("track picked:", picked);
-  await sleep(600);
+  await evalPage("rallyTest.ready ? rallyTest.ready().catch(()=>0) : 0").catch(() => {});
+  await sleep(800);
 }
 
 const started = await clickStart();
