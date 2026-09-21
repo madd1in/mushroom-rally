@@ -49,7 +49,7 @@ const courses=[
   points:[[0,70],[50,75],[80,50],[55,25],[85,0],[95,-45],[55,-60],[30,-35],[0,-60],[-30,-95],[-80,-80],[-70,-40],[-105,-10],[-95,40],[-60,35],[-40,65]],
   hills:[[4.6,4,.03],[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[9.3,10.0,'neon']],gaps:[[12.55,12]],agrav:[[2.65,4.95,'wall',90],[8.6,10.75,'roll',1]],
   ramps:[[10.6,0,8],[14.5,-2,7]],pads:[[4.4,3],[12.4,-3]],
-  builds:[[11.45,'neongate']],boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],swing:[[2.5,5,1.3,0],[7.4,5,1.1,1.5],[13.1,5,1.4,3]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
+  builds:[[11.45,'neongate']],boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
  {name:'Geisterhaus',icon:'👻',kind:'Spuk · Villa · Fahrt über Kopf',medals:[91,98,110],music:'night',bgmRate:.9,theme:'haunted',seed:66,
   points:[[0,70],[55,78],[95,55],[105,10],[70,-16],[100,-60],[70,-95],[20,-90],[-30,-90],[-75,-95],[-112,-55],[-104,-18],[-93,12],[-104,40],[-80,70],[-40,76]],
   hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.4,13.4,'over',1]],
@@ -58,7 +58,7 @@ const courses=[
  {name:'Lava-Feste',icon:'\u2668',kind:'Burg \u00b7 Magma \u00b7 Feuerb\u00e4lle',medals:[88,94,105],music:'sunset',bgmRate:1.06,theme:'lava',seed:88,
   points:[[-80,86],[0,90],[80,84],[118,56],[126,12],[112,-34],[92,-74],[44,-98],[-14,-94],[-62,-86],[-92,-56],[-72,-26],[-96,6],[-118,44],[-108,74]],
   castle:1.05,hills:[[3.2,5,.03],[8.6,3,.028]],raise:[[12.4,13.4,8,32,1]],tunnel:[[4.6,5.25,'lava']],gaps:[[8.15,14]],agrav:[[9.45,12.0,'roll',1]],
-  swing:[[3.4,5,1.25,0],[7.0,5,1.05,2],[11.2,5,1.15,1]],
+  swing:[[3.4,5,1.25,0],[7.0,5,1.05,2]],
   ramps:[[2.4,0,9],[9.7,0,8]],pads:[[5.9,-4],[13.2,4]],
   boost:[.55,6.4,11.8],boxes:[1.6,4.4,8.0,9.9,13.6],stands:[[.4,18],[8.6,-19]]},
  {name:'Regenbogenpiste',icon:'\u2727',kind:'Weltall \u00b7 Looping \u00b7 Korkenzieher',medals:[101,107,118],music:'night',bgmRate:1.04,theme:'rainbow',seed:101,
@@ -439,7 +439,9 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
   // Unter dem Kreis bleibt es frei: dort stuende Deko sonst mitten in der Anfahrt
   zones.push({d:mid,half:span/2+26,x:mx,z:mz,r:26});}
  // Hoehenprofil: Huegel (Gauss) + Plateau; Ueberhoehung aus der Kruemmung
- const hills=(course.hills||[]).map(([v,a,w])=>[cpDist(v)/length,a,w]);raises=(course.raise||[]).concat(course.plateau?[[...course.plateau,0]]:[]).map(([a,b,h,r,br])=>({s:cpDist(a),e:cpDist(b),h,r,bridge:!!br}));
+ // Huegel amplitude gedämpft (x .6): volle Hoehen fuehlten sich als staendiges Ruckeln an und
+ // warfen das Kart bei Tempo von der Fahrbahn (Kuppenabsprung) - Flow geht vor Sprunghunger.
+ const hills=(course.hills||[]).map(([v,a,w])=>[cpDist(v)/length,a*.6,w]);raises=(course.raise||[]).concat(course.plateau?[[...course.plateau,0]]:[]).map(([a,b,h,r,br])=>({s:cpDist(a),e:cpDist(b),h,r,bridge:!!br}));
  for(let i=0;i<PS;i++){const u=i/PS,d=u*length;let h=0;for(const [c,a,w] of hills){let du=u-c;du-=Math.round(du);h+=a*Math.exp(-(du*du)/(w*w));}h+=raiseH(d);const b=clamp(TP.k[i]*4,-.12,.12);TP.b[i]=b;TP.h[i]=h+Math.abs(b)*9.8;}
  for(const [v,L] of course.gaps||(course.gap?[course.gap]:[])){const c=cpDist(v);gaps.push({start:c-L/2,end:c+L/2,c});}
  tunnels=(course.tunnel||[]).map(([a,b,style])=>({s:cpDist(a),e:cpDist(b),style:style||'rock'}));
@@ -1520,13 +1522,16 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  const kk=snap?1:1-Math.exp(-dt*15);
  camUp.x+=(ux-camUp.x)*kk;camUp.y+=(uy-camUp.y)*kk;camUp.z+=(uz-camUp.z)*kk;
  if(camUp.lengthSq()<1e-4)camUp.set(0,1,0);camUp.normalize();
- // In Rollzonen rueckt die Kamera aus dem Schwenkbereich der Fahrbahn heraus (mehr als die halbe
- // Bahnbreite von der Drehachse weg) und dafuer naeher heran - sonst ueberstreicht das Band sie.
- const back=back0*(1-rw*.34),up=up0+rw*7.4;
+ // In Rollzonen bleibt die Kamera nah dran (normale Verfolgerhoehe plus wenig). Frueher stand sie
+ // 11 m ueber der Fahrbahn - bei 180 Grad Roll heisst kartseitig "ueber" weltoffen "11 m UNTER dem
+ // schwebenden Band", mitten zwischen den Spiralgängen: das sah aus wie Kamera unter der Strecke.
+ // Die Bahn-Kamera rotiert mit der Fahrbahn mit, kann also von ihr nicht ueberstrichen werden;
+ // nur die Rest-Glaettung braucht Abstand, dafuer zieht sie in Rollzonen schneller nach.
+ const back=back0*(1-rw*.34),up=up0+rw*1.8;
  _agV.set(kx-fx*back+camUp.x*up,ky-fy*back+camUp.y*up,kz-fz*back+camUp.z*up);
  // und sie setzt sich auf die Bahn an ihrer eigenen Stelle, nicht in den Rahmen des Karts
  if(rw>0){posAt(lapDist(p.distance-back),p.offset,up,_agB);_agV.lerp(_agB,rw);}
- if(snap)camera.position.copy(_agV);else camera.position.lerp(_agV,1-Math.exp(-dt*7));
+ if(snap)camera.position.copy(_agV);else camera.position.lerp(_agV,1-Math.exp(-dt*(7+rw*5)));
  camera.up.copy(camUp);
  camera.lookAt(kx+fx*8+camUp.x*1.3,ky+fy*8+camUp.y*1.3,kz+fz*8+camUp.z*1.3);
  if(p.boost>0){camera.position.y+=Math.sin(elapsed*63)*.05;camera.position.x+=Math.sin(elapsed*49)*.04;}
