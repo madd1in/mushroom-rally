@@ -336,7 +336,7 @@ function kart(color,goldLook=false,dtype=0){let g;if(P.kart){g=new T.Group();con
  // Anti-Grav-Unterlicht: additive Glowflaeche unterm Kart, sichtbar nur in Rollzonen -
  // rollt als Kind des Mesh automatisch mit und zeigt das Magnetfeld, das das Kart traegt.
  if(!UG_MAT){UG_MAT=new T.MeshBasicMaterial({map:canvasTex(64,64,(q)=>{const r0=q.createRadialGradient(32,32,4,32,32,30);r0.addColorStop(0,'rgba(255,255,255,.95)');r0.addColorStop(.45,'rgba(140,245,255,.5)');r0.addColorStop(1,'rgba(0,0,0,0)');q.fillStyle=r0;q.fillRect(0,0,64,64);}),color:0x9feaff,transparent:true,opacity:.55,blending:T.AdditiveBlending,depthWrite:false});}
- const ug=new T.Mesh(UG_GEO||(UG_GEO=new T.PlaneGeometry(2.7,3.7).rotateX(-Math.PI/2)),UG_MAT);
+ const ug=new T.Mesh(UG_GEO||(UG_GEO=new T.PlaneGeometry(3.1,4.2).rotateX(-Math.PI/2)),UG_MAT);
  ug.position.y=.14;ug.visible=false;g.add(ug);
  g.userData={...g.userData,shield,flames,brakes,underglow:ug};attachGlider(g,color);return g;}
 // KI-Karts instanziert: je Bauteil (Karosserie, Lack, Fahrer, Kappe, Raeder) ein Draw-Call fuer alle 7 Karts.
@@ -562,10 +562,9 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  const padMat=new T.MeshBasicMaterial({map:boostTex});
  for(const v of course.boost){const d=straightSpot(v,10,45,60);boostPads.push(d);addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
  for(const g of gaps){const d=g.start-40;boostPads.push(lapDist(d));addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
- // Beschleunigungsstreifen in jeder Rollzone: im Korkenzieher kostet jede Korrektur Schwung,
- // und ohne Nachschub schleppt man sich durch. Drei Stueck, breiter als die normalen.
- for(const q of agrav)for(const u of [.16,.33,.5,.67,.84]){const d=lapDist(q.s+q.span*u);
-  boostPads.push(d);addStrip(strip(d-3.6,d+3.6,0,12.4,.11,4.6,12),padMat,false);}
+ // Rollzonen haben DURCHGAENGIGEN Turbo: das breite Energieband ist zugleich der Schub
+ // (Funktion siehe update: inRoll haelt Schwung oben). Keine Einzelpads mehr - die Zone
+ // schiebt durchgehend, wie ein langer Boost-Streifen.
  bm('gate+boost');
  {const poles=[],pens=[],M4=new T.Matrix4(),col=new T.Color();for(let i=0;i<16;i++){const d=length*(i+.5)/16,fo=i%2?13:-13;if(inGap(d)||inZone(d,4)||forkBlocks(d,fo)||inBridge(d)||inTunnel(d))continue;const s=sample(d,fo);M4.makeRotationY(s.angle).setPosition(s.p.x,groundAt(d,fo).y-.1,s.p.z);addObstacle(s.p.x,s.p.z,.35);
   poles.push(new T.BoxGeometry(.12,3.1,.12).translate(0,1.55,0).applyMatrix4(M4));const pg=new T.PlaneGeometry(1.5,.7,5,1),n=pg.attributes.position.count,xn=new Float32Array(n),dx=new Float32Array(n),dz=new Float32Array(n),cc=new Float32Array(n*3);col.setHex(theme.pennants?theme.pennants[i%2]:(glow?(i%2?0xff3cac:0x2de2e6):(i%2?0xed6350:0xffd45c)));
@@ -974,7 +973,9 @@ function vertical(r,dt){const {y:ground,rh}=groundAt(r.distance,r.offset);
  // Hoehe wird das Kart eingeholt (Anflug ueber der Zone, Absprung, Treffer) - das alte Fenster
  // (nur unter ground+3.4) liess jeden fallen, der hoch hineinflog. Einholen mit festem Zug,
  // damit sich der Fang wie ein Magnet anfuehlt, nicht wie ein Teleport.
- if((agrav.length||loops.length)&&hasRoll(r.distance)&&!rh){if(r.air){r.air=false;r.airT=0;r.trick=0;}
+ // Vorfeld: der Magnet greift schon ~12 m vor der Zone - wer hoch ueber die Einfahrt anreist,
+ // wird an der Bahnschwelle gefangen statt davor in die Leere zu segeln.
+ if((agrav.length||loops.length)&&(hasRoll(r.distance)||agrav.some(q=>{const a=wrapDiff(q.s,r.distance);return a>0&&a<12;}))&&!rh){if(r.air){r.air=false;r.airT=0;r.trick=0;}
   r.y+=(ground-r.y)*(1-Math.exp(-dt*16));if(Math.abs(ground-r.y)<.05)r.y=ground;
   r.vy=roadVy;r.rampY=0;r.onGapRamp=false;return;}
  if(r.air){r.vy-=G*dt;r.y+=r.vy*dt;r.airT+=dt;if(r.y<ground-1.5&&r.vy<0&&ground>-20){respawn(r);return;}if(r.y<=ground&&ground>-20)land(r,ground,roadVy);}
@@ -1262,9 +1263,12 @@ function update(dt){
   // In einer Rollzone schwebt die Bahn - daneben ist kein Gelaende, sondern nichts. Die
   // Offroad-Bremse (Hoechsttempo 12,5) gehoert dort nicht hin; seitlich haelt die Fuehrung.
   const inRoll=(agrav.length||loops.length)&&hasRoll(r.distance);
+  // Durchgaengige Turbo-Streifen: das Energieband der Rollzone schiebt permanent an -
+  // der Schwung bleibt oben, niemand schleppt sich durch die Spirale (Nutzerwunsch).
+  if(inRoll&&!r.air&&Math.abs(r.speed)>5)r.boost=Math.max(r.boost,.55);
   // Magnetfeld-Spuren: Funken unterm Kart zeigen, dass die Bahn traegt (sparsam, nur beim Spieler-Umfeld)
-  if(inRoll&&!r.air&&frame%3===0&&nearPlayer(r,60)){const p=r.mesh.position;
-   emit(p.x+(Math.random()-.5)*1.4,p.y+.15,p.z+(Math.random()-.5)*1.4,theme.glow?0x7cf3ff:0x59d7ff,(Math.random()-.5)*2,-1-Math.random()*2,(Math.random()-.5)*2,.4);}
+  if(inRoll&&!r.air&&frame%2===0&&nearPlayer(r,60)){const p=r.mesh.position;
+   emit(p.x+(Math.random()-.5)*1.6,p.y+.15,p.z+(Math.random()-.5)*1.6,theme.glow?0x7cf3ff:0x59d7ff,(Math.random()-.5)*2.5,-1.5-Math.random()*2.5,(Math.random()-.5)*2.5,.4);}
   // Saubere Spirale: wer die Rollzone auf der Linie durchfaehrt (nie an die Magnetbande),
   // kriegt beim Austritt einen Mini-Turbo - belohnt Fahren statt Anecken.
   if(inRoll){if(!r.inAgPrev)r.agMax=0;r.agMax=Math.max(r.agMax||0,Math.abs(r.offset));}
@@ -1534,7 +1538,7 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  // schwebenden Band", mitten zwischen den Spiralgängen: das sah aus wie Kamera unter der Strecke.
  // Die Bahn-Kamera rotiert mit der Fahrbahn mit, kann also von ihr nicht ueberstrichen werden;
  // nur die Rest-Glaettung braucht Abstand, dafuer zieht sie in Rollzonen schneller nach.
- const back=back0*(1-rw*.34),up=up0+rw*1.8;
+ const back=back0*(1-rw*.34),up=up0+rw*2.4;
  _agV.set(kx-fx*back+camUp.x*up,ky-fy*back+camUp.y*up,kz-fz*back+camUp.z*up);
  // und sie setzt sich auf die Bahn an ihrer eigenen Stelle, nicht in den Rahmen des Karts
  if(rw>0){posAt(lapDist(p.distance-back),p.offset,up,_agB);_agV.lerp(_agB,rw);}
