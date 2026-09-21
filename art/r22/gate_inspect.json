@@ -1,0 +1,223 @@
+{
+ "file": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\gate.glb",
+ "size_kb": 114.1,
+ "triangles": 1412,
+ "objects": [
+  {
+   "name": "arch",
+   "tris": 280,
+   "mats": [
+    "ArchPaint"
+   ],
+   "dims_blender": [
+    19.5,
+    0.44,
+    4.09
+   ]
+  },
+  {
+   "name": "banner",
+   "tris": 12,
+   "mats": [
+    "BannerPaint"
+   ],
+   "dims_blender": [
+    17.6,
+    0.42,
+    2.0
+   ]
+  },
+  {
+   "name": "cap-1",
+   "tris": 196,
+   "mats": [
+    "CapPaint"
+   ],
+   "dims_blender": [
+    3.02,
+    3.1,
+    1.7
+   ]
+  },
+  {
+   "name": "cap1",
+   "tris": 196,
+   "mats": [
+    "CapPaint"
+   ],
+   "dims_blender": [
+    3.02,
+    3.1,
+    1.7
+   ]
+  },
+  {
+   "name": "dot",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.001",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.002",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.003",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.004",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.005",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.006",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.007",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.008",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "dot.009",
+   "tris": 64,
+   "mats": [
+    "DotPaint"
+   ],
+   "dims_blender": [
+    0.3,
+    0.3,
+    0.14
+   ]
+  },
+  {
+   "name": "pillar-1",
+   "tris": 44,
+   "mats": [
+    "PillarPaint"
+   ],
+   "dims_blender": [
+    1.9,
+    1.9,
+    6.6
+   ]
+  },
+  {
+   "name": "pillar1",
+   "tris": 44,
+   "mats": [
+    "PillarPaint"
+   ],
+   "dims_blender": [
+    1.9,
+    1.9,
+    6.6
+   ]
+  }
+ ],
+ "bounds_blender_xyz": [
+  [
+   -10.711,
+   -1.55,
+   0.0
+  ],
+  [
+   10.711,
+   1.55,
+   10.695
+  ]
+ ],
+ "bounds_gltf_xyz": [
+  [
+   -10.711137771606445,
+   0.0,
+   -1.549999713897705
+  ],
+  [
+   10.711137771606445,
+   10.694999694824219,
+   1.5499999523162842
+  ]
+ ]
+}

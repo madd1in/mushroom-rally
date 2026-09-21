@@ -1,0 +1,42 @@
+{
+  "name": "Sporentor R22",
+  "triangles": 1810,
+  "materials": [
+    "ArchPaint",
+    "PillarPaint",
+    "CapPaint",
+    "RoofPaint",
+    "DotPaint",
+    "BannerPaint",
+    "LampPaint",
+    "ShroomPaint"
+  ],
+  "objects": 8,
+  "bounds_blender_xyz": [
+    [
+      -11.15,
+      -2.663,
+      0.0
+    ],
+    [
+      11.15,
+      2.663,
+      11.14
+    ]
+  ],
+  "bounds_gltf_xyz": [
+    [
+      -11.15,
+      0.0,
+      -2.663
+    ],
+    [
+      11.15,
+      11.14,
+      2.663
+    ]
+  ],
+  "kb": 46.3,
+  "backup_of_r21_gate": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\art\\r22\\gate_r21_backup.glb",
+  "contract": "pillars +/-9.3, panel zone clear 4.8..6.4, labels at h8 z+/-.26"
+}

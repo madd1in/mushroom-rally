@@ -4,6 +4,39 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 22 (21.09.2026): Sporentor - neues Start-Ziel-Tor
+
+Das Start-Ziel-Tor war das letzte einfache Bauwerk im Spiel: zwei duenne Pfosten, ein schmaler
+Balken, zwei Pilzkappen. Jetzt steht dort das **Sporentor**: konische Creme-Pfeiler mit Sockel
+und Wulstringen, breite Pilzkappen mit Lamellen und Sporenpunkten als Kapitell, ein gebogener
+Rotbalken mit Konsolen und Creme-Bannerband, darueber eine ganze Pilzhut-Markise mit
+hochgezogenen Traufen, Sporenpunkten und Finial, zwei warm leuchtende Haengelaternen und vier
+kleine Fusspilze an der Basis. **1810 Dreiecke, 46 KB** - weniger als die Haelfte der alten
+Datei (1412 Dreiecke, 114 KB), weil die alten Kugel-Sporen entfielen.
+
+Die Kopplungen blieben unangetastet: Pfeiler bei +/-9,3 m (Kollisionskreise), Ampelzone
+4,8-6,4 m frei, Balken nur 0,48 m dick, damit die MUSHROOM-RALLY-Labels bei z=+/-0,26 weiterhin
+vor dem Bauwerk schweben. Einzige Codezeile: die Pilzkappen (Material `CapPaint`) werden je
+Strecke auf `theme.caps[0]` getoent - das Tor traegt jetzt Waldrot, Canyon-Orange,
+Neon-Pink, Geister-Violett, Lava-Orange und Regenbogen-Pink.
+
+Blender-Quelle in `art/r22/` (create_gate.py, gate_r22.blend, Backup des alten Tors);
+Workbench-Previews bestanden die Sichtpruefung nach zwei Iterationen (Kappen sind Gewoelbe,
+keine Truechter - die Umkehr der Profilformel war der Knackpunkt).
+
+Unreal: Tor als `gate_r22` ins Showcase-Projekt importiert (test123 5.8,
+`/Game/MushroomRally/gate_r22/`), im Keyart-Level `L_MR_Keyart` bei (0, -1000) auf der
+Strasse platziert und gespeichert; Viewport-Nachweis in `art/r22/unreal_gate_view.png`.
+
+**Wetter-Wolken dazu:** Canyon und Lava-Feste waren die einzigen wolkenlosen Tageslicht-Strecken.
+Jetzt haengen ueber dem Sonnen-Canyon warm leuchtende Abendwolken und ueber der Lava-Feste
+dunkle Glutwolken (`theme.cloudCols`, flache Kugelhaufen mit Emissionsanteil, ein Draw Call je
+Strecke). Forest behaelt seine weissen Wolken.
+
+**Verifikation:** 26/26 Unit-Tests; Kopflos-Chrome-Rennen ohne JS-Fehler, Tor im
+Startaufstellungs-Screenshot vollstaendig (Banner lesbar, Ampel sichtbar, keine Glitches);
+Canyon-Screenshot mit Abendwolken verifiziert.
+
 ## Runde 21 (20.09.2026): Neon-Torbogen
 
 Der Neon-Pilzwald war die letzte Strecke ohne Durchfahr-Bauwerk. Jetzt steht dort ein Torbogen:
