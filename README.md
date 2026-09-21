@@ -4,6 +4,22 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 24 (21.09.2026): Keyart mit Sporentor und Ballonbogen
+
+Das Vorschaubild beim Teilen (`assets/keyart.jpg`, og:image) zeigte noch den Stand vor Tor und
+Ballonbogen. Im Unreal-Keyart-Level (`L_MR_Keyart`, Projekt test123 5.8) stehen jetzt sieben
+Ballonhuellen im Bogen hinter dem Tor (Showcase-Materialvarianten `MI_Balloon_0..3`), und der
+SceneCapture schaut neu: Kart mit Fahrer vorne, Sporentor mittig, Ballonbogen als Tiefenschicht
+- Abendlicht, 1920x1080.
+
+Der RT-Export fiel als Float-PNG unlesbar aus; gesetzt hat schliesslich der bewaehrte Weg aus
+Runde 20: Viewport-Kamera auf die Capture-Pose (`set_level_viewport_camera_info`) und
+`HighResShot` - der Viewport bringt seine eigene belichtete Nachbearbeitung mit. JPG-Umwandlung
+per GDI+ (Qualitaet 88, 138 KB). Altes Bild als `art/r24/keyart_r19_backup.jpg` gesichert.
+
+**Verifikation:** Sichtpruefung des Renders (Tor prominent, Ballonbogen lesbar, Belichtung
+warm, Komposition share-tauglich); Level gespeichert.
+
 ## Runde 23 (21.09.2026): Ballonbogen am Start
 
 Zwoelf Meter hinter dem Start-Ziel-Tor spannt sich jetzt ein Bogen aus sieben Heissluftballons
