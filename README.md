@@ -4,6 +4,20 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 23 (21.09.2026): Ballonbogen am Start
+
+Zwoelf Meter hinter dem Start-Ziel-Tor spannt sich jetzt ein Bogen aus sieben Heissluftballons
+ueber die Fahrbahn, an einem Seil aufgehaengt, das an zwei Pfosten im Boden verankert ist. Beim
+Countdown steht er hinter dem Sporentor im Bild, beim Zieleinlauf faehrt man durch ihn hindurch
+ins Ziel. Die Ballonkoerbe haengen in Bogenform (Scheitel 12,6 m), die Farben rotieren durch die
+Fan-Palette, auf Leuchtstrecken bekommen die Huete einen sanften Emissionsanteil.
+
+Kosten: alle sieben Ballons teilen sich vier Instanz-Meshes (`scatterColored`, CapPaint je
+Instanz gefaerbt), dazu Seil (CatmullRom-Tube) und Pfosten - **6 Draw Calls** gesamt.
+
+**Verifikation:** 26/26 Unit-Tests; Kopflos-Chrome-Start ohne JS-Fehler, Bogen im
+Startaufstellungs-Screenshot vollstaendig (bunt, verankert, kein Clipping mit dem Tor).
+
 ## Runde 22 (21.09.2026): Sporentor - neues Start-Ziel-Tor
 
 Das Start-Ziel-Tor war das letzte einfache Bauwerk im Spiel: zwei duenne Pfosten, ein schmaler

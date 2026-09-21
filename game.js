@@ -569,6 +569,17 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  // (Funktion siehe update: inRoll haelt Schwung oben). Keine Einzelpads mehr - die Zone
  // schiebt durchgehend, wie ein langer Boost-Streifen.
  bm('gate+boost');
+ // Ballonbogen ueber der Fahrbahn, 14 m nach dem Start-Ziel-Tor: beim Countdown steht er
+ // hinter dem Tor im Bild, beim Zieleinlauf faehrt man durch ihn ins Ziel.
+ // Alle Ballons teilen sich vier Instanz-Meshes (CapPaint je Instanz gefaerbt) - 4 Aufrufe.
+ if(P.balloon){const NB=7,arc=[],rope=[];for(let i=0;i<NB;i++){const u=-1+2*i/(NB-1),s=samplePos(14,u*11.2,new T.Vector3()),h=12.6-3.5*u*u;
+   arc.push({x:s.x,y:s.y+h,z:s.z,s:1.05+.2*(1-u*u),ry:-u*.5,col:FAN_COLS[i%FAN_COLS.length]});rope.push(s.clone().setY(s.y+h-1.1));}
+  scatterColored(P.balloon,arc,'CapPaint',glow?.35:0);
+  const ends=[samplePos(14,-12.4,new T.Vector3()),samplePos(14,12.4,new T.Vector3())];ends.forEach(p=>p.y=Math.max(0,p.y));
+  const curve=new T.CatmullRomCurve3([ends[0],...rope,ends[1]]),cable=new T.Mesh(new T.TubeGeometry(curve,48,.07,5),dark);
+  cable.castShadow=false;world.add(cable);
+  const posts=mergeGeometries(ends.map(p=>new T.CylinderGeometry(.14,.18,2.4,6).translate(p.x,p.y+1.2,p.z)));
+  const pm2=new T.Mesh(posts,cream);pm2.castShadow=true;world.add(pm2);}
  {const poles=[],pens=[],M4=new T.Matrix4(),col=new T.Color();for(let i=0;i<16;i++){const d=length*(i+.5)/16,fo=i%2?13:-13;if(inGap(d)||inZone(d,4)||forkBlocks(d,fo)||inBridge(d)||inTunnel(d))continue;const s=sample(d,fo);M4.makeRotationY(s.angle).setPosition(s.p.x,groundAt(d,fo).y-.1,s.p.z);addObstacle(s.p.x,s.p.z,.35);
   poles.push(new T.BoxGeometry(.12,3.1,.12).translate(0,1.55,0).applyMatrix4(M4));const pg=new T.PlaneGeometry(1.5,.7,5,1),n=pg.attributes.position.count,xn=new Float32Array(n),dx=new Float32Array(n),dz=new Float32Array(n),cc=new Float32Array(n*3);col.setHex(theme.pennants?theme.pennants[i%2]:(glow?(i%2?0xff3cac:0x2de2e6):(i%2?0xed6350:0xffd45c)));
   for(let v=0;v<n;v++){xn[v]=(pg.attributes.position.getX(v)+.75)/1.5;dx[v]=Math.sin(s.angle);dz[v]=Math.cos(s.angle);cc[v*3]=col.r;cc[v*3+1]=col.g;cc[v*3+2]=col.b;}pg.translate(.81,2.75,0).applyMatrix4(M4);pg.setAttribute('color',new T.BufferAttribute(cc,3));pg.userData={xn,dx,dz};pens.push(pg);}
