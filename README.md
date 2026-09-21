@@ -4,6 +4,22 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 25 (21.09.2026): Wehende Zielflaggen am Start-Ziel-Bereich
+
+Links und rechts neben dem Sporentor stehen jetzt zwei sieben-Meter-Masten mit grossen
+Schachbrett-Fahnen (3,0 x 1,8 m), die im Wind der Wimpel-Leinen wiegen - dieselbe
+Vertex-Animation, mit eigener Amplitude (`amp`), weil die Tuecher groesser sind. Die Flaggen
+ragen von aussen ueber die Streckenraender, ohne die Durchfahrt (Halbbreite 7,6 m) oder die
+Ampelzone zu beruehren; die Masten haben Kollisionskreise. Zwei Draw Calls gesamt (Masten
+gemergt, Fahnen gemergt), die Schachbrett-Textur teilt sich die Palette mit der Ziellinie.
+
+Dazu: Hochformat-Keyart fuer Social-Posts erneuert (`media/keyart_hoch.jpg`, 1080x1920 aus
+dem Unreal-Keyart-Level, gleiche Session wie Runde 24).
+
+**Verifikation:** 26/26 Unit-Tests; Kopflos-Chrome-Start ohne JS-Fehler; Screenshot-Check -
+beide Masten und Fahnen sichtbar, Textur richtig gemappt, kein Clipping mit Tor, Ballons oder
+Karts.
+
 ## Runde 24 (21.09.2026): Keyart mit Sporentor und Ballonbogen
 
 Das Vorschaubild beim Teilen (`assets/keyart.jpg`, og:image) zeigte noch den Stand vor Tor und

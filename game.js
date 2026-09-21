@@ -561,6 +561,20 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  const bz=P.gate?.26:.37;mesh(new T.PlaneGeometry(16,1.6),label('MUSHROOM RALLY','#ed6350','#fff5d9'),arch,0,8,bz);mesh(new T.PlaneGeometry(16,1.6),label('MUSHROOM RALLY','#ed6350','#fff5d9'),arch,0,8,-bz).rotation.y=Math.PI;
  const checker=canvasTex(64,16,(q)=>{for(let x=0;x<16;x++)for(let y=0;y<4;y++){q.fillStyle=(x+y)%2?'#273943':'#fff1d9';q.fillRect(x*4,y*4,4,4);}});checker.magFilter=T.NearestFilter;
  {const panel=new T.Group();panel.position.set(0,5.6,-.75);arch.add(panel);box(panel,dark,0,0,0,5.2,1.5,.3);startLights=[-1.7,0,1.7].map(x=>{const m=new T.MeshStandardMaterial({color:0x220808,emissive:0x000000,roughness:.4});const l=new T.Mesh(new T.SphereGeometry(.5,16,12),m);l.position.set(x,0,-.2);panel.add(l);return m;});lightState=-1;}addStrip(strip(-1.6,1.6,0,15.2,.09,3.2,2),new T.MeshStandardMaterial({map:checker,roughness:.8}));
+ // Wehende Zielflaggen neben dem Tor - Schachbrett wie auf der Ziellinie, im Wimpel-Wind
+ {const ftex=canvasTex(64,64,(q)=>{for(let x=0;x<8;x++)for(let y=0;y<8;y++){q.fillStyle=(x+y)%2?'#273943':'#fff1d9';q.fillRect(x*8,y*8,8,8);}});ftex.magFilter=T.NearestFilter;
+  const s0=sample(0,0),poles=[],pens=[];
+  for(const sx of [-1,1]){const p=sample(0,sx*12.6),M4=new T.Matrix4().makeRotationY(s0.angle).setPosition(p.x,Math.max(0,p.y),p.z);
+   poles.push(new T.CylinderGeometry(.09,.13,7.4,6).translate(sx*12.6,3.7,0).applyMatrix4(M4));addObstacle(p.x,p.z,.4);
+   const pg=new T.PlaneGeometry(3.0,1.8,8,3),n=pg.attributes.position.count,xn=new Float32Array(n);
+   pg.translate(-sx*(3.0+.12),6.4,0);for(let v=0;v<n;v++)xn[v]=Math.max(0,(sx>0?3.12-pg.attributes.position.getX(v):pg.attributes.position.getX(v))/3.0);
+   pg.userData={xn};pg.applyMatrix4(M4);pens.push(pg);}
+  const pmesh=new T.Mesh(mergeGeometries(poles),cream);pmesh.castShadow=true;world.add(pmesh);
+  const geo=mergeGeometries(pens),xn=new Float32Array(geo.attributes.position.count),dx=xn.slice(),dz=xn.slice();let o=0;
+  for(const pg of pens){xn.set(pg.userData.xn,o);o+=pg.userData.xn.length;}
+  dx.fill(Math.sin(s0.angle));dz.fill(Math.cos(s0.angle));
+  const fm=new T.Mesh(geo,new T.MeshStandardMaterial({map:ftex,side:T.DoubleSide,roughness:.8}));fm.frustumCulled=false;world.add(fm);
+  flags.push({mesh:fm,base:geo.attributes.position.array.slice(),xn,dx,dz,amp:.3});}
  // Boost-Pads
  const padMat=new T.MeshBasicMaterial({map:boostTex});
  for(const v of course.boost){const d=straightSpot(v,10,45,60);boostPads.push(d);addStrip(strip(d-2.3,d+2.3,0,11,.1,4.6,6),padMat,false);}
@@ -1593,7 +1607,7 @@ function animateWorld(dt,now){
  {let dirty=false;for(let i=0;i<SPARKS;i++){const s=sparkPool[i];if(s.life<=0)continue;s.life-=dt;s.vy-=dt*8;s.x+=s.vx*dt;s.y+=s.vy*dt;s.z+=s.vz*dt;if(s.life>0){const k=s.life*2;_m.makeScale(k,k,k).setPosition(s.x,s.y,s.z);sparkMesh.setMatrixAt(i,_m);}else sparkMesh.setMatrixAt(i,_zeroM);dirty=true;}if(dirty)sparkMesh.instanceMatrix.needsUpdate=true;
   dirty=false;for(let i=0;i<PUFFS;i++){const p=puffPool[i];if(p.life<=0)continue;p.life-=dt;p.vy+=dt*1.1;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;if(p.life>0){const k=(1+(.75-p.life)*1.8)*Math.min(1,p.life*3);_m.makeScale(k,k,k).setPosition(p.x,p.y,p.z);puffMesh.setMatrixAt(i,_m);}else puffMesh.setMatrixAt(i,_zeroM);dirty=true;}if(dirty)puffMesh.instanceMatrix.needsUpdate=true;
   dirty=false;for(let i=0;i<SKIDS;i++){const s=skids[i];if(s.life<=0)continue;s.life-=dt;if(s.life<2.5){setSkid(i,s);dirty=true;}}if(dirty)skidMesh.instanceMatrix.needsUpdate=true;}
- if(!dbg.noFlags&&frame%2===0)for(const f of flags){const pos=f.mesh.geometry.attributes.position,q=pos.array;for(let v=0;v<pos.count;v++){const xn=f.xn[v],w=Math.sin(now*.006+xn*4+v*.02)*.11*xn;q[v*3]=f.base[v*3]+f.dx[v]*w;q[v*3+2]=f.base[v*3+2]+f.dz[v]*w;}pos.needsUpdate=true;}
+ if(!dbg.noFlags&&frame%2===0)for(const f of flags){const pos=f.mesh.geometry.attributes.position,q=pos.array;for(let v=0;v<pos.count;v++){const xn=f.xn[v],w=Math.sin(now*.006+xn*4+v*.02)*(f.amp||.11)*xn;q[v*3]=f.base[v*3]+f.dx[v]*w;q[v*3+2]=f.base[v*3+2]+f.dz[v]*w;}pos.needsUpdate=true;}
  for(const b of balloons){b.g.position.y=b.base+Math.sin(now*.00045+b.ph)*2.4;b.g.rotation.y=now*.00008+b.ph;}
  if(bats&&zones.length){const z=zones[0];for(let i=0;i<bats.count;i++){const a=now*.0005*(1+(i%3)*.25)+i*1.7,rr=10+(i%5)*4;_e.set(0,-a,0);_q.setFromEuler(_e);_m.compose(_v.set(z.x+Math.cos(a)*rr,24+Math.sin(now*.001+i)*4+(i%4)*2.5,z.z+Math.sin(a)*rr),_q,_s.set(1,Math.sin(now*.03+i*2),1));bats.setMatrixAt(i,_m);}bats.instanceMatrix.needsUpdate=true;}
  if(foamRing)foamRing.material.opacity=.16+Math.sin(now*.0012)*.09;
