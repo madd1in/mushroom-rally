@@ -575,7 +575,7 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  // Wehende Zielflaggen neben dem Tor - Schachbrett wie auf der Ziellinie, im Wimpel-Wind
  {const ftex=canvasTex(64,64,(q)=>{for(let x=0;x<8;x++)for(let y=0;y<8;y++){q.fillStyle=(x+y)%2?'#273943':'#fff1d9';q.fillRect(x*8,y*8,8,8);}});ftex.magFilter=T.NearestFilter;
   const s0=sample(0,0),poles=[],pens=[];
-  for(const sx of [-1,1]){const p=sample(0,sx*12.6),M4=new T.Matrix4().makeRotationY(s0.angle).setPosition(p.x,Math.max(0,p.y),p.z);
+  for(const sx of [-1,1]){const p=sample(0,sx*12.6).p,M4=new T.Matrix4().makeRotationY(s0.angle).setPosition(p.x,Math.max(0,p.y),p.z);
    poles.push(new T.CylinderGeometry(.09,.13,7.4,6).translate(sx*12.6,3.7,0).applyMatrix4(M4));addObstacle(p.x,p.z,.4);
    const pg=new T.PlaneGeometry(3.0,1.8,8,3),n=pg.attributes.position.count,xn=new Float32Array(n);
    pg.translate(-sx*(3.0+.12),6.4,0);for(let v=0;v<n;v++)xn[v]=Math.max(0,(sx>0?3.12-pg.attributes.position.getX(v):pg.attributes.position.getX(v))/3.0);
