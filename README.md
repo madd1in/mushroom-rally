@@ -4,6 +4,24 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 33 (23.09.2026): Schanzen-Facelift
+
+Die Sprungschanzen (auf jeder Strecke, vor jedem grossen Sprung) bekommen Fussdeko: zwei
+Holzbalken mit Streifenkante entlang der Flanken und je drei kleine Pilze (Stiel plus gewoelbte
+Kappe) auf den Balken. Die Fahrflaeche, Masse und Materialzuordnung (RampPaint fuer die
+Gelb-Toenung der Schluchtschanzen) bleiben unberuehrt - die Sprungphysik ist unveraendert.
+680 statt 308 Dreiecke, 54 KB. Blender-Quelle in art/r33/, Backup des alten Modells dort.
+
+Unreal: Import ins Showcase-Set (/Game/MushroomRally/ramp_r33/, 17 Static-Meshes mit aller
+Deko) als Engine-seitige Strukturvalidierung.
+
+Sound: Der ElevenLabs-Fundus (vier BGM-Loops plus SFX) ist vollstaendig im Spiel; neue
+Generierungen waren nicht moeglich - in dieser Umgebung existiert kein ElevenLabs-Zugang
+(API-Key/Werkzeug). Nachgereichte Clips lassen sich direkt einbinden.
+
+**Verifikation:** 37/37 Unit-Tests; Kopflos-Chrome-Rennen ohne Fehler; Workbench-Preview mit
+sauber sitzenden Balken und lesbaren Pilzen.
+
 ## Runde 32 (22.09.2026): Windringe und Praezisionsflug
 
 Die Sprungringe haben ein eigenes Blender-Modell: ein schlanker tuerkiser Leuchtring,

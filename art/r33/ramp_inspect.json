@@ -1,0 +1,26 @@
+{
+ "file": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\ramp.glb",
+ "kb": 24.0,
+ "tris": 308,
+ "objects": [
+  {
+   "name": "Ramp",
+   "tris": 308,
+   "mats": [
+    "RampPaint",
+    "RampStripe",
+    "RampSide"
+   ],
+   "dim": [
+    7.56,
+    5.16,
+    2.11
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}
