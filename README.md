@@ -15,9 +15,14 @@ lesbar bleibt. Sichtpruefung: Sterne durch die Bahn sichtbar, Farben kraeftig, k
 Transparenz-Artefakte.
 
 **Verifikation:** 26/26 Unit-Tests; Regenbogen-Rennen im Kopflos-Chrome mehrfach ohne Spiel-
-fehler durchlaufen (ein isVector3-Fehler erwies sich als Artefakt des alten Verify-Ablaufs,
-vier unabhaengige saubere Laeufe blieben fehlerfrei; das Verify-Skript wartet jetzt auf
-rallyTest.ready nach der Streckenwahl).
+fehler durchlaufen.
+
+**Nachtrag Hotfix (R28b):** Die Live-Seite hing danach im Ladeschirm fest. Ursache war ein Fehler
+aus den Zielflaggen (R25), der beim Auslesen der sample()-Rueckgabe `p.x` statt `p.p.x` nutzte -
+buildWorld crashte bei jeder Strecke, der Loader blieb stehen. Der isVector3-Fehler, den das
+Verify-Skript schon vorher meldete, war genau dieser Bug (die Verwechslung als Skript-Artefakt
+war falsch - die scheinbar sauberen Laeufe fingen ihn nur nicht ein). Nach dem Fix laedt das
+Spiel lokal in ~10-15 s und live in ~10 s ohne Exceptions.
 
 ## Runde 27 (22.09.2026): Durchgaengige Bahnmagnetik in den Spiralen
 
