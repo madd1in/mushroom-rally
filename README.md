@@ -4,6 +4,25 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 30 (22.09.2026): Konfettistart, Ziel-Feuerwerk, Fahrer-Varianten
+
+**Konfettiregen beim LOS!** Springt die Ampel auf Gruen, regnen 130 drehende Konfettizettel
+(eigenes Instanz-System, nicht die kleinen Funken) ueber die Startaufstellung - acht Farben,
+Schwanken und Taumeln im Fall, 2,6-3,8 s Lebensdauer. Erste Fassung mit 46 Funken-Partikeln war
+zu blass; die Zettel-Version besteht die Sichtpruefung deutlich.
+
+**Feuerwerk beim Zieleinlauf:** Wer ins Ziel kommt, bekommt drei gestaffelte Bursts ueber dem
+Sporentor (Theme-Farben, weisse Glanzpunkte dazu) - sichtbar auch noch im Result-Schirm, weil
+die Abarbeitung vor dem Spielzustands-Check laeuft.
+
+**Fahrer-Varianten verjuengt:** Mochi (Katze) und Schildi (Schildkroete) bekamen groessere
+Augen mit Highlights und rosige Wangen, Volt (Roboter) das breitere Mundband - derselbe
+Charm-Pass wie Pilzi in Runde 29, per generischem Blender-Skript ueber die Mesh-Namen.
+Backups aller drei Modelle in art/r29/.
+
+**Verifikation:** 26/26 Unit-Tests; Kopflos-Chrome-Rennen ohne Fehler; Screenshots: Konfetti
+klar als fallende Zettel lesbar, Feuerwerk als radiale Farbbursts ueber dem Tor.
+
 ## Runde 29 (22.09.2026): Glasbahn transparenter, Fahrer-Facelift
 
 **Glasbahn:** 80 % Deckkraft war noch zu dicht - jetzt 60 % und die Emission von 0,85 auf 0,7

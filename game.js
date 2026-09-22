@@ -88,7 +88,16 @@ let selected=0,colorIndex=0,driverIndex=Math.max(0,Math.min(3,store.get('driver'
 let boxes=[],racers=[],hazards=[],flags=[],balloons=[],puffs=[],shots=[],ramps=[],pads=[],rings=[],spores=[],swingers=[],gaps=[],boostPads=[],sporeMesh=null,crowd=null,boostTex=null,foamRing=null,fireflies=null,rails=[],forks=[],raises=[],tunnels=[],agrav=[],loops=[],crystals=[];
 let rainbowTex=null,mapInfo={cx:0,cz:0,k:.6},shake=0,lastPlace=8,leadAt=-99,finishMusicAt=0,soundOn=true,autoGas=false,startPress=-1,prevDrift=false,roulette=null,camFov=62,camH=0,camRoll=0,camRollPrev=0,cer=null,wrongT=0,autopilot=false;
 let gp={active:false,race:0,points:{}},stats=null,startLights=[],lightState=-1,chevrons=[];
-function setLights(n){if(n===lightState||!startLights.length)return;lightState=n;startLights.forEach((m,i)=>{const on=n===4||i<n;m.emissive.setHex(!on?0x000000:n===4?0x3dff6a:0xff2a1f);m.color.setHex(!on?0x220808:n===4?0x2bd653:0xff3b2f);m.emissiveIntensity=on?2.4:0;});}
+let fworks=[];
+// Konfettiregen ueber der Startaufstellung, wenn die Ampel auf Gruen springt (R30)
+function dropConfetti(){const cols=[...FAN_COLS,0xffffff,0xffd45c,0xff9ad5];for(let i=0;i<130;i++){const d=-1+Math.random()*12,off=(Math.random()-.5)*13,h=7+Math.random()*4.5;
+ try{const p=posAt(d,off,h,new T.Vector3());dropConfettiBit(p.x,p.y,p.z,cols[i%cols.length]);}catch(e){}}}
+function setLights(n){if(n===lightState||!startLights.length)return;lightState=n;startLights.forEach((m,i)=>{const on=n===4||i<n;m.emissive.setHex(!on?0x000000:n===4?0x3dff6a:0xff2a1f);m.color.setHex(!on?0x220808:n===4?0x2bd653:0xff3b2f);m.emissiveIntensity=on?2.4:0;});if(n===4)dropConfetti();}
+// Feuerwerk ueber dem Sporentor beim Zieleinlauf: drei Raketen gestaffelt (R30)
+function planFireworks(){const cols=theme?theme.caps:[0xffd45c];for(let i=0;i<3;i++)fworks.push({at:elapsed+.35+i*.75,off:(i-1)*5,h:11+i*2.4,col:cols[i%cols.length]});}
+function burstAt(x,y,z,col){for(let i=0;i<26;i++){const a=i/26*TAU,sp=4.5+random01()*5;emit(x,y,z,col,Math.cos(a)*sp,Math.sin(a*3)*2.2+1.5,Math.sin(a)*sp,.9+random01()*.5);}
+ for(let i=0;i<10;i++)emit(x,y,z,0xffffff,(random01()-.5)*7,(random01()-.5)*7,(random01()-.5)*7,.7);}
+const random01=()=>Math.random();
 let obsGrid=new Map();let zones=[],bats=null;
 const inZone=(d,pad=0)=>zones.some(z=>Math.abs(wrapDiff(d,z.d))<z.half+pad);
 const coarseInput=matchMedia('(pointer:coarse)').matches,quality={level:0,dprCap:coarseInput?1.25:1.25,fpsFrames:0,fpsStart:0};
@@ -623,7 +632,7 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
  {const lm=label('?','#ed6350','#fff9df',128,128),geo=new T.BufferGeometry();geo.setAttribute('position',new T.BufferAttribute(new Float32Array(boxes.length*3),3));boxQ=new T.Points(geo,new T.PointsMaterial({map:lm.map,size:1.1,transparent:true,depthWrite:false}));boxQ.frustumCulled=false;world.add(boxQ);lm.dispose();}
  bm('boxes');}
 // Neues Rennen auf derselben Strecke: Welt bleibt stehen, nur Fahrer & Zustand werden zurueckgesetzt (kein Ruckler beim Start)
-function resetRace(){clearGroup(actors,kartsG);hazards=[];shots=[];bombs=[];for(const sh of shocks){sh.t=9;sh.m.visible=false;}roulette=null;cer=null;shake=0;lastPlace=8;leadAt=-99;wrongT=0;
+function resetRace(){clearGroup(actors,kartsG);hazards=[];shots=[];bombs=[];fworks=[];for(const sh of shocks){sh.t=9;sh.m.visible=false;}roulette=null;cer=null;shake=0;lastPlace=8;leadAt=-99;wrongT=0;
  for(let i=0;i<SKIDS;i++){skids[i].life=0;skidMesh.setMatrixAt(i,_zeroM);}skidMesh.instanceMatrix.needsUpdate=true;for(let i=0;i<SPARKS;i++){sparkPool[i].life=0;sparkMesh.setMatrixAt(i,_zeroM);}sparkMesh.instanceMatrix.needsUpdate=true;for(let i=0;i<PUFFS;i++){puffPool[i].life=0;puffMesh.setMatrixAt(i,_zeroM);}puffMesh.instanceMatrix.needsUpdate=true;
  for(const b of boxes)b.cooldown=0;for(const s of spores)s.cd=0;for(const r of rings)r.flash=0;for(const p of pads)p.squash=0;lightState=-2;setLights(0);
  placeRacers();drawMap();}
@@ -999,6 +1008,9 @@ function updateSwingers(t=elapsed){const pl=racers[0];for(const s of swingers){c
 const _zeroM=new T.Matrix4().makeScale(0,0,0),_col=new T.Color();
 function fxMesh(geo,material,n){const im=new T.InstancedMesh(geo,material,n);im.instanceMatrix.setUsage(T.DynamicDrawUsage);im.frustumCulled=false;im.castShadow=false;for(let i=0;i<n;i++){im.setMatrixAt(i,_zeroM);im.setColorAt(i,_col.setHex(0xffffff));}scene.add(im);return im;}
 const SPARKS=260,sparkMesh=fxMesh(new T.BoxGeometry(.16,.16,.16),new T.MeshBasicMaterial({color:0xffffff}),SPARKS),sparkPool=Array.from({length:SPARKS},()=>({x:0,y:0,z:0,vx:0,vy:0,vz:0,life:0}));let sparkIdx=0;
+// Konfetti (R30): eigene Instanzen statt Funken - groessere, drehende Zettelchen mit Schwanken
+const CONFETTI=150,confettiGeo=new T.PlaneGeometry(.34,.24),confettiMesh=fxMesh(confettiGeo,new T.MeshBasicMaterial({side:T.DoubleSide}),CONFETTI),confettiPool=Array.from({length:CONFETTI},()=>({x:0,y:0,z:0,vy:0,ph:0,rv:0,sw:0,life:0}));let confettiIdx=0;
+function dropConfettiBit(x,y,z,col){const i=confettiIdx++%CONFETTI,c=confettiPool[i];c.x=x;c.y=y;c.z=z;c.vy=-1.4-Math.random()*1.1;c.ph=Math.random()*TAU;c.rv=(Math.random()-.5)*9;c.sw=.6+Math.random()*.9;c.life=2.6+Math.random()*1.2;confettiMesh.setColorAt(i,_col.setHex(col));confettiMesh.instanceColor.needsUpdate=true;}
 function emit(x,y,z,color,vx,vy,vz,life=.5){const i=sparkIdx++%SPARKS,s=sparkPool[i];s.x=x;s.y=y;s.z=z;s.vx=vx;s.vy=vy;s.vz=vz;s.life=life;sparkMesh.setColorAt(i,_col.setHex(color));sparkMesh.instanceColor.needsUpdate=true;}
 function burst(r,color,n=5){const p=r.mesh.position;for(let i=0;i<n;i++){const a=Math.random()*TAU;emit(p.x,p.y+.5,p.z,color,Math.sin(a)*4,2+Math.random()*3,Math.cos(a)*4,.6);}}
 const marks=new T.Group();scene.add(marks);
@@ -1284,6 +1296,8 @@ function updateShots(dt){for(let i=shots.length-1;i>=0;i--){const sh=shots[i];sh
   if((tg&&sh.d>=tg.distance-1.2)||(!tg&&sh.t>1.2)||sh.t>4.5){if(tg)shellImpact(sh);else burst({mesh:sh.g},0x8beb73,8);actors.remove(sh.g);shots.splice(i,1);}}}
 
 function update(dt){
+ // Feuerwerk vom Zieleinlauf abarbeiten (laeuft auch im Result-Schirm weiter)
+ for(const f of fworks)if(!f.done&&elapsed>=f.at){f.done=1;try{const p=posAt(0,f.off,f.h,new T.Vector3());burstAt(p.x,p.y,p.z,f.col);}catch(e){}}
  if(state==='ceremony'){updateCeremony(dt);return;}
  if(state!=='race'&&state!=='countdown')return;
  const player=racers[0],gasHeld=held('ArrowUp')||held('KeyW');
@@ -1421,7 +1435,7 @@ function update(dt){
   if(!isTT())for(const b of boxes){if(b.cooldown<=0&&!r.item&&!r.itemPending&&Math.abs(wrapDiff(r.distance,b.distance))<2.6&&Math.abs(r.offset-b.offset)<2.2&&Math.abs(r.y+1-b.baseY)<3){b.cooldown=4;if(me){r.itemPending=true;roulette={t:.95,tick:0,final:rollItem(placeOf(r),racers.length)};}else{r.item=rollItem(placeOf(r),racers.length);r.charges=r.item==='triple'?3:0;r.cooldown=1+Math.random()*2;}}}
   if(me&&lap(r,length)>oldLap){const lt=elapsed-stats.lapStart,best=lt<stats.bestLap;stats.bestLap=Math.min(stats.bestLap,lt);stats.lapStart=elapsed;const isLast=lap(r,length)===LAPS;
    toast(`RUNDE ${oldLap}: ${format(lt)}${best&&oldLap>1?' · BESTE RUNDE!':''}`,2,best&&oldLap>1?'good':'');notice(isLast?'LETZTE RUNDE!':'RUNDE 2',1.5);say(isLast?'lastlap':'lap2');if(isLast){if(!playClip('s_finallap',sfxGain,.9))SFX.lap();setBgmRate((course.bgmRate||1)*1.07);}else SFX.lap();}
-  if(finish(r,length,elapsed)&&me){const lt=elapsed-stats.lapStart;stats.bestLap=Math.min(stats.bestLap,lt);}
+  if(finish(r,length,elapsed)&&me){const lt=elapsed-stats.lapStart;stats.bestLap=Math.min(stats.bestLap,lt);planFireworks();}
   syncKart(r,dt);
   // Drift-Funken je Ladestufe (blau/orange/lila) an den Hinterraedern, Reifenspuren beim Rutschen
   const sx=Math.sin(r.h),cz=Math.cos(r.h);
@@ -1650,6 +1664,7 @@ function animateWorld(dt,now){
  for(let i=0;i<crystals.length;i++){const c=crystals[i];c.m.rotation.y+=dt*.6;c.m.position.y=c.base+Math.sin(now*.0012+c.ph)*.5;}
  if(!dbg.noBoxes&&boxInst.length&&boxQ){const qa=boxQ.geometry.attributes.position.array;_e.set(0,now*.001,0);_q.setFromEuler(_e);boxes.forEach((b,i)=>{b.cooldown=Math.max(0,b.cooldown-dt);const vis=b.cooldown<=0,y=b.baseY+Math.sin(now*.003+b.distance)*.2;_m.compose(_v.set(b.x,y,b.z),_q,_s.setScalar(vis?1.05:0));for(const im of boxInst)im.setMatrixAt(i,_m);qa[i*3]=b.x;qa[i*3+1]=vis?y+1.3:-999;qa[i*3+2]=b.z;});for(const im of boxInst)im.instanceMatrix.needsUpdate=true;boxQ.geometry.attributes.position.needsUpdate=true;}
  {let dirty=false;for(let i=0;i<SPARKS;i++){const s=sparkPool[i];if(s.life<=0)continue;s.life-=dt;s.vy-=dt*8;s.x+=s.vx*dt;s.y+=s.vy*dt;s.z+=s.vz*dt;if(s.life>0){const k=s.life*2;_m.makeScale(k,k,k).setPosition(s.x,s.y,s.z);sparkMesh.setMatrixAt(i,_m);}else sparkMesh.setMatrixAt(i,_zeroM);dirty=true;}if(dirty)sparkMesh.instanceMatrix.needsUpdate=true;
+ {let dirty=false;for(let i=0;i<CONFETTI;i++){const c=confettiPool[i];if(c.life<=0)continue;c.life-=dt;c.ph+=c.rv*dt;c.x+=Math.sin(c.ph*.6)*c.sw*dt;c.y+=c.vy*dt;if(c.life>0){_e.set(c.ph*.4,c.ph,0);_q.setFromEuler(_e);_m.compose(_v.set(c.x,c.y,c.z),_q,_s.set(1,1,1));confettiMesh.setMatrixAt(i,_m);}else confettiMesh.setMatrixAt(i,_zeroM);dirty=true;}if(dirty)confettiMesh.instanceMatrix.needsUpdate=true;}
   dirty=false;for(let i=0;i<PUFFS;i++){const p=puffPool[i];if(p.life<=0)continue;p.life-=dt;p.vy+=dt*1.1;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;if(p.life>0){const k=(1+(.75-p.life)*1.8)*Math.min(1,p.life*3);_m.makeScale(k,k,k).setPosition(p.x,p.y,p.z);puffMesh.setMatrixAt(i,_m);}else puffMesh.setMatrixAt(i,_zeroM);dirty=true;}if(dirty)puffMesh.instanceMatrix.needsUpdate=true;
   dirty=false;for(let i=0;i<SKIDS;i++){const s=skids[i];if(s.life<=0)continue;s.life-=dt;if(s.life<2.5){setSkid(i,s);dirty=true;}}if(dirty)skidMesh.instanceMatrix.needsUpdate=true;}
  if(!dbg.noFlags&&frame%2===0)for(const f of flags){const pos=f.mesh.geometry.attributes.position,q=pos.array;for(let v=0;v<pos.count;v++){const xn=f.xn[v],w=Math.sin(now*.006+xn*4+v*.02)*(f.amp||.11)*xn;q[v*3]=f.base[v*3]+f.dx[v]*w;q[v*3+2]=f.base[v*3+2]+f.dz[v]*w;}pos.needsUpdate=true;}

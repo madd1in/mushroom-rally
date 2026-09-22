@@ -1,0 +1,33 @@
+{
+ "driver_cat.glb": {
+  "changed": [
+   "D_Cheek",
+   "D_Cheek.001",
+   "D_Eye",
+   "D_Eye.001",
+   "D_EyeHi",
+   "D_EyeHi.001"
+  ],
+  "triangles": 6220,
+  "kb": 195.1
+ },
+ "driver_robot.glb": {
+  "changed": [
+   "D_Mouth"
+  ],
+  "triangles": 3492,
+  "kb": 160.9
+ },
+ "driver_turtle.glb": {
+  "changed": [
+   "D_Cheek",
+   "D_Cheek.001",
+   "D_Eye",
+   "D_Eye.001",
+   "D_EyeHi",
+   "D_EyeHi.001"
+  ],
+  "triangles": 6698,
+  "kb": 209.8
+ }
+}
