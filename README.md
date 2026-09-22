@@ -4,6 +4,18 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 35 (23.09.2026): Sprungpilz-Facelift
+
+Die Sprungpilze (mindestens zwei pro Strecke) bekommen eine gewellte Creme-Krempe am
+Kapprand und vier zusaetzliche Sporen-Sprenkel auf dem Hut. Die Squash-Animation erfasst
+die Deko automatisch (Gruppenskalierung). Korpus und Materialzuordnung unveraendert.
+592 statt 536 Dreiecke, 48 KB. Blender-Quelle in art/r35/, Backup dort.
+
+Unreal: Import validiert (/Game/MushroomRally/bouncepad_r35/, 6 Static-Meshes inkl. PadBrim).
+
+**Verifikation:** 37/37 Unit-Tests; Kopflos-Chrome-Rennen ohne Fehler; Workbench-Preview mit
+sauber sitzender Krempe.
+
 ## Runde 34 (23.09.2026): Item-Box-Facelift
 
 Die schwebenden Item-Boxen (auf jeder Strecke, staendig im Blick) bekommen acht goldene

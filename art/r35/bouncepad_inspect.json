@@ -1,0 +1,26 @@
+{
+ "file": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\bouncepad.glb",
+ "kb": 42.9,
+ "tris": 536,
+ "objects": [
+  {
+   "name": "BouncePad",
+   "tris": 536,
+   "mats": [
+    "PadStem",
+    "PadCap",
+    "PadDot"
+   ],
+   "dim": [
+    3.5,
+    3.5,
+    0.58
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}
