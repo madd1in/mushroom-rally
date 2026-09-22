@@ -7,3 +7,4 @@ node_modules/
 chrome-profile/
 *.blend1
 chrome-profile*/
+live-profile*/
