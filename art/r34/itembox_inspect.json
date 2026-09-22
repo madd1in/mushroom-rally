@@ -1,0 +1,109 @@
+{
+ "file": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\itembox.glb",
+ "kb": 34.5,
+ "tris": 396,
+ "objects": [
+  {
+   "name": "bowknot",
+   "tris": 64,
+   "mats": [
+    "RibbonPaint"
+   ],
+   "dim": [
+    0.266,
+    0.266,
+    0.28
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    1.48
+   ]
+  },
+  {
+   "name": "bowloop-0.22",
+   "tris": 100,
+   "mats": [
+    "RibbonPaint"
+   ],
+   "dim": [
+    0.571,
+    0.33,
+    0.27
+   ],
+   "loc": [
+    -0.22,
+    -0.0,
+    1.52
+   ]
+  },
+  {
+   "name": "bowloop0.22",
+   "tris": 100,
+   "mats": [
+    "RibbonPaint"
+   ],
+   "dim": [
+    0.571,
+    0.33,
+    0.27
+   ],
+   "loc": [
+    0.22,
+    0.0,
+    1.52
+   ]
+  },
+  {
+   "name": "boxbody",
+   "tris": 108,
+   "mats": [
+    "BoxPaint"
+   ],
+   "dim": [
+    1.4,
+    1.4,
+    1.4
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.7
+   ]
+  },
+  {
+   "name": "Cube",
+   "tris": 12,
+   "mats": [
+    "RibbonPaint"
+   ],
+   "dim": [
+    1.46,
+    0.16,
+    0.73
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.7
+   ]
+  },
+  {
+   "name": "Cube.001",
+   "tris": 12,
+   "mats": [
+    "RibbonPaint"
+   ],
+   "dim": [
+    1.46,
+    0.16,
+    0.73
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.7
+   ]
+  }
+ ]
+}

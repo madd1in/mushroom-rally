@@ -4,6 +4,20 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 34 (23.09.2026): Item-Box-Facelift
+
+Die schwebenden Item-Boxen (auf jeder Strecke, staendig im Blick) bekommen acht goldene
+Eckkappen - als EIN gemergtes Mesh, also nur ein zusaetzlicher Zeichenaufruf fuer alle Boxen
+einer Strecke. Bänder und Schleife sind jetzt sattes Gold mit leichtem Metallglanz statt
+flachem Beige. Korpus, Masse und alle Mesh-Namen unveraendert (Instanz-System und
+Drehradius greifen unverändert weiter). 492 statt 396 Dreiecke, 40 KB. Blender-Quelle in
+art/r34/, Backup dort.
+
+Unreal: Import validiert (/Game/MushroomRally/itembox_r34/, 7 Static-Meshes inkl. CornerCaps).
+
+**Verifikation:** 37/37 Unit-Tests; Kopflos-Chrome-Rennen ohne Fehler; Workbench-Preview mit
+sauber sitzenden Kappen.
+
 ## Runde 33 (23.09.2026): Schanzen-Facelift
 
 Die Sprungschanzen (auf jeder Strecke, vor jedem grossen Sprung) bekommen Fussdeko: zwei
