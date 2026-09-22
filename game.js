@@ -483,7 +483,8 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
   // Glasbahn (R28): halbtransparent und beidseitig - der Sternenhimmel scheint durch die
   // Regenbogenpiste, wie bei der Regenbogenstrasse ueber dem Kosmos. depthWrite aus, sonst
   // verdeckte die eigene Flaeche die transparenten Nachbarn an Looping und Kuppen.
-  const rbMat=new T.MeshStandardMaterial({map:rb,emissive:0xffffff,emissiveMap:rb,emissiveIntensity:.85,roughness:.5,metalness:.1,transparent:true,opacity:.8,depthWrite:false,side:T.DoubleSide});
+  // R29: Deckkraft 60 % und Emission zurueckgenommen - 80 % war dem Nutzer noch zu dicht.
+  const rbMat=new T.MeshStandardMaterial({map:rb,emissive:0xffffff,emissiveMap:rb,emissiveIntensity:.7,roughness:.5,metalness:.1,transparent:true,opacity:.6,depthWrite:false,side:T.DoubleSide});
   rainbowTex=rb;stripSegs(0,15.2,.065,6,rbMat);}
  else stripSegs(0,15.2,.065,6,new T.MeshStandardMaterial({map:speckleTexture(hex(theme.road),hex(theme.roadSpot),900),roughness:.9}));
  const curbTex=canvasTex(8,64,(q)=>{q.fillStyle=theme.curbA;q.fillRect(0,0,8,32);q.fillStyle=theme.curbB;q.fillRect(0,32,8,32);},true);curbTex.magFilter=T.NearestFilter;

@@ -4,6 +4,24 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 29 (22.09.2026): Glasbahn transparenter, Fahrer-Facelift
+
+**Glasbahn:** 80 % Deckkraft war noch zu dicht - jetzt 60 % und die Emission von 0,85 auf 0,7
+zurueckgenommen. Der Sternenhimmel scheint jetzt deutlich durch die Fahrbahn, auch unter den
+Karts; Sichtpruefung bestaetigt: Glas-Lesbarkeit und Rennbarkeit bleiben erhalten.
+
+**Fahrer-Facelift (Blender):** Die Fahrer wirkten aus der Distanz flach - Kappen lasen sich als
+Blobs, Augen waren zu klein, Arme dünn. Pass auf dem bestehenden Modell (Struktur und Namen
+unveraendert, damit Menue-Thumbnails und Podium-Referenzen weiterlaufen): Augen und Highlights
++38 %, Wangen +50 % und rosa statt blass, Mund 35 % breiter (Laecheln), Aermel +24 %, Ellbogen
+und Handschuhe dicker, Kopf 4 % kleiner (Proportion), und ein Creme-Kappenrand (D_CapBrim,
+20-seitiger Ring) gibt dem Pilzhut die fehlende Krempe. 6806 Dreiecke (+40), 252 KB. Backup
+des alten Modells in art/r29/.
+
+**Verifikation:** 26/26 Unit-Tests; Workbench-Preview (Front/Hero) und In-Game-Screenshots -
+Augen mit Highlights von Startaufstellungs-Distanz lesbar, Krempe sitzt, keine Clipping- oder
+Renderfehler.
+
 ## Runde 28 (22.09.2026): Regenbogenpiste als Glasbahn
 
 Die Regenbogenpiste ist jetzt halbtransparent: Das Farbband bekommt `transparent:true` bei 80 %

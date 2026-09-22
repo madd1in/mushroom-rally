@@ -1,0 +1,25 @@
+{
+ "changed": [
+  "D_Eye",
+  "D_Eye.001",
+  "D_EyeHi",
+  "D_EyeHi.001",
+  "D_EyeHi",
+  "D_EyeHi.001",
+  "D_Cheek",
+  "D_Cheek.001",
+  "D_Mouth",
+  "D_Upper",
+  "D_Upper.001",
+  "D_Lower",
+  "D_Lower.001",
+  "D_Elbow",
+  "D_Elbow.001",
+  "D_Glove",
+  "D_Glove.001",
+  "D_Head",
+  "D_CapBrim"
+ ],
+ "triangles": 6806,
+ "kb": 252.3
+}
