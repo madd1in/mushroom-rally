@@ -2,14 +2,14 @@ import { spawn } from "node:child_process";
 import { mkdirSync } from "node:fs";
 const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const PORT = 9384;
+const PORT = 9385;
 const OUT = "C:/Users/User/Documents/Playground/mushroom-rally/art/r28";
-mkdirSync(OUT + "/live-profile5", { recursive: true });
-const chrome = spawn(CHROME, ["--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${OUT}/live-profile5`,
+mkdirSync(OUT + "/live-profile6", { recursive: true });
+const chrome = spawn(CHROME, ["--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${OUT}/live-profile6`,
   "--window-size=1280,800", "--no-first-run", "--no-default-browser-check", "--hide-scrollbars",
   "--disable-features=Translate,CalculateNativeWinOcclusion", "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
 for (let i = 0; i < 60; i++) { try { const r = await fetch(`http://127.0.0.1:${PORT}/json/version`); if (r.ok) break; } catch {} await sleep(500); }
-const tab = await (await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent("http://127.0.0.1:4218/")}`, { method: "PUT" })).json();
+const tab = await (await fetch(`http://127.0.0.1:${PORT}/json/new?${encodeURIComponent("https://madd1in.github.io/mushroom-rally/")}`, { method: "PUT" })).json();
 const ws = new WebSocket(tab.webSocketDebuggerUrl);
 await new Promise((res, rej) => { ws.onopen = res; ws.onerror = rej; });
 let seq = 0; const pending = new Map(); const logs = [];

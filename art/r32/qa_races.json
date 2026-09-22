@@ -1,0 +1,16 @@
+{
+  "startedAt": "2026-09-22T20:33:34.122Z",
+  "seed": 851509230,
+  "cc": 100,
+  "maxSimulatedSeconds": 240,
+  "mode": "race",
+  "browser": "independent headless Chrome",
+  "tracks": [],
+  "errors": [],
+  "networkFailures": [],
+  "ceremony": null,
+  "serverPort": 56726,
+  "fatal": "Error: Timeout: local server\n    at waitFor (file:///C:/Users/User/Documents/Playground/mushroom-rally/.scratch/r32_races.mjs:14:130)\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processTimers (node:internal/timers:538:9)\n    at async file:///C:/Users/User/Documents/Playground/mushroom-rally/.scratch/r32_races.mjs:18:2",
+  "passed": false,
+  "completedAt": "2026-09-22T20:34:12.250Z"
+}

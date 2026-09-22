@@ -1,2 +1,1 @@
-{"name":"mushroom-rally","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.cjs","test":"node --test core.test.mjs glider.test.mjs audio.test.mjs"}}
-
+{"name":"mushroom-rally","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.cjs","test":"node --test core.test.mjs glider.test.mjs audio.test.mjs loader.test.mjs windring.test.mjs"}}

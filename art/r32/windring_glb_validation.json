@@ -1,0 +1,20 @@
+{
+  "magic": "glTF",
+  "version": 2,
+  "bytes": 44288,
+  "declaredLength": 44288,
+  "meshes": 3,
+  "primitives": 3,
+  "materials": [
+    "WindFrame",
+    "WindGlow",
+    "WindGold"
+  ],
+  "triangles": 1536,
+  "extensions": [
+    "KHR_materials_emissive_strength",
+    "KHR_materials_specular"
+  ],
+  "sha256": "412558A294394BFFBDD60C927F2F3D2EFC1E25CFCBA76449BDA7CC65A71F67E6",
+  "conservativeSurfaceClearRadius": 3.0657926716965416
+}

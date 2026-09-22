@@ -1,0 +1,42 @@
+{
+  "name": "Mushroom Rally Wind Ring",
+  "triangles": 1536,
+  "meshes": 3,
+  "materials": [
+    "WindGlow",
+    "WindGold",
+    "WindFrame"
+  ],
+  "blender_bounds": [
+    [
+      -3.482982873916626,
+      -0.12999999523162842,
+      -3.680000066757202
+    ],
+    [
+      3.482982873916626,
+      0.09758330136537552,
+      3.680000066757202
+    ]
+  ],
+  "gltf_bounds": [
+    [
+      -3.482982873916626,
+      -3.680000066757202,
+      -0.09758330136537552
+    ],
+    [
+      3.482982873916626,
+      3.680000066757202,
+      0.12999999523162842
+    ]
+  ],
+  "clear_opening_radius": 3.0699999063156946,
+  "outer_radius": 3.68490174672898,
+  "depth": 0.22758329659700394,
+  "axis": "Blender XZ plane, Blender -Y front; glTF XY plane, glTF +Z front/travel; root at origin",
+  "original_scene": "Scene",
+  "original_scene_objects": 41,
+  "provider": "none; original procedural Blender authorship",
+  "user_prompt": "kannst weiter mit blender, unreal, elevenlabs und neuen ideen das spiel verbessern please"
+}

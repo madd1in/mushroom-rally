@@ -60,15 +60,20 @@ await sleep(3500);
 await evalPage("(()=>{window.__errs=[];window.addEventListener('error',e=>window.__errs.push(String(e.message)));return 'ok'})()");
 
 async function clickStart() {
-  const raw = await evalPage(`(()=>{const b=document.querySelector('#start');if(!b||b.hidden)return null;const r=b.getBoundingClientRect();return JSON.stringify({x:r.left+r.width/2,y:r.top+r.height/2})})()`);
-  if (!raw) return null;
-  const { x, y } = JSON.parse(raw);
-  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: Math.round(x), y: Math.round(y), button: "none" });
-  await sleep(150);
-  await send("Input.dispatchMouseEvent", { type: "mousePressed", x: Math.round(x), y: Math.round(y), button: "left", clickCount: 1 });
-  await sleep(60);
-  await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: Math.round(x), y: Math.round(y), button: "left", clickCount: 1 });
-  return true;
+  for (let i = 0; i < 30; i++) {
+    const raw = await evalPage(`(()=>{const b=document.querySelector('#start');if(!b||b.hidden)return null;const r=b.getBoundingClientRect();return JSON.stringify({x:r.left+r.width/2,y:r.top+r.height/2})})()`);
+    if (raw) {
+      const { x, y } = JSON.parse(raw);
+      await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: Math.round(x), y: Math.round(y), button: "none" });
+      await sleep(150);
+      await send("Input.dispatchMouseEvent", { type: "mousePressed", x: Math.round(x), y: Math.round(y), button: "left", clickCount: 1 });
+      await sleep(60);
+      await send("Input.dispatchMouseEvent", { type: "mouseReleased", x: Math.round(x), y: Math.round(y), button: "left", clickCount: 1 });
+      return true;
+    }
+    await sleep(600);
+  }
+  return null;
 }
 
 const TRACK = parseInt(process.argv[2] ?? "0", 10); // 0 Promenade, 1 Canyon, 4 Lava

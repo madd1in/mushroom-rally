@@ -4,6 +4,31 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 32 (22.09.2026): Windringe und Praezisionsflug
+
+Die Sprungringe haben ein eigenes Blender-Modell: ein schlanker tuerkiser Leuchtring,
+sechs goldene Federpfeile und dunkle Verbindungen. Die Oeffnung bleibt frei; 1.536 Dreiecke,
+44 KB GLB und zwei zusammengefuehrte Zeichenaufrufe pro Ring in der Browserfassung.
+Die Ringe drehen langsam und leuchten beim Durchflug kurz auf.
+
+Wer mit geoeffnetem Pilzgleiter hoechstens 1,35 m vom Ringmittelpunkt abweicht, bekommt
+**Praezisionsflug**: 1,55 statt 1,30 Sekunden Ring-Turbo. Nur echte Gleitfluege zaehlen;
+Rettungsdrops, Treffer und Anti-Grav-Ringe sind ausgeschlossen. Die Ergebnisanzeige zaehlt
+Praezisionsfluege. Sprungweiten, Schwerkraft und Ring-Kontaktbereich bleiben erhalten.
+
+Der Gleiter bekommt einen leisen Oeffnungsklang; Praezision nutzt einen weich gemischten
+vorhandenen ElevenLabs-Effekt. Die normalen Ringtoene liegen tiefer und sind leiser.
+Es wurden fuer dieses Update bisher keine neuen ElevenLabs-Generierungen berechnet.
+
+**Lade-Fix R31:** Die vorhandenen drei Ladeversuche bleiben erhalten. Fehlende Prototypen
+werden beim ersten Weltaufbau erfasst. Kommen sie nach dem Neun-Sekunden-Fallback doch an,
+werden veraltete Strecken-Caches entfernt und das Menue einmal aktualisiert; im Rennen
+wird der Neuaufbau bis zum Wechsel aufgeschoben. Ein dauerhafter Fehler loest keinen
+nutzlosen Neuaufbau aus.
+
+**Verifikation:** 37/37 Unit-Tests (Physik, Gleiter, Audio, Lader, Praezisionsflug).
+Blender-Quellen und Unreal-Importskript liegen lokal unter `art/r32/`.
+
 ## Runde 30 (22.09.2026): Konfettistart, Ziel-Feuerwerk, Fahrer-Varianten
 
 **Konfettiregen beim LOS!** Springt die Ampel auf Gruen, regnen 130 drehende Konfettizettel
