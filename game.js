@@ -1812,7 +1812,7 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  if(!racers.length)return;const p=racers[0];
  // Verfolgerkamera haengt am Kart (nicht an der Strecke): man sieht, wohin man wirklich faehrt
  const targetH=p.h+(p.driftDir?-p.driftDir*.12:0);camH=snap?targetH:camH+angleDiff(targetH,camH)*Math.min(1,dt*(p.driftDir?3.2:5));
- const back0=portrait?10.5:8.4,up0=portrait?4.8:3.7,sx=Math.sin(camH),cz=Math.cos(camH),py=p.y??0;
+ const back0=dbg.camBack??(portrait?10.5:8.4),up0=dbg.camUp??(portrait?4.8:3.7),sx=Math.sin(camH),cz=Math.cos(camH),py=p.y??0;
 
  // Anti-Grav: Kamera folgt der gedrehten Fahrbahn (Versatz und Hochachse um die Fahrtrichtung gedreht)
  // Feed-Forward: das analytische Roll-Delta wird direkt uebernommen, nur der Restfehler wird geglaettet.
@@ -1913,7 +1913,7 @@ function animateWorld(dt,now){
  if(noticeTimer>0){noticeTimer-=dt;if(noticeTimer<=0&&state!=='countdown')setText('message','');}
  if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)$('toast').className='';}}
 function updateSwingersMenu(now){updateSwingers(now*.001);}
-function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-last)/1000||.016,.05);last=now;
+function loop(now){requestAnimationFrame(loop);if(dbg.manual)return;const dt=Math.min((now-last)/1000||.016,.05);last=now;
  if(finishMusicAt&&now>finishMusicAt){finishMusicAt=0;if(state==='finished'||state==='ceremony')playBgm('menu');}
  quality.fpsFrames++;if(quality.fpsStart&&now-quality.fpsStart>1200){adaptQuality(quality.fpsFrames*1000/(now-quality.fpsStart));quality.fpsFrames=0;quality.fpsStart=now;}else if(!quality.fpsStart)quality.fpsStart=now;
  frameStep(dt,now);}
@@ -2074,7 +2074,10 @@ if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,hud,
  saveGhost:()=>{try{localStorage.setItem('mr-ghost-'+selected,JSON.stringify({...rec,next:undefined,color:0xffffff}));}catch{}return rec&&rec.x.length;},ghost:()=>ghost&&{n:ghost.data.x.length,dist:ghost.dist,visible:ghost.mesh.visible},medalOf:t=>medalOf(t),aiUse:(id,item)=>{racers[id].item=item;return useItem(racers[id]);},racers:()=>racers,world:()=>({ramps,pads,rings,spores,gaps,swingers}),keys,
  loops:()=>loops.map(q=>({...q,s:Math.round(q.s),span:Math.round(q.span),R:Math.round(q.R)})),
  coasters:()=>coasters.map(c=>({s:Math.round(c.s),span:Math.round(c.span),kind:c.spec.kind,launch:c.spec.launch.map(Math.round),hills:c.spec.hills.map(q=>({c:Math.round(q.c),w:Math.round(q.w),h:+q.h.toFixed(1)})),arches:c.archX.map(Math.round),assets:{arch:!!P.magnetarch,truss:!!P.coastertruss},glow:!!coasterGlow})),
- coasterH:d=>coasterH(d),ridePhoto:()=>ridePhoto?ridePhoto.length:0,coasterRun:()=>racers.map(r=>({id:r.id,run:r.czRun?{arch:r.czRun.arch,air:r.czRun.airHills,maxOff:+r.czRun.maxOff.toFixed(2),launched:r.czRun.launched}:null,g:r.czG,float:r.czFloat,vis:r.czVis,speed:r.speed})),
+ // Videoaufnahme (R38): Bilder im festen Takt selbst weiterschalten (rAF-Schleife ruht bei dbg.manual)
+ step:(n=2,dt=1/60)=>{for(let i=0;i<n-1;i++){update(dt);animateWorld(dt,performance.now());}frameStep(dt,performance.now());},
+ audio:()=>{armAudio();audioInit();return {ctx,masterGain};},
+ coasterH:d=>coasterH(d),ridePhoto:()=>ridePhoto?ridePhoto.length:0,ridePhotoURL:()=>ridePhoto,coasterRun:()=>racers.map(r=>({id:r.id,run:r.czRun?{arch:r.czRun.arch,air:r.czRun.airHills,maxOff:+r.czRun.maxOff.toFixed(2),launched:r.czRun.launched}:null,g:r.czG,float:r.czFloat,vis:r.czVis,speed:r.speed})),
  // Standbild an beliebiger Stelle: Spieler auf Streckenmeter d setzen, Kamera einrasten, rendern
  pose:(d,off=0,speed=30,frames=40)=>{if(!racers.length)return null;const r=racers[0],s=sample(d,off),gy=groundAt(d,off).y;r.distance=d;r.offset=off;r.x=s.p.x;r.z=s.p.z;r.h=s.angle;r.speed=speed;r.vx=Math.sin(r.h)*speed;r.vz=Math.cos(r.h)*speed;r.y=gy;r.vy=0;r.air=false;r.airT=0;r.stun=0;r.trick=0;r.finishTime=null;r.lastGround=gy;
   const cz=coasterAt(d);if(cz){r.czRun=null;coasterRide(r,cz,false);}else{r.czFloat=0;r.czVis=1;}

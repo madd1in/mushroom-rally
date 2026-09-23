@@ -1,0 +1,60 @@
+{
+  "container": "MPEG4",
+  "codec": "H264",
+  "crf": "HIGH",
+  "preset": "GOOD",
+  "audio": "AAC",
+  "frames": 1155,
+  "events": 19,
+  "sounds": 17,
+  "placed": [
+    [
+      5.267,
+      "sfx/boost.mp3"
+    ],
+    [
+      10.433,
+      "sfx/boost.mp3"
+    ],
+    [
+      12.7,
+      "sfx/boost.mp3"
+    ],
+    [
+      15.333,
+      "sfx/trick.mp3"
+    ],
+    [
+      22.333,
+      "sfx/launch.mp3"
+    ],
+    [
+      22.333,
+      "voice/launch.mp3"
+    ],
+    [
+      24.633,
+      "sfx/ramp.mp3"
+    ],
+    [
+      27.267,
+      "sfx/ramp.mp3"
+    ],
+    [
+      28.967,
+      "sfx/ramp.mp3"
+    ],
+    [
+      31.233,
+      "voice/coaster.mp3"
+    ],
+    [
+      31.233,
+      "sfx/boost.mp3"
+    ],
+    [
+      33.933,
+      "sfx/trick.mp3"
+    ]
+  ]
+}

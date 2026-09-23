@@ -64,6 +64,14 @@ Rollzonen nicht mit (beim Zurueckwechseln lief die Animation der zuletzt gebaute
 Bananen in Magnetzonen liegen im Bild jetzt auf der gehobenen Bahn statt darunter; Item-Boxen und
 Sporen auf Huegeln lassen sich einsammeln.
 
+**Gameplay-Video (Nachtrag):** `media/r38_magnet_achterbahn.mp4` (Hochformat 1080x1920, 30 fps,
+mit Ton) plus `..._small.mp4` (810x1440) unter 10 MB. Kopflos-Chrome rendert ohne GPU (~130 ms je Bild), deshalb
+wird nicht in Echtzeit aufgenommen, sondern Bild fuer Bild in Spielzeit (`art/r38/capture_frames.mjs`,
+`performance.now` laeuft virtuell mit). Die Spielereignisse werden mitprotokolliert; Schnitt,
+Endkarte (On-Ride-Foto, Link, Credits) und Ton (Musik, Katapult, Ansagen, Airtime-Whoosh exakt auf
+die Ereignisse gelegt) entstehen im Blender-Videoschnitt (`art/r38/edit_video_blender.py`), Export
+als H.264/AAC. Post-Texte je Plattform: `media/social-texte-r38.md`.
+
 **Verifikation:** 46/46 Unit-Tests (9 neue fuer `coaster.mjs`). Autopilot-Regression auf allen
 sieben Strecken bei 100 ccm: alle im Ziel, 0 JS-Fehler, 0 fehlende Dateien, je Runde eine
 Achterbahn-Wertung auf den drei Achterbahn-Strecken; zusaetzlich 150 ccm auf Geisterhaus,
