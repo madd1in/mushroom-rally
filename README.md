@@ -4,6 +4,25 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 36 (23.09.2026): Tribuene, Geist, Trophaee, Podium
+
+Vier Facelifts in einem Zug, alle rein dekorativ (Korpus, Materialzuordnung und alle
+Mesh-Namen unveraendert, Backups in art/r36/):
+
+- **Tribuene:** Festliche Wimpelgirlande ueber die Dachvorderkante (leicht durchhaengende
+  Linie mit 14 Dreieckswimpeln, ein Mesh) und zwei Knaufe auf den Dachenden. 778 Dreiecke.
+- **Geist:** Er hat vorher kein Gesicht gehabt - jetzt zwei dunkle ovale Augen und ein
+  Mund-Oval auf der Vorderseite. Pendelt wie gehabt; das Gesicht liest sich aus jeder
+  Schwenkrichtung. 4208 Dreiecke.
+- **Trophäee:** Zwei klassische Pokal-Henkel (12-seitige Halbringe, TrophyGold). 1576 Dreiecke.
+  Rotiert weiter auf Platz 1 der Siegerehrung.
+- **Podium:** Goldene Fussleiste an der Front. 1068 Dreiecke.
+
+Unreal: Importe validiert (grandstand 4, ghost 19, trophy 3, podium 2 Static-Meshes).
+
+**Verifikation:** 37/37 Unit-Tests; Geisterhaus-Rennen ohne Fehler; Workbench-Previews:
+Geist-Gesicht lesbar und auf der Fläche, Wimpel haengen korrekt.
+
 ## Runde 35 (23.09.2026): Sprungpilz-Facelift
 
 Die Sprungpilze (mindestens zwei pro Strecke) bekommen eine gewellte Creme-Krempe am

@@ -1,0 +1,28 @@
+{
+ "file": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\grandstand.glb",
+ "kb": 44.1,
+ "tris": 576,
+ "objects": [
+  {
+   "name": "Grandstand",
+   "tris": 576,
+   "mats": [
+    "StandWood",
+    "StandSeat",
+    "StandCream",
+    "StandAwning",
+    "StandFlag"
+   ],
+   "dim": [
+    18.75,
+    5.135,
+    8.9
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

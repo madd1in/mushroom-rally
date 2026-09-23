@@ -1,0 +1,28 @@
+{
+ "file": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\trophy.glb",
+ "kb": 92.8,
+ "tris": 1288,
+ "objects": [
+  {
+   "name": "Trophy",
+   "tris": 1288,
+   "mats": [
+    "TrophyBase",
+    "TrophyGold",
+    "PodiumBase",
+    "TrophyCap",
+    "TrophyDot"
+   ],
+   "dim": [
+    1.69,
+    1.1,
+    2.02
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}

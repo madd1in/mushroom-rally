@@ -1,0 +1,28 @@
+{
+ "file": "C:\\Users\\User\\Documents\\Playground\\mushroom-rally\\assets\\podium.glb",
+ "kb": 62.2,
+ "tris": 1056,
+ "objects": [
+  {
+   "name": "Podium",
+   "tris": 1056,
+   "mats": [
+    "PodiumBase",
+    "PodiumGold",
+    "PodiumNumber",
+    "PodiumSilver",
+    "PodiumBronze"
+   ],
+   "dim": [
+    7.76,
+    2.34,
+    1.5
+   ],
+   "loc": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ]
+}
