@@ -1,0 +1,295 @@
+{
+  "startedAt": "2026-09-23T16:11:24.277Z",
+  "cc": 100,
+  "tracks": [
+    {
+      "track": 0,
+      "outcome": "finished",
+      "finishTime": 102.4833333333288,
+      "falls": 0,
+      "airtime": 0,
+      "coasters": 0,
+      "maxLaunch": 0,
+      "minVis": 1,
+      "maxFloat": 0,
+      "launches": 0,
+      "name": "✿Pilz-PromenadeWurzeltor · Viadukt · Wan",
+      "coaster": [],
+      "state": "finished",
+      "place": 5,
+      "simulated": 110,
+      "perf": {
+        "drawCalls": 256,
+        "triangles": 99492,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 160.8
+    },
+    {
+      "track": 1,
+      "outcome": "finished",
+      "finishTime": 113.0833333333282,
+      "falls": 0,
+      "airtime": 0,
+      "coasters": 0,
+      "maxLaunch": 0,
+      "minVis": 1,
+      "maxFloat": 0,
+      "launches": 0,
+      "name": "☀Sonnen-CanyonSchnell · Schluchtsprung ·",
+      "coaster": [],
+      "state": "finished",
+      "place": 1,
+      "simulated": 120,
+      "perf": {
+        "drawCalls": 134,
+        "triangles": 316122,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 96.8
+    },
+    {
+      "track": 2,
+      "outcome": "finished",
+      "finishTime": 96.28333333332915,
+      "falls": 1,
+      "airtime": 0,
+      "coasters": 0,
+      "maxLaunch": 0,
+      "minVis": 1,
+      "maxFloat": 0,
+      "launches": 0,
+      "name": "✦Neon-PilzwaldTechnisch · Korkenzieher i",
+      "coaster": [],
+      "state": "finished",
+      "place": 7,
+      "simulated": 100,
+      "perf": {
+        "drawCalls": 163,
+        "triangles": 406612,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 88
+    },
+    {
+      "track": 3,
+      "outcome": "finished",
+      "finishTime": 101.56666666666219,
+      "falls": 0,
+      "airtime": 6,
+      "coasters": 3,
+      "maxLaunch": 44.40003260195042,
+      "minVis": 0.8723482532222012,
+      "maxFloat": 0.5,
+      "launches": 0,
+      "name": "👻GeisterhausSpuk · Villa · Fahrt über K",
+      "coaster": [
+        {
+          "s": 522,
+          "span": 110,
+          "kind": "hills",
+          "launch": [
+            2,
+            24
+          ],
+          "hills": [
+            {
+              "c": 49,
+              "w": 15,
+              "h": 8.9
+            },
+            {
+              "c": 80,
+              "w": 11,
+              "h": 6.4
+            }
+          ],
+          "arches": [
+            2,
+            7,
+            11,
+            15,
+            20,
+            24
+          ],
+          "assets": {
+            "arch": true,
+            "truss": true
+          },
+          "glow": true
+        }
+      ],
+      "state": "finished",
+      "place": 4,
+      "simulated": 110,
+      "perf": {
+        "drawCalls": 156,
+        "triangles": 433658,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 82.4
+    },
+    {
+      "track": 4,
+      "outcome": "finished",
+      "finishTime": 90.83333333332946,
+      "falls": 0,
+      "airtime": 0,
+      "coasters": 0,
+      "maxLaunch": 0,
+      "minVis": 1,
+      "maxFloat": 0,
+      "launches": 0,
+      "name": "♨Lava-FesteBurg · Magma · Feuerbälle—",
+      "coaster": [],
+      "state": "finished",
+      "place": 1,
+      "simulated": 100,
+      "perf": {
+        "drawCalls": 133,
+        "triangles": 330702,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 93.9
+    },
+    {
+      "track": 5,
+      "outcome": "finished",
+      "finishTime": 112.81666666666155,
+      "falls": 0,
+      "airtime": 6,
+      "coasters": 3,
+      "maxLaunch": 45.46368557945318,
+      "minVis": 0.8065413586354441,
+      "maxFloat": 0.5,
+      "launches": 0,
+      "name": "✧RegenbogenpisteWeltall · Looping · Kork",
+      "coaster": [
+        {
+          "s": 821,
+          "span": 161,
+          "kind": "hills",
+          "launch": [
+            3,
+            35
+          ],
+          "hills": [
+            {
+              "c": 72,
+              "w": 23,
+              "h": 13.1
+            },
+            {
+              "c": 117,
+              "w": 16,
+              "h": 8
+            }
+          ],
+          "arches": [
+            3,
+            10,
+            16,
+            23,
+            29,
+            35
+          ],
+          "assets": {
+            "arch": true,
+            "truss": true
+          },
+          "glow": true
+        }
+      ],
+      "state": "finished",
+      "place": 2,
+      "simulated": 120,
+      "perf": {
+        "drawCalls": 118,
+        "triangles": 175304,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 82.4
+    },
+    {
+      "track": 6,
+      "outcome": "finished",
+      "finishTime": 119.03333333332786,
+      "falls": 0,
+      "airtime": 9,
+      "coasters": 3,
+      "maxLaunch": 45.46640097021542,
+      "minVis": 0.6150997246877878,
+      "maxFloat": 0.5,
+      "launches": 0,
+      "name": "❂Magnet-KirmesAchterbahn · Magnet-Katapu",
+      "coaster": [
+        {
+          "s": 437,
+          "span": 266,
+          "kind": "super",
+          "launch": [
+            4,
+            40
+          ],
+          "hills": [
+            {
+              "c": 85,
+              "w": 40,
+              "h": 23.1
+            },
+            {
+              "c": 152,
+              "w": 25,
+              "h": 14.7
+            },
+            {
+              "c": 197,
+              "w": 19,
+              "h": 9
+            }
+          ],
+          "arches": [
+            4,
+            11,
+            18,
+            26,
+            33,
+            40
+          ],
+          "assets": {
+            "arch": true,
+            "truss": true
+          },
+          "glow": true
+        }
+      ],
+      "state": "finished",
+      "place": 4,
+      "simulated": 130,
+      "perf": {
+        "drawCalls": 134,
+        "triangles": 369594,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 121.3
+    }
+  ],
+  "errors": [],
+  "networkFailures": [],
+  "passed": true,
+  "completedAt": "2026-09-23T16:24:46.945Z"
+}

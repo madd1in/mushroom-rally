@@ -1,0 +1,11 @@
+{
+  "triangles": 1332,
+  "objects": 29,
+  "glb_bytes": 62688,
+  "materials": [
+    "MagnetBase",
+    "MagnetGlow",
+    "MagnetPaint",
+    "MagnetSteel"
+  ]
+}

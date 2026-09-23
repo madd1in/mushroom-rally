@@ -1,0 +1,17 @@
+{
+  "triangles": 8060,
+  "glb_bytes": 170984,
+  "hub": 24.0,
+  "radius": 20.0,
+  "gondolas": 12,
+  "materials": [
+    "FerrisSteel",
+    "FerrisBase",
+    "FerrisBooth",
+    "FerrisBoothRoof",
+    "WheelPaint",
+    "WheelLights",
+    "GondolaPaint",
+    "GondolaTrim"
+  ]
+}

@@ -4,6 +4,72 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 38 (23.09.2026): Magnet-Achterbahn, neue Strecke Magnet-Kirmes, On-Ride-Foto
+
+Die Magnetbahn wird zur Super-Achterbahn. Neues Streckenelement `coaster` (Logik in
+`coaster.mjs`, ohne Browser getestet), gefahren wie Rollzone und Looping flach, gezeichnet als
+Achterbahn:
+
+- **Magnet-Katapult:** sechs Hufeisen-Magnetboegen ueber einer Abschussstrecke. Jeder Bogen gibt
+  beim Durchfahren genau einmal +7 m/s Schub, gedeckelt bei 46 m/s (Turbo sonst 40). Die
+  Pol-Leuchten laufen als Lauflicht in Fahrtrichtung und blitzen beim Durchfahren auf. Danach
+  traegt die Magnetbahn das Tempo durch die ganze Achterbahn.
+- **Airtime-Huegel:** Top-Hat, Kamelruecken, Bunny-Hop. Jeder Buckel ist (1-x^2)^3, also C2-glatt
+  (auch die Kruemmung ist an den Raendern null, kein Ruck), Steigung hoechstens ~45 Grad. Auf
+  kurzen Zonen wird die Hoehe automatisch gedeckelt; das hat der Unit-Test gefunden.
+- **Energietempo:** bergauf langsamer, bergab schneller (Energieerhaltung relativ zu 44 m/s, oben
+  nie unter 52 %), dazu der laengere Bildweg am Hang. Der Tacho zeigt das Bildtempo: auf der
+  Top-Hat-Kuppe gut 80 km/h, bergab wieder ueber 100.
+- **Airtime:** Faellt das Lastvielfache an der Kuppe unter 0,35, schwebt das Kart bis 0,5 m ueber
+  der Bahn, der Fahrer lehnt sich zurueck, das Sichtfeld weitet sich. "AIRTIME!" je Huegel.
+- **Wertung bei der Ausfahrt:** sauber (nie an der Magnetbande) und mindestens zwei Airtimes =
+  SUPER-ACHTERBAHN (1,25 s Turbo, 2 Sporen), sonst ACHTERBAHN-SCHWUNG (0,9 s, 1 Spore). Wer per
+  Rettungspilz aus der Zone kommt, bekommt nichts.
+- **On-Ride-Foto:** An der ersten Abfahrt blitzt es: eine Streckenkamera VOR dem Kart schaut
+  zurueck aufs Gesicht (mit Sichtlinien-Pruefung, damit kein Rivale davor steht), das Bild landet
+  als Polaroid im Ergebnisschirm ("ON-RIDE-FOTO · MAGNET-KIRMES").
+
+**Neue Strecke 7 "Magnet-Kirmes"** (Kirmes in der Abenddaemmerung): 266-m-Super-Achterbahn mit
+23-m-Top-Hat, Looping auf der rechten Geraden, Korkenzieher links, Lichterketten und ein
+drehendes **Riesenrad** im Innenfeld (zwoelf Gondeln mit Pilzhut, haengen immer senkrecht).
+Medaillen 100 / 106 / 117 s.
+
+**Auch auf bestehenden Strecken:** Geisterhaus bekommt Geisterbahn-Wellen hinter der Villa
+(violette Boegen, giftgruenes Leuchten), die Regenbogenpiste eine Sternen-Achterbahn vor dem Ziel
+(Glasbahn ohne Unterseite, keine Stuetzen im All). Rekorde und Geister werden seit dieser Runde
+**nur fuer geaenderte Strecken** verworfen (`TRACK_VER` je Strecke statt globalem `LAYOUT_VER`),
+hier also nur Geisterhaus und Regenbogenpiste.
+
+**Blender (MCP, Blender 5.2):** `magnetarch.glb` (Hufeisenmagnet mit Stahl-Polschuhen, Feldringen,
+Blitz-Emblem; 1.332 Dreiecke, 62 KB), `coastertruss.glb` (4-m-Fachwerksegment, im Spiel gestapelt
+statt gestreckt, plus Betonfuss; 764 Dreiecke, 20 KB), `ferriswheel.glb` (Gestell, Rad und
+Gondel-Vorlage in einer Datei, im Spiel ueber die Materialnamen getrennt; ~8.000 Dreiecke,
+171 KB). Quellen und Vorschauen in `art/r38/`.
+
+**ElevenLabs (claude.ai-Connector):** Katapult-Sound (Sound Effects v2) und zwei Ansagen mit
+Stimme Leo: "Magnet-Katapult!" (erster Abschuss im Rennen) und "Super-Achterbahn!" (erste
+Super-Wertung und letzte Runde). Danach waren die Credits aufgebraucht; der Airtime-Klang nutzt
+den vorhandenen Schanzen-Whoosh plus Synth-Schimmer. Der lokale ElevenLabs-MCP-Server war nicht
+verbunden.
+
+**Unreal (5.8):** Import aller drei Modelle validiert (29 / 3 / 8 Static Meshes unter
+`/Game/MushroomRally/*_r38/`). Showcase "Magnet-Katapult" (Tunnel aus fuenf Boegen, Hero-Kart,
+18-m-Huegel auf Fachwerkstuetzen, Riesenrad) abseits im Keyart-Level aufgebaut, ueber eine eigene
+SceneCapture gerendert (`media/r38_magnet_katapult.jpg`) und danach wieder entfernt. Der Level
+wurde nicht gespeichert: Er hatte schon vorher ungespeicherte Aenderungen (u. a. einen Ordner
+`R38_HauntedKeyart`), die unangetastet bleiben. Neu aufbauen: `art/r38/unreal_coaster_r38.py`.
+
+**Fixes nebenbei:** Der Strecken-Cache sicherte Achterbahn-Daten und die Energiewaende der
+Rollzonen nicht mit (beim Zurueckwechseln lief die Animation der zuletzt gebauten Strecke).
+Bananen in Magnetzonen liegen im Bild jetzt auf der gehobenen Bahn statt darunter; Item-Boxen und
+Sporen auf Huegeln lassen sich einsammeln.
+
+**Verifikation:** 46/46 Unit-Tests (9 neue fuer `coaster.mjs`). Autopilot-Regression auf allen
+sieben Strecken bei 100 ccm: alle im Ziel, 0 JS-Fehler, 0 fehlende Dateien, je Runde eine
+Achterbahn-Wertung auf den drei Achterbahn-Strecken; zusaetzlich 150 ccm auf Geisterhaus,
+Regenbogenpiste und Kirmes. Draw Calls im Rennen 118-183. Fahrt-Screenshots von Katapult, Kuppe
+(Airtime) und Abfahrt sowie des On-Ride-Fotos gesichtet.
+
 ## Runde 37 (23.09.2026): Keyart mit allen Facelift-Assets erneuert
 
 Das Teaserbild (og:image) und die Hochformat-Variante fuer Story-Posts zeigen jetzt die

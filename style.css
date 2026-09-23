@@ -57,6 +57,11 @@ p{font-size:15px;line-height:1.65;color:#e1eddd}
 #resultStats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 12px}
 #resultStats div{background:#ffffff10;border-radius:10px;padding:7px 10px;display:flex;flex-direction:column}
 #resultStats span{font-size:10px;letter-spacing:1px;opacity:.7}#resultStats b{font-size:16px;font-variant-numeric:tabular-nums}
+/* R38: On-Ride-Foto der Achterbahn als schraeg angepinntes Polaroid, Blitz beim Ausloesen */
+#ridePhoto{margin:6px auto 12px;background:#fff8ea;padding:8px 8px 6px;border-radius:5px;box-shadow:0 10px 26px #0007;transform:rotate(-2.2deg);max-width:320px}
+#ridePhoto img{display:block;width:100%;border-radius:2px;aspect-ratio:16/9;object-fit:cover;background:#223}
+#ridePhoto figcaption{color:#46343a;font-weight:800;font-size:11px;letter-spacing:1.6px;text-align:center;margin-top:6px}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
 #cerUnlock{color:var(--yellow);font-weight:bold;margin:4px 0}
 #colors{display:flex;gap:12px;margin:12px 0 20px}
 .swatch{width:44px;height:34px;border-radius:9px;background:var(--swatch);border:2px solid transparent;box-shadow:inset 0 -5px #0002;position:relative}

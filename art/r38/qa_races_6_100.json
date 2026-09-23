@@ -1,0 +1,88 @@
+{
+  "startedAt": "2026-09-23T12:05:06.051Z",
+  "cc": 100,
+  "tracks": [
+    {
+      "track": 6,
+      "outcome": "finished",
+      "finishTime": 115.84999999999471,
+      "falls": 0,
+      "airtime": 9,
+      "coasters": 3,
+      "maxLaunch": 42.79959671025591,
+      "minVis": 0.6159804432356805,
+      "maxFloat": 0.5,
+      "launches": 0,
+      "name": "❂Magnet-KirmesAchterbahn · Magnet-Katapu",
+      "coaster": [
+        {
+          "s": 437,
+          "span": 266,
+          "kind": "super",
+          "launch": [
+            4,
+            40
+          ],
+          "hills": [
+            {
+              "c": 85,
+              "w": 40,
+              "h": 23.1
+            },
+            {
+              "c": 152,
+              "w": 25,
+              "h": 14.7
+            },
+            {
+              "c": 197,
+              "w": 19,
+              "h": 9
+            }
+          ],
+          "arches": [
+            4,
+            11,
+            18,
+            26,
+            33,
+            40
+          ],
+          "assets": {
+            "arch": true,
+            "truss": true
+          },
+          "glow": true
+        }
+      ],
+      "state": "finished",
+      "place": 3,
+      "simulated": 120,
+      "perf": {
+        "drawCalls": 133,
+        "triangles": 395758,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 50.1
+    }
+  ],
+  "errors": [],
+  "networkFailures": [
+    {
+      "status": 404,
+      "url": "http://127.0.0.1:56332/assets/audio/voice/coaster.mp3"
+    },
+    {
+      "status": 404,
+      "url": "http://127.0.0.1:56332/assets/audio/sfx/airtime.mp3"
+    },
+    {
+      "status": 404,
+      "url": "http://127.0.0.1:56332/assets/audio/sfx/launch.mp3"
+    }
+  ],
+  "passed": true,
+  "completedAt": "2026-09-23T12:06:06.988Z"
+}

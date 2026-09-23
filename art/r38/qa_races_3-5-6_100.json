@@ -1,0 +1,195 @@
+{
+  "startedAt": "2026-09-23T15:34:09.411Z",
+  "cc": 100,
+  "tracks": [
+    {
+      "track": 3,
+      "outcome": "finished",
+      "finishTime": 99.13333333332899,
+      "falls": 0,
+      "airtime": 6,
+      "coasters": 3,
+      "maxLaunch": 44.9255138559071,
+      "minVis": 0.8797417090077506,
+      "maxFloat": 0.5,
+      "launches": 0,
+      "name": "👻GeisterhausSpuk · Villa · Fahrt über K",
+      "coaster": [
+        {
+          "s": 522,
+          "span": 110,
+          "kind": "hills",
+          "launch": [
+            2,
+            24
+          ],
+          "hills": [
+            {
+              "c": 49,
+              "w": 15,
+              "h": 8.9
+            },
+            {
+              "c": 80,
+              "w": 11,
+              "h": 6.4
+            }
+          ],
+          "arches": [
+            2,
+            7,
+            11,
+            15,
+            20,
+            24
+          ],
+          "assets": {
+            "arch": true,
+            "truss": true
+          },
+          "glow": true
+        }
+      ],
+      "state": "finished",
+      "place": 1,
+      "simulated": 110,
+      "perf": {
+        "drawCalls": 126,
+        "triangles": 279172,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 42.7
+    },
+    {
+      "track": 5,
+      "outcome": "finished",
+      "finishTime": 112.5499999999949,
+      "falls": 0,
+      "airtime": 6,
+      "coasters": 3,
+      "maxLaunch": 45.46377833548604,
+      "minVis": 0.8068637932430501,
+      "maxFloat": 0.5,
+      "launches": 0,
+      "name": "✧RegenbogenpisteWeltall · Looping · Kork",
+      "coaster": [
+        {
+          "s": 821,
+          "span": 161,
+          "kind": "hills",
+          "launch": [
+            3,
+            35
+          ],
+          "hills": [
+            {
+              "c": 72,
+              "w": 23,
+              "h": 13.1
+            },
+            {
+              "c": 117,
+              "w": 16,
+              "h": 8
+            }
+          ],
+          "arches": [
+            3,
+            10,
+            16,
+            23,
+            29,
+            35
+          ],
+          "assets": {
+            "arch": true,
+            "truss": true
+          },
+          "glow": true
+        }
+      ],
+      "state": "finished",
+      "place": 5,
+      "simulated": 120,
+      "perf": {
+        "drawCalls": 118,
+        "triangles": 175304,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 17.2
+    },
+    {
+      "track": 6,
+      "outcome": "finished",
+      "finishTime": 116.31666666666135,
+      "falls": 0,
+      "airtime": 9,
+      "coasters": 3,
+      "maxLaunch": 44.83388588724539,
+      "minVis": 0.6159857611846463,
+      "maxFloat": 0.5,
+      "launches": 0,
+      "name": "❂Magnet-KirmesAchterbahn · Magnet-Katapu",
+      "coaster": [
+        {
+          "s": 437,
+          "span": 266,
+          "kind": "super",
+          "launch": [
+            4,
+            40
+          ],
+          "hills": [
+            {
+              "c": 85,
+              "w": 40,
+              "h": 23.1
+            },
+            {
+              "c": 152,
+              "w": 25,
+              "h": 14.7
+            },
+            {
+              "c": 197,
+              "w": 19,
+              "h": 9
+            }
+          ],
+          "arches": [
+            4,
+            11,
+            18,
+            26,
+            33,
+            40
+          ],
+          "assets": {
+            "arch": true,
+            "truss": true
+          },
+          "glow": true
+        }
+      ],
+      "state": "finished",
+      "place": 3,
+      "simulated": 120,
+      "perf": {
+        "drawCalls": 136,
+        "triangles": 395328,
+        "dpr": 0.8,
+        "qualityLevel": 3
+      },
+      "errors": [],
+      "wallSeconds": 17
+    }
+  ],
+  "errors": [],
+  "networkFailures": [],
+  "passed": true,
+  "completedAt": "2026-09-23T15:35:33.413Z"
+}
