@@ -4,6 +4,18 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 37 (23.09.2026): Keyart mit allen Facelift-Assets erneuert
+
+Das Teaserbild (og:image) und die Hochformat-Variante fuer Story-Posts zeigen jetzt die
+faceliftete Ausstattung: drei schwebende Item-Boxen mit goldenen Eckkappen vor dem Sporentor,
+zwei Sprungpilze mit welliger Krempe am Strassenrand und die Pilzschanze mit Fussbalken
+seitlich - dazu Tor, Ballonbogen und Kart wie gehabt. Aufnahmen aus dem Unreal-Keyart-Level
+(HighResShot quer 1920x1080 und hoch 1080x1920, JPG Qualitaet 88); alte Bilder in
+art/r37/backup/. Level mit der neuen Deko-Gruppe R37_KeyartRefresh gespeichert.
+
+**Verifikation:** Sichtpruefung beider Aufnahmen (Komposition teilbar, nichts abgeschnitten,
+Belichtung gut); Dateien lokal 1920x1080 und 1080x1920 bestätigt.
+
 ## Runde 36 (23.09.2026): Tribuene, Geist, Trophaee, Podium
 
 Vier Facelifts in einem Zug, alle rein dekorativ (Korpus, Materialzuordnung und alle
