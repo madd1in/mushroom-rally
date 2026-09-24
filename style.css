@@ -490,3 +490,65 @@ body:not(.racing):not(.cer) header .brand{opacity:0;pointer-events:none}
 /* Auswahl etwas deutlicher, Hover ruhiger */
 #menu #tracks .track{transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
 #menu #tracks .track.selected{transform:translateY(-1px)}
+
+/* ============================================================================================
+   R40: Menue und Schrift naeher an Mario Kart World - fette kursive Display-Schrift mit dicker
+   dunkler Kontur und farbigem Schlagschatten, helle Karten, schraege Knoepfe, Zielflaggen-Muster.
+   Steht am Ende und ueberstimmt die aelteren Schichten (body-Praefix fuer die Spezifitaet).
+   ============================================================================================ */
+:root{--mk-ink:#15133a;--mk-red:#e8202a;--mk-red2:#b0101b;--mk-yellow:#ffd21f;--mk-orange:#ff8a00;--mk-blue:#1c7cff;--mk-sky:#62c9ff;
+ --mk-font:'Rubik','Baloo 2','Trebuchet MS',Arial,sans-serif;
+ --mk-check:repeating-conic-gradient(var(--mk-ink) 0 25%,#fff 0 50%) 0 0/14px 14px}
+body .menu-title,body .position strong,body #toast{font-family:var(--mk-font);font-style:italic;font-weight:900;paint-order:stroke fill}
+/* Titel: weiss mit dicker Kontur, "Rally" gelb, roter Versatzschatten */
+body .menu-title{font-size:clamp(46px,5vw,68px);letter-spacing:-1px;line-height:.92;color:#fff;-webkit-text-stroke:9px var(--mk-ink);text-shadow:0 6px 0 var(--mk-red),0 10px 18px #0007;transform:skewX(-6deg);transform-origin:left bottom}
+body .menu-title em{color:var(--mk-yellow);font-style:italic}
+body .menu-tag{font-family:var(--mk-font);font-style:italic;font-weight:800;color:#fff;letter-spacing:.3px;-webkit-text-stroke:4px var(--mk-ink);paint-order:stroke fill;font-size:15px;margin-top:4px}
+/* Helle Karte mit Zielflaggen-Streifen */
+body #menu .menu-panel{position:relative;padding:22px 18px 18px;border-radius:26px;background:linear-gradient(180deg,#ffffffef,#e7f3ffe8);box-shadow:0 8px 0 #15133a40,0 24px 60px -20px #000a;color:var(--mk-ink)}
+body #menu .menu-panel:before{content:'';position:absolute;left:18px;right:18px;top:-9px;height:14px;border-radius:7px;background:var(--mk-check);box-shadow:0 3px 0 #15133a55}
+body #menu .menu-brand{margin:-6px 0 2px}
+/* Segmente (Modus, Klasse, Lenkhilfe, Grafik): schraege Knoepfe */
+body #menu .seg,body #menu #gfx,body #menu #assist{background:#15133a14;border-radius:16px;padding:5px;gap:6px;backdrop-filter:none}
+body #menu .seg button,body #menu #gfx button,body #menu #assist button{transform:skewX(-10deg);border-radius:11px;background:#fff;color:var(--mk-ink);border:2.5px solid #15133a26;box-shadow:0 3px 0 #15133a33;font-family:var(--mk-font);font-style:italic;font-weight:800;transition:transform .12s,box-shadow .12s,background .12s}
+body #menu .seg button b{font-style:italic;font-weight:900;display:inline-block;transform:skewX(10deg);font-size:15px}
+body #menu .seg button:hover,body #menu #gfx button:hover,body #menu #assist button:hover{transform:skewX(-10deg) translateY(-2px);box-shadow:0 5px 0 #15133a33}
+body #menu .seg button.selected,body #menu #gfx button.selected,body #menu #assist button.selected{background:linear-gradient(180deg,var(--mk-yellow),var(--mk-orange));color:#fff;border-color:#fff;box-shadow:0 0 0 2.5px var(--mk-ink),0 4px 0 2px var(--mk-ink);-webkit-text-stroke:3.5px var(--mk-ink);paint-order:stroke fill}
+body #menu .pick small{font-family:var(--mk-font);font-style:italic;font-weight:900;letter-spacing:.5px;color:var(--mk-ink);font-size:12px}
+/* Strecken-Karten: dicker weisser Rand, Auswahl gelb mit dunkler Kontur und Glanz */
+body #menu #tracks{gap:8px}
+body #menu #tracks .track{border:3px solid #fff;border-radius:14px;box-shadow:0 3px 0 #15133a55;overflow:hidden}
+body #menu #tracks .track b{font-family:var(--mk-font);font-style:italic;font-weight:900;color:#fff;-webkit-text-stroke:3px var(--mk-ink);paint-order:stroke fill;letter-spacing:.2px}
+body #menu #tracks .track.selected{border-color:var(--mk-yellow);box-shadow:0 0 0 3px var(--mk-ink),0 6px 0 3px var(--mk-ink),0 14px 26px -10px var(--mk-yellow);transform:translateY(-3px) scale(1.03)}
+body #menu #tracks .track.selected:before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(115deg,#fff0 30%,#ffffff55 42%,#fff0 54%) -200% 0/250% 100% no-repeat;animation:mkShine 2.4s ease-in-out infinite}
+@keyframes mkShine{0%,40%{background-position:-200% 0}100%{background-position:200% 0}}
+/* Fahrer und Farben */
+body #menu #drivers button{border-radius:14px;border:2.5px solid #15133a26;background:#fff;box-shadow:0 3px 0 #15133a33}
+body #menu #drivers button.selected{border-color:var(--mk-yellow);box-shadow:0 0 0 2.5px var(--mk-ink),0 4px 0 2px var(--mk-ink)}
+body #menu #colors .swatch{border:3px solid #fff;box-shadow:0 0 0 2px #15133a55,0 3px 0 #15133a44}
+body #menu #colors .swatch.selected{box-shadow:0 0 0 3px var(--mk-ink),0 4px 0 2px var(--mk-ink)}
+/* Start: grosser roter schraeger Knopf mit Zielflagge */
+body #menu #start{position:relative;overflow:hidden;transform:skewX(-8deg);border-radius:18px;padding:18px 26px;background:linear-gradient(180deg,#ff4a4a,var(--mk-red) 55%,var(--mk-red2));border:3px solid #fff;box-shadow:0 0 0 3px var(--mk-ink),0 7px 0 3px var(--mk-ink),0 16px 30px -12px #e8202aaa;color:#fff;animation:mkPulse 1.8s ease-in-out infinite}
+body #menu #start b{display:inline-block;transform:skewX(8deg);font-family:var(--mk-font);font-style:italic;font-weight:900;font-size:26px;letter-spacing:.5px;text-transform:uppercase;-webkit-text-stroke:5px var(--mk-ink);paint-order:stroke fill}
+body #menu #start span{position:absolute;right:0;top:0;bottom:0;width:70px;float:none;background:var(--mk-check);opacity:.9;-webkit-mask:linear-gradient(90deg,#0000,#000 60%);mask:linear-gradient(90deg,#0000,#000 60%);font-size:0}
+body #menu #start:hover{transform:skewX(-8deg) translateY(-3px)}
+body #menu #start:active{transform:skewX(-8deg) translateY(3px);box-shadow:0 0 0 3px var(--mk-ink),0 3px 0 3px var(--mk-ink)}
+@keyframes mkPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12)}}
+body #menu .controls,body #menu #trophies{color:#15133ab3;font-weight:700}
+body #menu kbd{background:#fff;color:var(--mk-ink);border:2px solid #15133a33;border-radius:6px;box-shadow:0 2px 0 #15133a33}
+/* HUD: Platz, Rundenzaehler, Zeit und Einblendungen in derselben Schrift */
+body .position strong{color:var(--mk-yellow);-webkit-text-stroke:8px var(--mk-ink);text-shadow:0 5px 0 var(--mk-red)}
+body .position>span,body #lap,body #time{font-family:var(--mk-font);font-style:italic;font-weight:900;-webkit-text-stroke:4px var(--mk-ink);paint-order:stroke fill;color:#fff}
+body #toast{background:none;color:#fff;font-size:34px;-webkit-text-stroke:7px var(--mk-ink);text-shadow:0 5px 0 var(--mk-red),0 8px 16px #0006;letter-spacing:.5px}
+body #toast.good{background:none;text-shadow:0 5px 0 #1f9a4b,0 8px 16px #0006}
+body #toast.bad{background:none;text-shadow:0 5px 0 var(--mk-red),0 8px 16px #0006}
+body #toast.mt-mini{background:none;text-shadow:0 5px 0 var(--mk-blue),0 8px 16px #0006}
+body #toast.mt-super{background:none;text-shadow:0 5px 0 var(--mk-orange),0 8px 16px #0006}
+body #toast.mt-ultra{background:none;box-shadow:none;text-shadow:0 5px 0 #9a3fd1,0 0 24px #d36bff}
+/* Ladekarte */
+body .loader-card b{font-family:var(--mk-font);font-style:italic;font-weight:900;-webkit-text-stroke:6px var(--mk-ink);paint-order:stroke fill;color:#fff;text-shadow:0 5px 0 var(--mk-red)}
+@media (prefers-reduced-motion:reduce){body #menu #start,body #menu #tracks .track.selected:before{animation:none}}
+/* R40: Streckenliste darf nicht schrumpfen - sonst quetschte das Raster die Zeilen und die Karten
+   ueberlappten sich. Breit: vier Spalten (sieben Strecken in zwei Zeilen), schmal: zwei Spalten. */
+body #menu #tracks{flex-shrink:0;grid-template-columns:repeat(4,1fr)}
+@media (max-width:620px){body #menu #tracks{grid-template-columns:repeat(2,1fr)}}

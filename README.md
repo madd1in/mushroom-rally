@@ -4,6 +4,21 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 40 (24.09.2026): Menue im Mario-Kart-World-Stil, Drache durchsichtig, keine Ruckler in Runde 1
+
+- **Menue und Schrift:** fette kursive Display-Schrift (Rubik 900) mit dicker dunkler Kontur und
+  rotem Versatzschatten, helle Karte mit Zielflaggen-Streifen, schraege Knoepfe (Auswahl
+  gelb-orange), Strecken-Karten mit weissem Rand und Glanzlauf, grosser roter "LOS GEHT'S"-Knopf
+  mit Zielflagge. Platz, Runde, Zeit und Einblendungen im HUD in derselben Schrift.
+- **Streckenliste ueberlappte:** das Raster durfte schrumpfen und quetschte die Zeilen auf 77 px
+  (Karten 152 px) - jetzt vier Spalten, schmal zwei, das Menue scrollt statt zu quetschen.
+- **Drache durchsichtig**, solange man in seiner Achterbahn faehrt (12 %); von aussen bleibt er
+  voll sichtbar.
+- **Ruckler nur in Runde 1:** das On-Ride-Foto kostete einen Frame mit zwei Zusatz-Bildern,
+  blockierendem Pixel-Ruecklauf und JPEG-Kodierung. Jetzt ein Bild, asynchroner Schnappschuss,
+  Kodierung im Leerlauf. Dazu werden ausgeblendete Kartteile (Boot, Tauchboot, Flugzeug, Schild,
+  Gleiter) und alle Texturen beim Start vorab kompiliert bzw. hochgeladen.
+
 ## Runde 39 (24.09.2026): Elemente-Parcours, Schraeg- und Mehrfach-Loopings, Drache, Flow
 
 **Elemente-Parcours** (Logik in `elem.mjs`, ohne Browser getestet): Das Kart verwandelt sich je

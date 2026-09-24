@@ -785,8 +785,15 @@ function resetRace(){ridePhoto=null;photoPending=false;clearGroup(actors,kartsG)
 // Shader aller selten sichtbaren Effekte vorab kompilieren (Flammen, Schild, Banane, Panzer), sonst ruckelt der erste Einsatz
 // Shader im Hintergrund kompilieren (KHR_parallel_shader_compile); bis dahin bleibt die Strecke ausgeblendet statt das Bild einzufrieren
 let buildToken=0,worldReady=true,readyPromise=Promise.resolve();
+// Ausgeblendete Kartteile (Boot, Tauchboot, Flugzeug, Schild, Gleiter) ueberging die allgemeine
+// Vorkompilierung - beim ersten Auftauchen im Rennen kompilierte der Browser die Shader und das
+// Bild stockte (nur in Runde 1). Kurz einblenden, im Hintergrund kompilieren, wieder ausblenden.
+function warmKarts(){const hidden=[];kartsG.traverse(o=>{if(!o.visible){hidden.push(o);o.visible=true;}});
+ try{renderer.compileAsync(kartsG,camera,scene).catch(()=>{});}catch(e){}for(const o of hidden)o.visible=false;initTextures(kartsG);}
+// Texturen vorab hochladen (sonst beim ersten Sichtkontakt mitten im Rennen)
+function initTextures(root){const seen=new Set();root.traverse(o=>{if(!o.material)return;for(const m of [].concat(o.material))if(m)for(const k of ['map','alphaMap','emissiveMap','normalMap','roughnessMap','metalnessMap','aoMap'])if(m[k]&&!seen.has(m[k])){seen.add(m[k]);try{renderer.initTexture(m[k]);}catch(e){}}});}
 function warmup(){const tmp=new T.Group(),add=o=>{o.traverse(c=>{c.visible=true;c.frustumCulled=false;});tmp.add(o);};add(new T.Mesh(flameGeo,flameMat));add(new T.Mesh(shieldGeo,shieldMat));add(bombMesh());add(new T.Mesh(shockGeo,shocks[0].m.material));if(P.banana)add(cloneProto(P.banana));if(P.shell)add(cloneProto(P.shell));if(P.ghost)add(cloneProto(P.ghost));
- tmp.position.copy(camera.position);scene.add(tmp);const tok=++buildToken;let p;try{p=renderer.compileAsync(scene,camera);}catch(e){p=Promise.resolve();}scene.remove(tmp);
+ tmp.position.copy(camera.position);scene.add(tmp);const tok=++buildToken;let p;try{p=renderer.compileAsync(scene,camera);}catch(e){p=Promise.resolve();}scene.remove(tmp);initTextures(world);
  worldReady=false;world.visible=false;actors.visible=false;$('trackLoading').hidden=false;
  readyPromise=Promise.race([p,new Promise(r=>setTimeout(r,8000))]).then(()=>{if(tok!==buildToken)return;worldReady=true;actors.visible=true;startReveal();$('trackLoading').hidden=true;});}
 
@@ -804,7 +811,7 @@ function placeRacers(){const cls=CLASSES[cc];racers=[];
   if(reuse){r.mesh=kartPool.meshes[s];const u=r.mesh.userData;if(u.shield)u.shield.visible=false;if(u.glider)u.glider.visible=false;resetTransform(u);if(u.flames)for(const f of u.flames)f.visible=false;r.mesh.visible=true;r.mesh.scale.setScalar(1);}
   else{r.mesh=id===0||!kartInst?kart(r.color,id===0&&KART_COLORS[colorIndex].gold,id===0?driverIndex:AI_DRIVERS[id]):kartVirtual(r.color,ai.indexOf(id));kartsG.add(r.mesh);}
   racers[id]=r;}
- if(!reuse)kartPool={sig,meshes:order.map(id=>racers[id].mesh)};
+ if(!reuse){kartPool={sig,meshes:order.map(id=>racers[id].mesh)};warmKarts();}
  racers.forEach(r=>{vertical(r,1/60);syncKart(r,0);});syncKartInstances();camH=racers[0].h;lastPlace=racers.length;setupGhost();}
 // ---------------------------------------------------------------- Zeitfahren: Geist der eigenen Bestzeit + Medaillen
 const isTT=()=>mode==='tt'&&!gp.active;
@@ -1040,18 +1047,27 @@ function buildDragon(c){const src=P.dragon;dragon=null;if(!src)return;
  seg.updateMatrixWorld(true);const segInv=new T.Matrix4().copy(seg.matrixWorld).invert();
  seg.traverse(o=>{if(!o.isMesh)return;const local=new T.Matrix4().multiplyMatrices(segInv,o.matrixWorld);
   const im=new T.InstancedMesh(o.geometry,o.material,mats.length);mats.forEach((m,i)=>im.setMatrixAt(i,_m.multiplyMatrices(m,local)));
-  im.castShadow=true;im.receiveShadow=true;world.add(im);});
+  im.castShadow=true;im.receiveShadow=true;im.userData.dragonPart=true;world.add(im);});
  // Schwanzflamme am Anfang (zeigt vom Leib weg)
- if(tailSrc){const t=tailSrc.clone(true),p=curve.getPointAt(1/n),dir=curve.getTangentAt(1/n).negate();t.position.copy(p);t.scale.setScalar(.5);t.lookAt(p.clone().add(dir));world.add(t);}
+ if(tailSrc){const t=tailSrc.clone(true),p=curve.getPointAt(1/n),dir=curve.getTangentAt(1/n).negate();t.position.copy(p);t.scale.setScalar(.5);t.lookAt(p.clone().add(dir));t.traverse(o=>{if(o.isMesh)o.userData.dragonPart=true;});world.add(t);}
  // Kopf: schaut entlang der Bahn zurueck zum Korkenzieher-Ausgang, leicht nach unten
  const head=new T.Group(),h=headSrc.clone(true);h.position.set(0,0,0);head.add(h);head.position.copy(headAt);head.scale.setScalar(1.25);
  const look=axisPt(d1-6,0,-A+1.5);head.lookAt(look);world.add(head);
  let jaw=null;if(jawSrc){jaw=jawSrc.clone(true);jaw.position.set(0,-.7,1.1);h.add(jaw);}
  let eye=null;h.traverse(o=>{if(o.isMesh&&o.material&&o.material.name==='DragonEye'){o.material=o.material.clone();eye=o.material;}});
- head.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
- dragon={head,jaw,eye,d1,fireT:0,cd:0,roarT:0,t:0};}
+ head.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;o.userData.dragonPart=true;}});
+ // Eigene Materialkopien fuer den Kopf (das Auge ist schon eine)
+ head.traverse(o=>{if(o.isMesh&&o.material!==eye)o.material=o.material.clone();});
+ // Durchsichtig in der eigenen Achterbahn (R40): der Leib verdeckte im Korkenzieher die Sicht
+ const dm=new Set(),meshes=[];world.traverse(o=>{if(o.isMesh&&o.userData.dragonPart){meshes.push(o);for(const m of [].concat(o.material))dm.add(m);}});
+ for(const m of dm){m.transparent=true;m.opacity=1;}
+ dragon={head,jaw,eye,d1,fireT:0,cd:0,roarT:0,t:0,mats:[...dm],meshes,alpha:1,zone:{s:c.s,span:c.span}};}
 // Feuer und Kiefer (animateWorld): der Drache speit, wenn der Spieler auf den Korkenzieher-Ausgang zufaehrt
 function updateDragon(dt){const g=dragon;if(!g)return;g.t+=dt;g.cd=Math.max(0,g.cd-dt);
+ {const p=racers[0],race=state==='race'||state==='countdown'||state==='finished';let want=1;
+  if(p&&race&&g.zone){const rel=lapDist(p.distance-g.zone.s);if(rel<g.zone.span+15||lapDist(g.zone.s-p.distance)<30)want=.12;}
+  if(Math.abs(want-g.alpha)>.002){g.alpha+=(want-g.alpha)*Math.min(1,dt*4);if(Math.abs(want-g.alpha)<.004)g.alpha=want;
+   for(const m of g.mats){m.opacity=g.alpha;m.depthWrite=g.alpha>.97;}for(const o of g.meshes)o.castShadow=g.alpha>.9;}}
  const p=racers[0];if(p&&(state==='race'||state==='finished')&&g.cd<=0){const rel=wrapDiff(g.d1,lapDist(p.distance));if(rel>4&&rel<38){g.fireT=1.6;g.cd=6;if(state==='race'){SFX.roar();}}}
  const fire=g.fireT>0;g.fireT=Math.max(0,g.fireT-dt);
  const open=fire?.55:.08+.05*Math.sin(g.t*1.3);if(g.jaw)g.jaw.rotation.x+=(open-g.jaw.rotation.x)*Math.min(1,dt*8);
@@ -1963,10 +1979,17 @@ function takeRidePhoto(){photoPending=false;const p=racers[0];if(!p)return;
    _c.subVectors(o.mesh.position,e);const t=clamp(_c.dot(_s),0,L);return _c.addScaledVector(_s,-t).length()>1.7;});
   let eye=null;for(const [ahead,side,up] of [[6,2.4,2.4],[4.5,-2.6,2.2],[5,3.4,3.4],[3.8,0,3.8],[7,-3.2,3]]){const e=posAt(p.distance+ahead,p.offset+side,up,new T.Vector3());if(clearLine(e)){eye=e;break;}}
   if(!eye)eye=posAt(p.distance+3.6,p.offset+1.6,3.2,new T.Vector3());
-  camera.up.set(0,1,0);camera.position.copy(eye);camera.lookAt(look);camera.fov=48;camera.updateProjectionMatrix();renderer.render(scene,camera);
-  const src=renderer.domElement,w=480,h=Math.round(w*src.height/Math.max(1,src.width)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(src,0,0,w,h);ridePhoto=c.toDataURL('image/jpeg',.82);}
+  // R40: Das Foto kostete einen Frame mit zwei vollen Zusatz-Bildern, blockierendem Pixel-Ruecklauf
+  // und JPEG-Kodierung - auf dem Handy ein deutlicher Ruckler. Jetzt: ein Bild (Schattenkarte
+  // wiederverwendet), asynchroner Schnappschuss, Kodierung im Leerlauf; das normale Bild kommt im
+  // naechsten Frame, der Blitz deckt den einen Frame ab.
+  camera.up.set(0,1,0);camera.position.copy(eye);camera.lookAt(look);camera.fov=48;camera.updateProjectionMatrix();
+  const sa=renderer.shadowMap.autoUpdate;renderer.shadowMap.autoUpdate=false;renderer.render(scene,camera);renderer.shadowMap.autoUpdate=sa;
+  const src=renderer.domElement,w=480,h=Math.round(w*src.height/Math.max(1,src.width));
+  createImageBitmap(src,{resizeWidth:w,resizeHeight:h,resizeQuality:'medium'}).then(bmp=>{const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0);if(bmp.close)bmp.close();
+   (window.requestIdleCallback||setTimeout)(()=>{ridePhoto=c.toDataURL('image/jpeg',.82);});}).catch(()=>{ridePhoto=null;});}
  catch(e){ridePhoto=null;}
- camera.position.copy(pos);camera.quaternion.copy(q);camera.up.copy(up);camera.fov=fov;camera.updateProjectionMatrix();renderer.render(scene,camera);
+ camera.position.copy(pos);camera.quaternion.copy(q);camera.up.copy(up);camera.fov=fov;camera.updateProjectionMatrix();
  const f=$('flash');if(f){f.style.transition='none';f.style.opacity='.8';requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition='opacity .5s';f.style.opacity='0';}));}
  SFX.shutter();}
 function showRidePhoto(){const rp=$('ridePhoto');if(!rp)return;rp.hidden=!ridePhoto;if(ridePhoto){rp.querySelector('img').src=ridePhoto;rp.querySelector('figcaption').textContent='ON-RIDE-FOTO · '+course.name.toUpperCase();}}
