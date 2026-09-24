@@ -653,3 +653,45 @@ body.ow #owPanel{display:block}
 body.ow .position,body.ow #lap,body.ow #gpBadge{display:none!important}
 body.ow .race-top>div:first-child{display:none!important}
 body #menu #tracks.locked,body #menu #classes.locked{opacity:.38;pointer-events:none;filter:saturate(.4)}
+
+/* R44: Bildraten-Anzeige (?fps) */
+#fpsMeter{position:fixed;left:6px;top:calc(env(safe-area-inset-top,0px) + 4px);z-index:99;font:600 11px/1.3 system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.55);padding:2px 6px;border-radius:6px;pointer-events:none}
+
+/* ===== R44: Touch-Steuerung im Mario-Kart-Tour/World-Stil =====
+   Runde Knoepfe mit weissem Rand, Verlauf und kraeftiger Kursivschrift. Gas und Hopser getrennt:
+   GAS (gruen, gross) unten rechts, HOPS (rot) links daneben im Daumenbogen, Item-Blase oben, Bremse klein. */
+body #touch{padding:0 12px calc(12px + env(safe-area-inset-bottom,0px));align-items:flex-end}
+body #touch button{font-family:var(--mk-font,'Rubik',system-ui,sans-serif);font-style:italic;font-weight:900;letter-spacing:.5px;color:#fff;
+ border:3px solid #fff;border-radius:50%;backdrop-filter:none;-webkit-backdrop-filter:none;
+ text-shadow:0 2px 0 rgba(0,0,0,.35);box-shadow:0 5px 0 rgba(0,0,0,.28),inset 0 -6px 0 rgba(0,0,0,.18),inset 0 5px 0 rgba(255,255,255,.28);
+ transition:transform .06s ease-out,filter .06s;line-height:1}
+body #touch button small{display:block;white-space:nowrap;font-size:10px;font-weight:800;opacity:.9;margin-top:3px;letter-spacing:.8px}
+body #touch button.down{transform:scale(.9) translateY(3px);filter:brightness(1.25);box-shadow:0 2px 0 rgba(0,0,0,.28),inset 0 -3px 0 rgba(0,0,0,.18),inset 0 4px 0 rgba(255,255,255,.3);color:#fff}
+/* Lenkung: zwei grosse Kapseln */
+body #touch .steer{display:flex;gap:10px;padding:6px;border-radius:999px;background:rgba(10,18,40,.28)}
+body #touch .steer button{width:clamp(74px,20vw,96px);height:clamp(74px,20vw,96px);font-size:34px;font-style:normal;
+ background:radial-gradient(circle at 35% 30%,#5a6b8f,#27324d 70%)}
+/* Aktionsgruppe */
+body #touch .act{display:grid;grid-template-columns:auto auto;grid-template-areas:"item brake" "hop gas";gap:10px 12px;align-items:end;justify-items:center}
+body #touch .t-gas{grid-area:gas;width:clamp(96px,26vw,118px);height:clamp(96px,26vw,118px);font-size:24px;
+ background:radial-gradient(circle at 35% 28%,#8ff07a,#2fae3f 55%,#1d7a2b)!important}
+body #touch .t-drift{grid-area:hop;width:clamp(86px,23vw,104px);height:clamp(86px,23vw,104px);font-size:20px;border-radius:50%!important;margin-bottom:26px;
+ background:radial-gradient(circle at 35% 28%,#ff9a86,#f0402f 55%,#b8231a)!important}
+body #touch .t-item{grid-area:item;width:clamp(66px,18vw,80px);height:clamp(66px,18vw,80px);font-size:34px;font-style:normal;
+ background:radial-gradient(circle at 35% 28%,#ffffff,#dfe7f5 60%,#aab6cc)!important;color:#1d2a44!important;text-shadow:none;border-color:#ffd43b}
+body #touch .t-item.ready{background:radial-gradient(circle at 35% 28%,#fff6b0,#ffd43b 60%,#e8a40c)!important;box-shadow:0 0 0 4px rgba(255,212,59,.35),0 0 22px rgba(255,212,59,.8),0 5px 0 rgba(0,0,0,.28)!important;animation:mkItemPulse 1s ease-in-out infinite}
+@keyframes mkItemPulse{50%{transform:scale(1.06)}}
+body #touch .t-brake{grid-area:brake;width:clamp(56px,15vw,66px);height:clamp(56px,15vw,66px);font-size:10px;letter-spacing:0;
+ background:radial-gradient(circle at 35% 28%,#9aa3b5,#5b6477 60%,#3b4252)!important}
+/* Auto-Gas an: HOPS rutscht an die Stelle von GAS */
+body.autogas #touch .act{grid-template-areas:"item brake" "hop hop"}
+body.autogas #touch .t-drift{margin-bottom:0;width:clamp(100px,27vw,120px);height:clamp(100px,27vw,120px)}
+/* Querformat / niedrige Hoehe: alles etwas kleiner und flacher */
+@media (max-height:500px){
+ body #touch .steer button{width:66px;height:66px;font-size:28px}
+ body #touch .act{grid-template-columns:auto auto auto;grid-template-areas:"item hop gas" "brake hop gas";gap:8px}
+ body #touch .t-gas{width:88px;height:88px;font-size:19px}
+ body #touch .t-drift{width:78px;height:78px;font-size:16px;margin-bottom:0}
+ body #touch .t-item{width:56px;height:56px;font-size:26px}
+ body #touch .t-brake{width:50px;height:50px}
+}

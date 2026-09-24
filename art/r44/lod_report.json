@@ -1,0 +1,146 @@
+{
+ "balloon": {
+  "before": 908,
+  "after": 453,
+  "ratio": 0.454,
+  "kb": 34.5
+ },
+ "castle": {
+  "before": 24220,
+  "after": 10169,
+  "ratio": 0.416,
+  "kb": 526.7
+ },
+ "coastertruss": {
+  "before": 764,
+  "after": 380,
+  "ratio": 0.469,
+  "kb": 12.6
+ },
+ "dragon": {
+  "before": 4928,
+  "after": 2069,
+  "ratio": 0.4,
+  "kb": 80.6
+ },
+ "driver": {
+  "before": 7050,
+  "after": 3030,
+  "ratio": 0.25,
+  "kb": 141.9
+ },
+ "driver_cat": {
+  "before": 6220,
+  "after": 2596,
+  "ratio": 0.366,
+  "kb": 113.5
+ },
+ "driver_robot": {
+  "before": 3380,
+  "after": 2004,
+  "ratio": 0.25,
+  "kb": 125.5
+ },
+ "driver_turtle": {
+  "before": 6698,
+  "after": 2795,
+  "ratio": 0.345,
+  "kb": 123.5
+ },
+ "elements": {
+  "before": 2264,
+  "after": 1132,
+  "ratio": 0.5,
+  "kb": 73.6
+ },
+ "ferriswheel": {
+  "before": 8060,
+  "after": 3380,
+  "ratio": 0.398,
+  "kb": 85.2
+ },
+ "ghost": {
+  "before": 4208,
+  "after": 2391,
+  "ratio": 0.25,
+  "kb": 82.6
+ },
+ "glider": {
+  "before": 2527,
+  "after": 1057,
+  "ratio": 0.42,
+  "kb": 27.5
+ },
+ "grandstand": {
+  "before": 778,
+  "after": 387,
+  "ratio": 0.471,
+  "kb": 36.5
+ },
+ "gravestone": {
+  "before": 532,
+  "after": 264,
+  "ratio": 0.476,
+  "kb": 17.1
+ },
+ "itembox": {
+  "before": 492,
+  "after": 244,
+  "ratio": 0.474,
+  "kb": 23.9
+ },
+ "kart": {
+  "before": 5246,
+  "after": 2202,
+  "ratio": 0.42,
+  "kb": 49.6
+ },
+ "kartkit": {
+  "before": 5776,
+  "after": 2422,
+  "ratio": 0.42,
+  "kb": 67.0
+ },
+ "kartwheel": {
+  "before": 852,
+  "after": 426,
+  "ratio": 0.5,
+  "kb": 15.4
+ },
+ "mansion": {
+  "before": 18516,
+  "after": 7772,
+  "ratio": 0.417,
+  "kb": 369.4
+ },
+ "mushroom": {
+  "before": 1744,
+  "after": 870,
+  "ratio": 0.487,
+  "kb": 75.1
+ },
+ "pumpkin": {
+  "before": 2352,
+  "after": 1176,
+  "ratio": 0.49,
+  "kb": 46.8
+ },
+ "roottree": {
+  "before": 3806,
+  "after": 3266,
+  "ratio": 0.25,
+  "kb": 84.8
+ },
+ "spectator": {
+  "before": 280,
+  "after": 140,
+  "ratio": 0.5,
+  "kb": 12.7
+ },
+ "tree": {
+  "before": 828,
+  "after": 406,
+  "ratio": 0.482,
+  "kb": 43.2
+ }
+}

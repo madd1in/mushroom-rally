@@ -33,7 +33,7 @@ for(const state of ['menu','race'])test(`production recovery invalidates stale c
 });
 for(const succeeds of [true,false])test(`GLB retry chain ${succeeds?'recovers on third attempt':'settles after three failures'} and counts progress once`,async()=>{
  const queued=[],delays=[],p={};let attempts=0,progress=0,marked=0;
- const c=vm.createContext({P:p,GLTFLoader:class{load(url,ok,unused,error){attempts++;if(succeeds&&attempts===3)ok({scene:{asset:url}});else error(new Error('network'));}},NO_MERGE:new Set(),mergeByMaterial:x=>x,markShared:()=>marked++,progress:()=>progress++,setTimeout:(fn,ms)=>{queued.push(fn);delays.push(ms);}});
+ const c=vm.createContext({P:p,GLTFLoader:class{load(url,ok,unused,error){attempts++;if(succeeds&&attempts===3)ok({scene:{asset:url}});else error(new Error('network'));}},NO_MERGE:new Set(),LITE:false,LO_FILES:new Set(),liteRoot:x=>x,mergeByMaterial:x=>x,markShared:()=>marked++,progress:()=>progress++,setTimeout:(fn,ms)=>{queued.push(fn);delays.push(ms);}});
  vm.runInContext(fragment('function loadProto(', 'function progress(')+';globalThis.load=loadProto;',c);
  const pending=c.load('gate');assert.equal(attempts,1);assert.equal(progress,0);assert.equal(p.gate,undefined);
  while(queued.length)queued.shift()();await pending;

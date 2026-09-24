@@ -423,7 +423,7 @@ kart_obj = kart.finish()
 wheel = Part('K_Wheel')
 R_T, W_T = .42, .17
 def tire(bm):
-    seg, pseg = 28, 6
+    seg, pseg = 20, 4
     prof = []
     for i in range(pseg + 1):
         a = -math.pi / 2 + math.pi * i / pseg
@@ -446,23 +446,23 @@ def tire(bm):
             if (c - ref).dot(f.normal) < 0:
                 f.normal_flip()
     # Profilbloecke (Pfeilmuster) auf der Laufflaeche
-    for k in range(14):
-        t = 2 * math.pi * (k + .5) / 14
+    for k in range(10):
+        t = 2 * math.pi * (k + .5) / 10
         for s in (-1, 1):
             cz, cy = math.sin(t) * (R_T - .004), math.cos(t) * (R_T - .004)
             g = bmesh.ops.create_cube(bm, size=1)
             xf(bm, g['verts'], Matrix.Translation(Vector((s * .07, cy, cz))) @ Matrix.Rotation(t, 4, 'X') @ Matrix.Rotation(s * .5, 4, 'Y') @ Matrix.Diagonal((.1, .022, .07, 1)))
 wheel.add('Tire', tire)
 # Flankenring (weiss) auf der Aussenseite, Felge mit fuenf Speichen, Nabe
-wheel.add('White', torus((-W_T - .002, 0, 0), .31, .012, (-1, 0, 0), 24, 4))
-wheel.add('Rim', cyl((-.10, 0, 0), (-.19, 0, 0), .27, .25, 20))
-wheel.add('Dark', cyl((-.185, 0, 0), (-.20, 0, 0), .21, .21, 20))
+wheel.add('White', torus((-W_T - .002, 0, 0), .31, .012, (-1, 0, 0), 18, 3))
+wheel.add('Rim', cyl((-.10, 0, 0), (-.19, 0, 0), .27, .25, 14))
+wheel.add('Dark', cyl((-.185, 0, 0), (-.20, 0, 0), .21, .21, 14))
 for k in range(5):
     t = 2 * math.pi * k / 5
     wheel.add('Rim', rbox((-.2, math.cos(t) * .12, math.sin(t) * .12), (.05, .20, .07), 0, 1, rot=(t, 0, 0)), smooth=False)
-wheel.add('Gold', cyl((-.18, 0, 0), (-.26, 0, 0), .075, .06, 16))
-wheel.add('White', cyl((-.255, 0, 0), (-.27, 0, 0), .045, .045, 12))
-wheel.add('Dark', cyl((.12, 0, 0), (.16, 0, 0), .27, .27, 16))
+wheel.add('Gold', cyl((-.18, 0, 0), (-.26, 0, 0), .075, .06, 10))
+wheel.add('White', cyl((-.255, 0, 0), (-.27, 0, 0), .045, .045, 8))
+wheel.add('Dark', cyl((.12, 0, 0), (.16, 0, 0), .27, .27, 10))
 wheel_obj = wheel.finish()
 # Die Radmitte muss im Ursprung liegen; die Achse ist Blender-x
 # (Spiel-Rad: x Achse, y/z Kreis). Die Bausteine oben sind direkt in Blender-Koordinaten mit Achse x erstellt,

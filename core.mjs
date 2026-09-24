@@ -7,6 +7,9 @@ export const PHYS={top:30,accel:15,brake:32,reverse:8,coast:4,offTop:12.5,offDra
 export const SPORE_BONUS=.35,MAX_SPORES=10;
 // Mini-Turbo-Stufen: [Driftzeit, Boostdauer, Name]. Lange, saubere Drifts in Kurvenrichtung laden schneller.
 export const MT_LEVELS=[[1.9,1.6,'ultra'],[1.15,1.05,'super'],[.55,.6,'mini']];
+// Bunny-Hop (R44, wie Mario Kart): die Drifttaste laesst das Kart hopsen. Waehrend des Hopsers legt die Lenkung die
+// Richtung fest (und dreht etwas williger), bei der Landung mit gehaltener Taste beginnt der Funkendrift.
+export const HOP_T=.3,HOP_GRACE=.22,HOP_TURN=1.3;
 // KI-Klassen: Tempo-Faktor und Fahrkoennen (Linienwahl, Bremspunkte, Drift-Nutzung, Fehlerrate).
 export const CLASSES={50:{ai:.76,skill:.34,rubber:.06},100:{ai:.855,skill:.52,rubber:.055},150:{ai:1,skill:.9,rubber:.02}};
 export function racer(id,name,color){return {id,name,color,x:0,z:0,h:0,vx:0,vz:0,speed:0,slide:0,distance:0,offset:0,boost:0,shield:0,stun:0,drift:0,driftDir:0,hop:0,lastMT:null,item:null,charges:0,spores:0,finishTime:null,cooldown:0};}
@@ -32,14 +35,21 @@ export function driveKart(k,dt,input,surf={}){
   if(stunned)vf*=Math.exp(-2.5*dt);
  }
  const sp=Math.abs(vf);
+ if(air){k.hopT=0;k.hopGrace=0;}
  if(!air){
-  if(!k.driftDir&&input.drift&&Math.abs(steer)>.35&&sp>P.driftMin&&!off&&!stunned){k.driftDir=Math.sign(steer);k.drift=0;k.hop=.2;}
+  const press=!!input.drift&&!k.driftHeld;
+  if(press&&!k.driftDir&&!(k.hopT>0)&&!stunned){k.hopT=HOP_T;k.hop=HOP_T;k.hopDir=0;k.hopGrace=0;}
+  if(k.hopT>0){if(Math.abs(steer)>.3)k.hopDir=Math.sign(steer);k.hopT-=dt;if(k.hopT<=0){k.hopT=0;k.hopGrace=input.drift?HOP_GRACE:0;}}
+  else if(k.hopGrace>0)k.hopGrace=Math.max(0,k.hopGrace-dt);
+  const dir=k.hopDir||(Math.abs(steer)>.35?Math.sign(steer):0);
+  if(!k.driftDir&&input.drift&&k.hopGrace>0&&dir&&sp>P.driftMin&&!off&&!stunned){k.driftDir=dir;k.drift=0;k.hopGrace=0;k.hopDir=0;}
   if(k.driftDir&&(!input.drift||sp<8||stunned)){const lvl=stunned?null:miniTurbo(k.drift);if(lvl){k.boost=Math.max(k.boost,lvl[1]);k.lastMT=lvl[2];}k.driftDir=0;k.drift=0;}
  }
  let yaw;
  // Drift-Radius per Lenkung steuerbar: nach aussen gegenlenken = weiter Bogen, nach innen = enger Bogen.
  if(k.driftDir){const into=steer*k.driftDir;yaw=k.driftDir*P.turn*(k.mTurn||1)*driftFactor(into)*Math.min(1,sp/10);if(!air)k.drift+=dt*(into>.3?1.35:into<-.3?.55:1)*(off?.4:1);}
  else yaw=steer*P.turn*(k.mTurn||1)*turnCurve(sp)*(vf<-.5?-1:1);
+ if(k.hopT>0&&!k.driftDir)yaw*=HOP_TURN;
  if(air)yaw*=P.airTurn;if(stunned)yaw=0;
  // surf.gripMul: im Looping haelt die Bahn magnetisch, sonst traegt die Fliehkraft jeden nach aussen
  const grip=(air?.3:k.driftDir?P.driftGrip:off?P.offGrip:P.grip)*(air?1:(k.mGrip||1))*(surf.gripMul||1);
@@ -48,6 +58,7 @@ export function driveKart(k,dt,input,surf={}){
  if(k.driftDir&&!air){vl-=k.driftDir*sp*.10*dt;
   // Driftwinkel deckeln (ca. 27 Grad): haelt die Linie, statt ueber den Streckenrand zu tragen
   const cap=sp*P.driftSlide;if(Math.abs(vl)>cap)vl+=(Math.sign(vl)*cap-vl)*Math.min(1,dt*7);}
+ k.driftHeld=!!input.drift;
  k.vx=fx*vf+lx*vl;k.vz=fz*vf+lz*vl;k.h+=yaw*dt;const mv=surf.moveMul||1;k.x+=k.vx*dt*mv;k.z+=k.vz*dt*mv;k.speed=vf;k.slide=vl;
 }
 // Hoechsttempo, mit dem eine Kurve der Kruemmung kappa (1/m) noch mit Grip bzw. im Drift fahrbar ist.

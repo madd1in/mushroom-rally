@@ -31,7 +31,7 @@ try {
     if (m.method === 'Network.responseReceived' && m.params.response.status >= 400 && !m.params.response.url.endsWith('/favicon.ico')) report.networkFailures.push({status: m.params.response.status, url: m.params.response.url});};
   await send('Runtime.enable'); await send('Page.enable'); await send('Network.enable');
   await send('Page.addScriptToEvaluateOnNewDocument', {source: `{let a=0x38c0ffee;Math.random=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}`});
-  await send('Page.navigate', {url: 'http://127.0.0.1:' + sp + '/?test=1'});
+  await send('Page.navigate', {url: 'http://127.0.0.1:' + sp + '/?test=1' + (process.env.QA_MOBILE ? '&mobile=1' : '')});
   await waitFor(() => evaluate('!!window.rallyTest').catch(() => false), 90000, 'test API'); await evaluate('rallyTest.ready()');
   for (const i of tracks) {
     const errStart = report.errors.length, wall = Date.now();

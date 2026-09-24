@@ -4,6 +4,50 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 44 (25.09.2026): Fluessig auf Handys, Bunny-Hop-Drift, Touch-Steuerung im Mario-Kart-Stil
+
+**Ruckeln in Runde 1 - Ursache gefunden (Profil auf echter GPU, Kopflos-Chrome mit Intel UHD):**
+Die automatische Grafikanpassung startete mit Schatten und schaltete sie im Rennen ab, sobald die
+Bildrate unter 50 fps fiel. Schatten aus aendert den Shader-Schluessel aller Materialien - jedes
+Objekt wurde beim ersten Auftauchen neu kompiliert (Spitzen bis 200-490 ms, nur in Runde 1). Dazu
+kompilierten ausgeblendete Teile (Drache vor seiner Zone, Boot-/Flugzeugteile) erst beim ersten
+Sichtkontakt. Jetzt:
+- mitten im Rennen wird nur noch die Aufloesung (und der Schattenrhythmus) angepasst, nie Schatten oder Material
+- die gelernte Stufe wird gespeichert und beim naechsten Start gleich angewandt; ein fluessiges Rennen (>58 fps) erlaubt wieder eine Stufe hoeher
+- die Vorkompilierung blendet alle versteckten Teile der Strecke kurz ein (Drache, Transformationen, Unterwasser-Deko)
+- Shaderfehler-Pruefung (getProgramInfoLog, blockiert bis der Treiber fertig ist) nur noch im Testmodus
+
+**Audio frass 16 % CPU:** Motor- und Mischpult-Regler bekamen jeden Frame neue
+setTargetAtTime-Ereignisse. Bei pausiertem Audiokontext (Handy vor dem ersten Tippen, Ton aus) laeuft
+die Zeit nicht weiter und die Ereignislisten wachsen endlos. Jetzt nur bei laufendem Kontext und
+spuerbarer Aenderung, alte Ereignisse werden vorher verworfen.
+
+**Leicht-Modus (Handys automatisch, sonst Grafik "Sparsam"):** Lambert- statt PBR-Material,
+keine Schatten und kein Scheinwerfer-Punktlicht von Anfang an, halbe Streudeko, und Low-Poly-Modelle
+aus Blender (art/r44/make_lod.py, Decimate: Burg 24k -> 10k, Fahrer 7k -> 3k, Kart 5,2k -> 2,2k,
+Baeume/Pilze/Tribuenen halbiert; assets/lo/). Messung mit Handy-Emulation (412x915, 4x CPU-Drossel):
+schlimmster Frame in Runde 1 486 -> 100 ms, Frames ueber 50 ms in Runde 2 125 -> 53, Dreiecke
+400k -> 212k, Draw-Calls 142 -> 103. Handys starten mit 1,5facher Aufloesung und regeln nur die
+Aufloesung herunter. Neue Kartraeder auch im normalen Modus leichter (1352 -> 852 Dreiecke).
+Mit **?fps** in der Adresse zeigt das Spiel Bildrate, Modus, Aufloesung und Draw-Calls an.
+
+**Bunny-Hop-Drift wie in Mario Kart:** Die Drifttaste laesst das Kart hopsen (0,3 s, Chiptune-
+Sprung). Waehrend des Hopsers bestimmt die Lenkung die Richtung (und dreht etwas williger), bei der
+Landung mit gehaltener Taste beginnt der Funkendrift - erst blau, dann rot (lila fuer sehr lange
+Drifts), Loslassen gibt den Turbo. Ohne Lenkung bleibt es ein Hopser. Die KI haelt die Taste ueber
+den Hopser und lenkt in die Kurve.
+
+**Touch-Steuerung neu im Mario-Kart-Tour/World-Stil:** runde Knoepfe mit weissem Rand und Verlauf,
+GAS (gruen, gross) und HOPS (rot) jetzt getrennt - vorher gab der Drift-Knopf automatisch Gas mit,
+mit dem Hopser waere jeder Gasstoss ein Sprung geworden. Item-Blase gelb leuchtend, Bremse klein,
+Lenkung als zwei grosse Kapseln. Auto-Gas bleibt auf dem Handy standardmaessig aus.
+
+**Fehler behoben:** Der Portal-Knopf der Open World ("... fahren") blieb nach dem Antippen im Rennen
+und sogar im Hauptmenue sichtbar.
+
+**Verifikation:** 72/72 Unit-Tests (neue Hop-Tests), Rennregression aller Strecken normal und im
+Leicht-Modus ohne Fehler, Screenshot der Touch-Steuerung in Handy-Emulation.
+
 ## Runde 43 (24.09.2026): Karts und Fahrer neu in Blender - jede Figur mit eigenem Bausatz
 
 **Neue Karosserie (Blender, art/r43/create_karts.py):** Statt flacher Wanne mit dickem
