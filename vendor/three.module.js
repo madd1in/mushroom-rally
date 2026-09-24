@@ -29308,7 +29308,9 @@ class WebGLRenderer {
 						const materialProperties = properties.get( material );
 						const program = materialProperties.currentProgram;
 
-						if ( program.isReady() ) {
+						// Mushroom Rally: wurde die Welt waehrend des Wartens verworfen (schneller
+						// Streckenwechsel), hat das Material kein Programm mehr - als fertig werten
+						if ( program === undefined || program.isReady() ) {
 
 							// remove any programs that report they're ready to use from the list
 							materials.delete( material );

@@ -1,0 +1,85 @@
+{
+  "container": "MPEG4",
+  "codec": "H264",
+  "audio": "AAC",
+  "frames": 1275,
+  "events": 23,
+  "placed": [
+    [
+      0.467,
+      "sfx_transform.wav"
+    ],
+    [
+      0.467,
+      "sfx_splash.wav"
+    ],
+    [
+      1.033,
+      "sfx_transform.wav"
+    ],
+    [
+      1.033,
+      "sfx_splash.wav"
+    ],
+    [
+      3.7,
+      "trick.mp3"
+    ],
+    [
+      8.267,
+      "trick.mp3"
+    ],
+    [
+      15.233,
+      "sfx_transform.wav"
+    ],
+    [
+      15.233,
+      "sfx_splash.wav"
+    ],
+    [
+      15.767,
+      "sfx_transform.wav"
+    ],
+    [
+      15.767,
+      "sfx_splash.wav"
+    ],
+    [
+      17.967,
+      "trick.mp3"
+    ],
+    [
+      21.533,
+      "trick.mp3"
+    ],
+    [
+      24.367,
+      "sfx_transform.wav"
+    ],
+    [
+      24.367,
+      "launch.mp3"
+    ],
+    [
+      31.233,
+      "sfx_transform.wav"
+    ],
+    [
+      31.233,
+      "sfx_splash.wav"
+    ],
+    [
+      31.733,
+      "sfx_transform.wav"
+    ],
+    [
+      31.733,
+      "sfx_splash.wav"
+    ]
+  ],
+  "seconds": 42.5,
+  "small_kbps": 1603,
+  "big_bytes": 42507188,
+  "small_bytes": 8865234
+}
