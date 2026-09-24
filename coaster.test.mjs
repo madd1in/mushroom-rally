@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {COASTER, coasterSpec, coasterProfile, coasterSpeedFactor, coasterG, airtimeFloat, launchKick, launchArches, coasterRating} from './coaster.mjs';
+import {COASTER, BANK, coasterSpec, coasterProfile, coasterSpeedFactor, coasterG, airtimeFloat, launchKick, launchArches, coasterRating, twistAt, bankAngle, bankEnvelope, bankAxis, rollClearance} from './coaster.mjs';
 
 const spec = coasterSpec('super', 300);
 
@@ -34,7 +34,7 @@ test('profile is C2-smooth: slope and curvature match finite differences everywh
 });
 
 test('slopes stay drivable (at most ~46 degrees) on both kinds', () => {
-  for (const kind of ['super', 'hills']) for (const span of [180, 300, 360]) {
+  for (const kind of ['super', 'hills', 'dragon', 'bank']) for (const span of [110, 180, 300, 360]) {
     const s = coasterSpec(kind, span);
     let m = 0;
     for (let x = 0; x <= span; x += .5) m = Math.max(m, Math.abs(coasterProfile(s, x).s));
@@ -89,4 +89,65 @@ test('rating rewards clean runs with airtime', () => {
   assert.equal(coasterRating({maxOff: 2, airHills: 0}).label, 'ACHTERBAHN-SCHWUNG!');
   assert.equal(coasterRating({maxOff: 7, airHills: 1}), null);
   assert.equal(coasterRating({maxOff: 2, airHills: 3, hit: true}).label, 'ACHTERBAHN-SCHWUNG!');
+});
+
+test('twists: full turns end at a multiple of 2*PI, axis only while turning', () => {
+  const s = coasterSpec('dragon', 320);
+  assert.equal(s.rolls.length, 2);
+  const before = twistAt(s, 1), after = twistAt(s, s.span - 1);
+  assert.equal(before.ph, 0); assert.equal(before.axis, 0);
+  const turns = s.rolls.reduce((a, r) => a + r.sgn * r.turns, 0);
+  assert.ok(Math.abs(after.ph - turns * Math.PI * 2) < 1e-9);
+  assert.equal(after.axis, 0);
+  const cork = s.rolls[1], mid = twistAt(s, cork.c);
+  assert.equal(mid.axis, 7.5);
+  // stetig: kein Winkelsprung zwischen benachbarten halben Metern
+  let jump = 0, prev = twistAt(s, 0).ph;
+  for (let x = .5; x <= s.span; x += .5) {const ph = twistAt(s, x).ph; jump = Math.max(jump, Math.abs(ph - prev)); prev = ph;}
+  assert.ok(jump < .35, 'max step ' + jump);
+});
+
+test('road edges never dip into the ground during twists (all kinds, all spans)', () => {
+  for (const kind of ['super', 'hills', 'dragon']) for (const span of [110, 161, 260, 320, 360]) {
+    const s = coasterSpec(kind, span), p = {h: 0, s: 0, k: 0};
+    for (const r of s.rolls) for (let x = r.c - r.w; x <= r.c + r.w; x += .25) {
+      const t = twistAt(s, x), h = coasterProfile(s, x, p).h;
+      assert.ok(rollClearance(h, t.ph, t.axis) >= .39, `${kind}/${span} at ${x}: ${rollClearance(h, t.ph, t.axis)}`);
+    }
+  }
+});
+
+test('short hill zones drop twists they cannot clear instead of clipping', () => {
+  assert.equal(coasterSpec('hills', 110).rolls.length, 0);
+  assert.equal(coasterSpec('hills', 161).rolls.length, 1);
+});
+
+test('banking: leans into the curve, capped, pivots on the inner edge', () => {
+  assert.ok(bankAngle(1 / 40) < 0, 'left turn raises the right side');
+  assert.ok(bankAngle(-1 / 40) > 0);
+  assert.equal(bankAngle(0), 0);
+  assert.ok(Math.abs(bankAngle(1)) <= BANK.max + 1e-12);
+  assert.equal(bankAxis(-.5), BANK.edge);
+  assert.equal(bankAxis(.5), -BANK.edge);
+  assert.equal(bankAxis(0), 0);
+  // um die Innenkante gekippt bleibt jede Stelle der Fahrbahn ueber dem Boden
+  for (const ph of [-.9, -.4, .4, .9]) for (let s = -BANK.edge; s <= BANK.edge; s += .5) {
+    const L = bankAxis(ph), y = (s - L) * Math.sin(ph);
+    assert.ok(y >= -1e-9, `ph ${ph} s ${s}: ${y}`);
+  }
+});
+
+test('bank envelope: zero at zone ends, zero around twists, full in between', () => {
+  const b = coasterSpec('bank', 160);
+  assert.equal(bankEnvelope(b, 0), 0); assert.equal(bankEnvelope(b, 160), 0);
+  assert.equal(bankEnvelope(b, 80), 1);
+  const d = coasterSpec('dragon', 320);
+  for (const r of d.rolls) assert.equal(bankEnvelope(d, r.c), 0);
+  assert.equal(bankEnvelope(coasterSpec('super', 300), 150), 0, 'kinds without bank never bank');
+});
+
+test('bank-only zones have no arches and no rating', () => {
+  const b = coasterSpec('bank', 160);
+  assert.equal(launchArches(b).length, 0);
+  assert.equal(coasterRating({maxOff: 1, airHills: 3, noRating: true}), null);
 });

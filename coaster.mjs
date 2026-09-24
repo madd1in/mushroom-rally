@@ -17,31 +17,109 @@ export const COASTER = {
   launchTime: 2.4,    // so lange traegt das Katapult ueber das normale Turbo-Maximum
 };
 
-// Vorlagen. launch = [Beginn, Ende] der Katapultstrecke, hills = [Mitte, Halbbreite, Hoehe m].
-// Die Halbbreite ist ein Anteil der Zonenlaenge; die Hoehen sind absolut.
+// Vorlagen. launch = [Beginn, Ende] der Katapultstrecke (oder null), hills = [Mitte, Halbbreite,
+// Hoehe m], rolls = [Mitte, Halbbreite, Umdrehungen, Achshoehe m, Zusatzhub m] (R39: Twists - die
+// Bahn dreht sich um ihre Laengsachse, bei Achshoehe > 0 um eine Achse UEBER der Fahrbahn, also
+// wie ein Korkenzieher um einen Koerper herum), bank = Steilkurven aus der Kruemmung.
+// Halbbreiten und Mitten sind Anteile der Zonenlaenge; Hoehen sind absolut.
 export const COASTER_KINDS = {
   // Grosse Achterbahn: Top-Hat, Kamelruecken, Bunny-Hop
-  super: {launch: [.015, .15], hills: [[.32, .15, 26], [.57, .095, 15], [.74, .07, 9]]},
-  // Kurze Magnet-Wellen fuer Strecken mit wenig Platz
-  hills: {launch: [.02, .22], hills: [[.45, .14, 14], [.73, .1, 8]]},
+  super: {launch: [.015, .15], hills: [[.32, .15, 26], [.57, .095, 15], [.74, .07, 9]], rolls: [], bank: false, arches: true},
+  // Kurze Magnet-Wellen fuer Strecken mit wenig Platz, mit Zero-G-Roll auf dem ersten Huegel
+  hills: {launch: [.02, .22], hills: [[.45, .14, 14], [.73, .1, 8]], rolls: [[.45, .075, 1, 0, 0]], bank: true, arches: true},
+  // Drachen-Achterbahn (R39, Dragon-Driftway-Stil): Top-Hat, Kamelruecken mit Zero-G-Roll,
+  // Bunny-Hop, dann ein doppelter Korkenzieher um den Drachenkoerper (Achse 7,5 m ueber der Bahn)
+  dragon: {launch: [.015, .12], hills: [[.26, .12, 26], [.47, .085, 17], [.63, .05, 8]], rolls: [[.47, .06, 1, 0, 0], [.82, .07, 2, 7.5, 9]], bank: true, arches: true},
+  // Magnet-Steilkurve: keine Huegel, nur Neigung aus der Kruemmung (um die Innenkante)
+  bank: {launch: null, hills: [], rolls: [], bank: true, arches: false},
 };
+
+// Steilkurven: Neigung = Kruemmung x k, gedeckelt. Gekippt wird um die Innenkante (edge), die
+// Innenkante bleibt also am Boden, aussen steigt die Bahn wie in einer Velodrom-Kurve.
+export const BANK = {k: 34, max: .95, edge: 8.9, fade: 30, near: 14};
+
+const TAU = Math.PI * 2;
+const clamp01 = x => Math.max(0, Math.min(1, x));
+const sstep = u => {const t = clamp01(u); return t * t * t * (t * (t * 6 - 15) + 10);};
 
 // Die steilste Stelle eines Buckels hat die Steigung 1,717*h/w. Auf kurzen Zonen wird die Hoehe
 // deshalb gedeckelt (hoechstens ~45 Grad), sonst stuende die Bahn im Bild fast senkrecht.
+// Twists bringen ihren eigenen Zusatzhub mit (ein breiterer Buckel unter der Rolle), damit die
+// Fahrbahnkante beim Drehen nicht in den Boden taucht (siehe rollClearance).
 export function coasterSpec(kind, span) {
   const k = COASTER_KINDS[kind] || COASTER_KINDS.super;
-  return {
-    kind, span,
-    launch: [k.launch[0] * span, k.launch[1] * span],
-    hills: k.hills.map(([c, w, h]) => ({c: c * span, w: w * span, h: Math.min(h, w * span * .58)})),
+  const cap = (h, w) => Math.min(h, w * .58);
+  const rolls = (k.rolls || []).map(([c, w, turns, axis, lift], i) => ({c: c * span, w: w * span, turns, axis, lift, sgn: i % 2 ? -1 : 1}));
+  const spec = {
+    kind, span, bank: !!k.bank, arches: !!k.arches,
+    launch: k.launch ? [k.launch[0] * span, k.launch[1] * span] : null,
+    hills: k.hills.map(([c, w, h]) => ({c: c * span, w: w * span, h: cap(h, w * span)}))
+      .concat(rolls.filter(r => r.lift > 0).map(r => ({c: r.c, w: r.w * 1.45, h: cap(r.lift, r.w * 1.45)}))),
+    rolls: [],
   };
+  // Nur Rollen behalten, bei denen die Fahrbahnkante ueberall mindestens 0,4 m ueber dem Boden
+  // bleibt. Auf kurzen Zonen sind die Huegel flacher (Steigungsdeckel) - dort faellt der Twist weg.
+  const p = {h: 0, s: 0, k: 0};
+  for (const r of rolls) {
+    let ok = true;
+    for (let x = r.c - r.w; x <= r.c + r.w && ok; x += .5) {
+      const u = (x - (r.c - r.w)) / (2 * r.w), ph = r.turns * TAU * sstep(u);
+      ok = rollClearance(coasterProfile(spec, x, p).h, ph, r.axis) >= .4;
+    }
+    if (ok) spec.rolls.push(r);
+  }
+  return spec;
 }
 
 // Magnetboegen gleichmaessig ueber die Katapultstrecke (Meter ab Zonenbeginn)
 export function launchArches(spec, n = 6) {
+  if (!spec.launch || !spec.arches) return [];
   const [a, b] = spec.launch, out = [];
   for (let i = 0; i < n; i++) out.push(a + (b - a) * (n > 1 ? i / (n - 1) : .5));
   return out;
+}
+
+// Twist an Stelle x: Drehwinkel (rad) und die Hoehe der Drehachse ueber der Fahrbahn. Nach einer
+// Rolle bleibt der Winkel bei vollen Umdrehungen stehen (2*PI*n) - im Bild identisch mit 0.
+export function twistAt(spec, x, out = {ph: 0, axis: 0}) {
+  let ph = 0, axis = 0;
+  for (const r of spec.rolls || []) {
+    const u = (x - (r.c - r.w)) / (2 * r.w);
+    if (u <= 0) continue;
+    ph += r.sgn * r.turns * TAU * sstep(u);
+    if (u < 1) axis = r.axis;
+  }
+  out.ph = ph; out.axis = axis;
+  return out;
+}
+
+// Steilkurven-Neigung aus der Kruemmung (rad). Linkskurve (kappa > 0) hebt die rechte Seite.
+export function bankAngle(kappa) {
+  return Math.max(-BANK.max, Math.min(BANK.max, -kappa * BANK.k)) + 0;   // + 0: nie -0
+}
+
+// Wie stark die Steilkurve an Stelle x wirkt: weich an den Zonenenden ein/aus und nie zugleich
+// mit einem Twist (dort kippt die Bahn schon selbst, und die Drehachsen waeren verschieden).
+export function bankEnvelope(spec, x) {
+  if (!spec.bank) return 0;
+  const f = Math.min(BANK.fade, spec.span * .2);
+  let e = sstep(x / f) * sstep((spec.span - x) / f);
+  for (const r of spec.rolls || []) {
+    const out = Math.max(0, Math.abs(x - r.c) - r.w);
+    e = Math.min(e, sstep(out / BANK.near));
+  }
+  return e;
+}
+
+// Drehachse der Steilkurve: die Innenkante (seitlicher Versatz, Vorzeichen wie der Querversatz)
+export function bankAxis(ph) {
+  return ph === 0 ? 0 : -Math.sign(ph) * BANK.edge;
+}
+
+// Tiefster Punkt der Fahrbahn relativ zum Boden bei Hoehe h, Drehwinkel ph und Achshoehe a
+// (Twist um eine Achse ueber der Bahn). Muss ueberall > 0 bleiben.
+export function rollClearance(h, ph, a = 0, half = BANK.edge) {
+  return h - half * Math.abs(Math.sin(ph)) + a * (1 - Math.cos(ph));
 }
 
 // Profil an Stelle x (Meter ab Zonenbeginn): Hoehe h, Steigung s = dh/dx, Kruemmung k = d2h/dx2
@@ -91,6 +169,7 @@ export function launchKick(speed) {
 
 // Wertung beim Verlassen der Achterbahn: sauber = nie an der Magnetbande, mit Airtime
 export function coasterRating(run) {
+  if (run.noRating) return null;
   const clean = (run.maxOff ?? 99) < 5.5 && !run.hit;
   const air = run.airHills || 0;
   if (clean && air >= 2) return {label: 'SUPER-ACHTERBAHN!', boost: 1.25, spores: 2};

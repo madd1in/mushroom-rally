@@ -1,0 +1,10 @@
+{
+  "triangles": 4928,
+  "glb_bytes": 137076,
+  "objects": [
+    "DR_Segment",
+    "DR_Head",
+    "DR_Jaw",
+    "DR_TailTip"
+  ]
+}
