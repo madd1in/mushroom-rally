@@ -4,6 +4,21 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 41 (24.09.2026): Fenster im Menuestil, Handy-Menue repariert
+
+- **Pause, Ergebnis, Siegerehrung, Fehler- und Ladeanzeige** im Stil des neuen Menues: helle Karte
+  mit Zielflaggen-Streifen, kursive Titel mit dicker Kontur und rotem Versatzschatten, roter
+  schraeger Hauptknopf, weisse Nebenknoepfe, Rangliste als kleine Karten (eigene Zeile gelb),
+  Sterne gelb mit Kontur. Vorher waren diese Fenster noch im alten Dunkelgruen.
+- **Ergebnis auf dem Desktop kompakter:** Werte in drei Spalten, damit "Nochmal" ohne Scrollen
+  sichtbar ist.
+- **Handy-Menue:** Ton- und Vollbild-Knopf lagen ueber dem Titel, Kartfarben stapelten sich
+  senkrecht und "Grafik" lief rechts aus dem Bild. Jetzt beginnt das Menue unter der Kopfleiste,
+  die Auswahl steht im Raster (Grafik eigene Zeile), das Menue scrollt.
+- **Gewaehlte Streckenkarte** wurde oben und links vom scrollenden Raster abgeschnitten - das Raster
+  hat jetzt Luft fuer die angehobene Karte.
+- Doppelte `#speedlines`-ID in `index.html` entfernt.
+
 ## Runde 40 (24.09.2026): Menue im Mario-Kart-World-Stil, Drache durchsichtig, keine Ruckler in Runde 1
 
 - **Menue und Schrift:** fette kursive Display-Schrift (Rubik 900) mit dicker dunkler Kontur und

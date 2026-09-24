@@ -552,3 +552,74 @@ body .loader-card b{font-family:var(--mk-font);font-style:italic;font-weight:900
    ueberlappten sich. Breit: vier Spalten (sieben Strecken in zwei Zeilen), schmal: zwei Spalten. */
 body #menu #tracks{flex-shrink:0;grid-template-columns:repeat(4,1fr)}
 @media (max-width:620px){body #menu #tracks{grid-template-columns:repeat(2,1fr)}}
+
+/* ============================================================================================
+   R41: Fenster (Pause, Ergebnis, Siegerehrung, Fehler, Laden) im Menuestil von R40 - helle Karte
+   mit Zielflaggen-Streifen, kursive Display-Schrift mit Kontur, roter Hauptknopf, weisse
+   Nebenknoepfe. Dazu Handy-Feinschliff im Menue.
+   ============================================================================================ */
+body .modal{background:#15133a8c;backdrop-filter:blur(8px)}
+body .modal>div,body #ceremony>div{position:relative;overflow:visible;background:linear-gradient(180deg,#fffffff5,#e7f3fff0);color:var(--mk-ink);border:0;border-radius:26px;box-shadow:0 8px 0 #15133a40,0 24px 60px -20px #000c;padding:30px 26px 22px}
+body .modal>div:before,body #ceremony>div:before{content:'';position:absolute;left:18px;right:18px;top:-9px;height:14px;border-radius:7px;background:var(--mk-check);box-shadow:0 3px 0 #15133a55}
+/* Inhalt scrollt innen, damit der Zielflaggen-Streifen oben nicht abgeschnitten wird */
+body .modal>div{max-height:min(92vh,calc(100dvh - 40px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+body .modal .eyebrow,body #ceremony .eyebrow{color:var(--mk-red);font-family:var(--mk-font);font-style:italic;font-weight:900;letter-spacing:1.5px}
+body .modal .eyebrow i{background:var(--mk-red)}
+body .modal h2,body #ceremony h2{font-family:var(--mk-font);font-style:italic;font-weight:900;letter-spacing:0;line-height:1.02;color:#fff;-webkit-text-stroke:7px var(--mk-ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--mk-red),0 8px 16px #0004;margin:10px 0 14px}
+body .modal p,body #ceremony p{color:#15133acc}
+body #resultTime{font-family:var(--mk-font);font-style:italic;font-weight:800;font-size:18px;color:var(--mk-ink);margin:4px 0 8px}
+body #cerUnlock{color:#c25a00}
+/* Hauptknopf rot und schraeg wie "Los geht's", Nebenknoepfe weiss */
+body .modal button:not(.secondary),body #ceremony button:not(.secondary){position:relative;overflow:hidden;transform:skewX(-8deg);border-radius:16px;padding:15px 22px;background:linear-gradient(180deg,#ff4a4a,var(--mk-red) 55%,var(--mk-red2));border:3px solid #fff;box-shadow:0 0 0 3px var(--mk-ink),0 6px 0 3px var(--mk-ink);color:#fff;font-family:var(--mk-font);font-style:italic;font-weight:900;font-size:19px;letter-spacing:.3px;-webkit-text-stroke:4px var(--mk-ink);paint-order:stroke fill;text-align:center;margin-top:18px}
+body .modal button:not(.secondary):hover,body #ceremony button:not(.secondary):hover{transform:skewX(-8deg) translateY(-2px);filter:brightness(1.08)}
+body .modal button:not(.secondary):active,body #ceremony button:not(.secondary):active{transform:skewX(-8deg) translateY(3px);box-shadow:0 0 0 3px var(--mk-ink),0 3px 0 3px var(--mk-ink)}
+body .modal .secondary,body #ceremony .secondary{transform:skewX(-8deg);border-radius:13px;margin-top:12px;padding:11px 16px;background:#fff;color:var(--mk-ink);border:2.5px solid #15133a26;box-shadow:0 3px 0 #15133a33;font-family:var(--mk-font);font-style:italic;font-weight:800;font-size:15px}
+body .modal .secondary:hover,body #ceremony .secondary:hover{transform:skewX(-8deg) translateY(-2px);box-shadow:0 5px 0 #15133a33}
+body .modal .secondary[aria-pressed="true"]{background:linear-gradient(180deg,var(--mk-yellow),var(--mk-orange));color:#fff;border-color:#fff;box-shadow:0 0 0 2.5px var(--mk-ink),0 4px 0 2px var(--mk-ink);-webkit-text-stroke:3px var(--mk-ink);paint-order:stroke fill}
+/* Sterne und Werte */
+body #resultStars{color:#15133a26;-webkit-text-stroke:0}
+body #resultStars i.on{color:var(--mk-yellow);-webkit-text-stroke:2px var(--mk-ink);paint-order:stroke fill;text-shadow:0 3px 0 var(--mk-orange)}
+body #resultStars b{background:var(--mk-red);color:#fff;font-family:var(--mk-font);font-style:italic;font-weight:900;transform:skewX(-8deg)}
+body #resultStats div{background:#fff;border:2px solid #15133a1f;box-shadow:0 2px 0 #15133a26}
+body #resultStats span{color:#15133aa6;opacity:1;font-weight:700}
+body #resultStats b{color:var(--mk-ink);font-family:var(--mk-font);font-style:italic;font-weight:900}
+/* Rangliste: Zeilen als kleine Karten, eigene Zeile gelb */
+body .modal ol,body #ceremony ol{display:flex;flex-direction:column;gap:4px}
+body .modal li,body #ceremony li{border:0;border-radius:10px;padding:6px 12px;background:#15133a0d;color:var(--mk-ink);font-weight:700}
+body .modal li span:first-child,body #ceremony li span:first-child{font-family:var(--mk-font);font-style:italic;font-weight:900;min-width:26px}
+body .modal li.me,body #ceremony li.me{background:linear-gradient(90deg,var(--mk-yellow),#ffe98a);color:var(--mk-ink);box-shadow:0 0 0 2px var(--mk-ink)}
+body .modal li .gain{color:#1f9a4b}
+body #ceremony>div{background:linear-gradient(180deg,#fffffff2,#e7f3ffe8);backdrop-filter:blur(6px)}
+/* Fehler- und Ladeanzeige */
+body #error{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 32px));border-radius:22px;background:#fff;color:var(--mk-ink);box-shadow:0 0 0 3px var(--mk-ink),0 8px 0 3px var(--mk-ink);padding:28px;font-weight:700}
+body #trackLoading{background:#fff;color:var(--mk-ink);box-shadow:0 0 0 3px var(--mk-ink),0 5px 0 3px var(--mk-ink);font-family:var(--mk-font);font-style:italic;font-weight:900}
+body #trackLoading i{border-color:#15133a26;border-top-color:var(--mk-red)}
+/* Streckenkarten: Auswahl hebt sich an und hat einen Rahmen - im scrollenden Raster brauchte
+   sie Luft, sonst schnitt der Rand oben und links die gewaehlte Karte ab. */
+body #menu #tracks{padding:8px 7px 11px;margin:-8px -7px -11px}
+/* Handy hochkant: Kopfleisten-Knoepfe lagen ueber dem Titel, die Auswahlzeile lief rechts aus dem Bild */
+@media (max-width:620px){
+ body #menu{padding-top:64px;align-items:flex-start}
+ body #menu .menu-panel{max-height:none;flex:none}
+ body #menu .menu-picks{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:start}
+ body #menu .gfx-pick{grid-column:1/-1}
+ body #menu #colors{flex-wrap:nowrap;gap:6px}
+ body #menu #colors .swatch{width:27px;height:27px}
+ body #menu #colors{gap:5px}
+ body #menu .gfx-pick{margin-left:0}
+ body .modal{padding:16px}
+ body .modal>div{padding:28px 18px 18px;width:100%;max-width:100%}
+ body .modal h2,body #ceremony h2{font-size:30px}
+}
+/* Ergebnis auf dem Desktop kompakter, damit die Knoepfe ohne Scrollen im Bild bleiben */
+@media (min-width:761px){
+ body #result>div{width:560px;padding-top:24px}
+ body #result h2{font-size:30px;margin:6px 0 8px}
+ body #resultTime{margin:0 0 4px;font-size:16px}
+ body #resultStars{font-size:30px}
+ body #resultStats{grid-template-columns:repeat(3,1fr);gap:6px}
+ body #resultStats div{padding:5px 9px}
+ body .modal li{padding:4px 12px;font-size:13px}
+ body .modal ol{gap:3px}
+}
+@media (prefers-reduced-motion:reduce){body .modal button,body #ceremony button{transition:none}}
