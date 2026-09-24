@@ -46,8 +46,8 @@ try {
       for (let j = 0; j < 30; j++) {
         // 10 s Simulation in 20er-Schritten, dabei die Achterbahn-Werte des Spielers abtasten
         const s = await evaluate(`(()=>{let maxL=0,minV=1,maxF=0;for(let k=0;k<30;k++){rallyTest.tick(20,1/60);const c=rallyTest.coasterRun()[0];if(c&&c.run){maxL=Math.max(maxL,c.speed);minV=Math.min(minV,c.vis??1);maxF=Math.max(maxF,c.float??0);}}
-          const s=rallyTest.state(),p=s.racers[0];return {state:s.state,finishTime:p?.finishTime??null,falls:s.stats?.falls??0,air:s.stats?.airtime??0,coasters:s.stats?.coasters??0,place:rallyTest.tick(0).place,maxL,minV,maxF};})()`);
-        Object.assign(res, {state: s.state, finishTime: s.finishTime, falls: s.falls, airtime: s.air, coasters: s.coasters, place: s.place, simulated: (j + 1) * 10});
+          const s=rallyTest.state(),p=s.racers[0];return {state:s.state,finishTime:p?.finishTime??null,falls:s.stats?.falls??0,fallAt:s.stats?.fallAt||[],air:s.stats?.airtime??0,coasters:s.stats?.coasters??0,place:rallyTest.tick(0).place,maxL,minV,maxF};})()`);
+        Object.assign(res, {state: s.state, finishTime: s.finishTime, falls: s.falls, fallAt: s.fallAt, airtime: s.air, coasters: s.coasters, place: s.place, simulated: (j + 1) * 10});
         res.maxLaunch = Math.max(res.maxLaunch, s.maxL); res.minVis = Math.min(res.minVis, s.minV); res.maxFloat = Math.max(res.maxFloat, s.maxF);
         if (s.finishTime !== null || s.state === 'finished') {res.outcome = 'finished'; break;}
       }

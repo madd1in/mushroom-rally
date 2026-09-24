@@ -4,6 +4,60 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 39 (24.09.2026): Elemente-Parcours, Schraeg- und Mehrfach-Loopings, Drache, Flow
+
+**Elemente-Parcours** (Logik in `elem.mjs`, ohne Browser getestet): Das Kart verwandelt sich je
+nach Element - auf dem Wasser in ein **Rennboot** (V-Rumpf, Duese, Gischt, schaukelt), unter
+Wasser in ein **Tauchboot** (Propellerring, Flossen, Blasen), in der Luft in ein **Flugzeug**
+(Tragflaechen mit Pilzpunkten, Luftschraube, Kondensstreifen). Beim Durchstossen der
+Wasseroberflaeche spritzt es, jede Verwandlung hat ihren Klang. Teile und Deko aus Blender
+(`art/r39/create_elements.py`, `assets/transform.glb`, `assets/elements.glb`).
+
+- **Seen:** echtes Loch im Inselboden (Alpha-Maske im Bodendeckel), Becken mit animiertem
+  Kaustik-Licht, Uferstrand, Wasseroberflaeche, Seetang, Korallen, Fischschwaerme, Bojen an der
+  Bootsspur. Unter Wasser faerbt sich die Sicht (Nebel, Hintergrund), die Musik klingt gedaempft.
+- **Tauch-Spirale:** Auf der Magnet-Kirmes (Wildwasser-Spirale) und im Neon-Pilzwald (Neon-Riff)
+  liegt ein Mehrfach-Looping am Seegrund - die unteren Boegen jeder Windung tauchen ein, die
+  oberen ragen in die Luft: Boot, abtauchen, Spirale durch Wasser und Luft, auftauchen, an Land.
+- **Geistersee** (Geisterhaus) mit Tauchgang, **Pilzbach** (Pilz-Promenade) als Bootsstrecke.
+- **Flug:** Startrampe mit Leuchtkante, dann traegt die Luft - die Fahrbahn verschwindet,
+  Flugringe geben Turbo, Landung auf der Gegenrampe. **Feuerflug** (Lava-Feste) und
+  **Sternenflug** (Regenbogenpiste).
+
+**Loopings neu** (`loop.mjs`): Jede Windung ist zur Seite geneigt - Ein- und Ausfahrt laufen
+aneinander vorbei, statt sich zu schneiden (ein ebener Looping mit Ausfahrt vor der Einfahrt
+kreuzt sich zwangslaeufig selbst). Die Ausfahrt schliesst jetzt ohne den bisherigen 9-m-Sprung
+an die Strasse an. Bis drei Windungen hintereinander ergeben Spiralen, auch in Kurven
+(gekruemmte Spirale). Ein Test prueft fuer alle Groessen mindestens 4 m Abstand zwischen den
+Bahnteilen, im Spiel werden 3,65 bis 5,5 m gemessen. Kart und Kamera folgen der geneigten Bahn.
+Jede Strecke hat ihren eigenen Looping-Charakter: Doppel-Looping (Pilz-Promenade, Geisterhaus,
+Lava-Feste), Looping-Kette aus drei Einzel-Loopings (Sonnen-Canyon), gekruemmte
+Dreifach-Helix (Neon-Pilzwald), Sternenspirale (Regenbogenpiste).
+
+**Laengere Wand- und Ueberkopffahrten:** Rollzonen sind jetzt Folgen aus Drehungen und
+Haltephasen - lange 90-Grad-Wandfahrt, lange Ueberkopffahrt, Wandwechsel ueber Kopf und der
+Rundgang ueber alle vier Seiten (Lava-Feste).
+
+**Drachen-Achterbahn** (Magnet-Kirmes): Fliegenpilz-Drache aus Blender, die Bahn schraubt sich
+im Korkenzieher um seinen Leib, am Ausgang speit er Feuer. Dazu Steilkurven aus der Kruemmung.
+
+**Flow (Spielgefuehl):**
+- **Glatter Belag:** Kurvenueberhoehung und Kurvenhub kamen aus der rohen Kruemmung des
+  Streckenzugs, die von Stuetzpunkt zu Stuetzpunkt schwankt - die Fahrbahn hob und senkte sich in
+  jeder Kurvenfolge um bis zu 1,2 m (Buckelpiste). Jetzt ueber die Strecke geglaettet.
+- **Kein Hueperln mehr auf dem Handy:** Der Kuppenabsprung wurde je Frame entschieden - bei
+  20 fps hob das Kart schon an sanften Wellen ab. Jetzt aus der Hoehenkruemmung, unabhaengig von
+  der Bildrate.
+- **Lenkhilfe** (Menue, Standard an): das Kart folgt der Kurve auf der eigenen Spur, die eigene
+  Lenkung kommt obendrauf; vor zu engen Kurven geht sie vom Gas. Freihaendig auf dem
+  Neon-Pilzwald: 982 m statt 321 m in 45 s, keine Stuerze statt zwei.
+- **Leitplanken** schon ab 65 m Kurvenradius und in jeder Landezone hinter Schanzen.
+- **Handy:** Touch-Geraete starten mit Aufloesungsdeckel 1,0 und Schatten jeden zweiten Frame.
+
+Rundenzeiten werden durch die Spiralen laenger - Medaillen neu, Rekorde aller Strecken einmalig
+zurueckgesetzt. Autopilot-Rennen auf allen sieben Strecken: alle im Ziel, keine JS-Fehler.
+Tests: 65 (neu `loop.test.mjs`, `elem.test.mjs`).
+
 ## Runde 38 (23.09.2026): Magnet-Achterbahn, neue Strecke Magnet-Kirmes, On-Ride-Foto
 
 Die Magnetbahn wird zur Super-Achterbahn. Neues Streckenelement `coaster` (Logik in

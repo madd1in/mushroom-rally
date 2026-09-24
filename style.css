@@ -453,11 +453,11 @@ body:not(.racing):not(.cer) header .brand{opacity:0;pointer-events:none}
  #menu #start{padding:10px 16px;font-size:16px}
 }
 /* Grafikstufe im Menue */
-#menu #gfx{display:flex;gap:4px}
-#menu #gfx button{margin:0;padding:6px 9px;border-radius:10px;font-size:11px;font-weight:700;color:#b9d2c1;background:#05100bc7;border:1.5px solid #ffffff14}
-#menu #gfx button.selected{background:linear-gradient(180deg,#ffffff1f,#ffffff08);border-color:var(--gold);color:#fff}
+#menu #gfx,#assist{display:flex;gap:4px}
+#menu #gfx button,#assist button{margin:0;padding:6px 9px;border-radius:10px;font-size:11px;font-weight:700;color:#b9d2c1;background:#05100bc7;border:1.5px solid #ffffff14}
+#menu #gfx button.selected,#assist button.selected{background:linear-gradient(180deg,#ffffff1f,#ffffff08);border-color:var(--gold);color:#fff}
 .gfx-pick{margin-left:auto}
-@media(max-width:430px){.gfx-pick{margin-left:0;width:100%}#menu #gfx button{padding:7px 10px;font-size:12px}}
+@media(max-width:430px){.gfx-pick{margin-left:0;width:100%}#menu #gfx button,#assist button{padding:7px 10px;font-size:12px}}
 /* Item-Vorschau als gerendertes Bild */
 #item #itemIcon img,#titem #titemIcon img{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 3px 6px #0007)}
 

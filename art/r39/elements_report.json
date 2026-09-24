@@ -1,0 +1,25 @@
+[
+  {
+    "file": "transform.glb",
+    "triangles": 2204,
+    "bytes": 136100,
+    "objects": [
+      "TF_Boat",
+      "TF_Dive",
+      "TF_DiveProp",
+      "TF_Plane",
+      "TF_PlaneProp"
+    ]
+  },
+  {
+    "file": "elements.glb",
+    "triangles": 2264,
+    "bytes": 121288,
+    "objects": [
+      "EL_Buoy",
+      "UW_Coral",
+      "UW_Fish",
+      "UW_Kelp"
+    ]
+  }
+]

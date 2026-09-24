@@ -1,11 +1,11 @@
 {
-  "startedAt": "2026-09-23T16:11:24.277Z",
+  "startedAt": "2026-09-24T04:39:26.674Z",
   "cc": 100,
   "tracks": [
     {
       "track": 0,
       "outcome": "finished",
-      "finishTime": 102.4833333333288,
+      "finishTime": 113.53333333332817,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -16,21 +16,22 @@
       "name": "✿Pilz-PromenadeWurzeltor · Viadukt · Wan",
       "coaster": [],
       "state": "finished",
-      "place": 5,
-      "simulated": 110,
+      "fallAt": [],
+      "place": 2,
+      "simulated": 120,
       "perf": {
-        "drawCalls": 256,
-        "triangles": 99492,
+        "drawCalls": 111,
+        "triangles": 181162,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 160.8
+      "wallSeconds": 83.1
     },
     {
       "track": 1,
       "outcome": "finished",
-      "finishTime": 113.0833333333282,
+      "finishTime": 121.71666666666104,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -41,21 +42,22 @@
       "name": "☀Sonnen-CanyonSchnell · Schluchtsprung ·",
       "coaster": [],
       "state": "finished",
-      "place": 1,
-      "simulated": 120,
+      "fallAt": [],
+      "place": 3,
+      "simulated": 130,
       "perf": {
-        "drawCalls": 134,
-        "triangles": 316122,
+        "drawCalls": 142,
+        "triangles": 317548,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 96.8
+      "wallSeconds": 48.8
     },
     {
       "track": 2,
       "outcome": "finished",
-      "finishTime": 96.28333333332915,
+      "finishTime": 120.84999999999442,
       "falls": 1,
       "airtime": 0,
       "coasters": 0,
@@ -66,29 +68,36 @@
       "name": "✦Neon-PilzwaldTechnisch · Korkenzieher i",
       "coaster": [],
       "state": "finished",
-      "place": 7,
-      "simulated": 100,
+      "fallAt": [
+        [
+          828,
+          -11.3,
+          773
+        ]
+      ],
+      "place": 6,
+      "simulated": 130,
       "perf": {
-        "drawCalls": 163,
-        "triangles": 406612,
+        "drawCalls": 179,
+        "triangles": 413564,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 88
+      "wallSeconds": 53.6
     },
     {
       "track": 3,
       "outcome": "finished",
-      "finishTime": 101.56666666666219,
+      "finishTime": 90.1333333333295,
       "falls": 0,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 44.40003260195042,
-      "minVis": 0.8723482532222012,
+      "maxLaunch": 45.46589279225852,
+      "minVis": 0.8918397175297692,
       "maxFloat": 0.5,
       "launches": 0,
-      "name": "👻GeisterhausSpuk · Villa · Fahrt über K",
+      "name": "👻GeisterhausSpuk · Villa · Geisterbahn—",
       "coaster": [
         {
           "s": 522,
@@ -126,21 +135,22 @@
         }
       ],
       "state": "finished",
-      "place": 4,
-      "simulated": 110,
+      "fallAt": [],
+      "place": 2,
+      "simulated": 100,
       "perf": {
-        "drawCalls": 156,
-        "triangles": 433658,
+        "drawCalls": 153,
+        "triangles": 417960,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 82.4
+      "wallSeconds": 39.7
     },
     {
       "track": 4,
       "outcome": "finished",
-      "finishTime": 90.83333333332946,
+      "finishTime": 106.44999999999524,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -151,29 +161,30 @@
       "name": "♨Lava-FesteBurg · Magma · Feuerbälle—",
       "coaster": [],
       "state": "finished",
+      "fallAt": [],
       "place": 1,
-      "simulated": 100,
+      "simulated": 110,
       "perf": {
-        "drawCalls": 133,
-        "triangles": 330702,
+        "drawCalls": 147,
+        "triangles": 341604,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 93.9
+      "wallSeconds": 35.2
     },
     {
       "track": 5,
       "outcome": "finished",
-      "finishTime": 112.81666666666155,
-      "falls": 0,
+      "finishTime": 137.65000000000168,
+      "falls": 1,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 45.46368557945318,
-      "minVis": 0.8065413586354441,
+      "maxLaunch": 45.4159993401652,
+      "minVis": 0.819142015590697,
       "maxFloat": 0.5,
       "launches": 0,
-      "name": "✧RegenbogenpisteWeltall · Looping · Kork",
+      "name": "✧RegenbogenpisteWeltall · Looping · Ster",
       "coaster": [
         {
           "s": 821,
@@ -211,62 +222,74 @@
         }
       ],
       "state": "finished",
-      "place": 2,
-      "simulated": 120,
+      "fallAt": [
+        [
+          678,
+          16.9,
+          629
+        ]
+      ],
+      "place": 5,
+      "simulated": 150,
       "perf": {
-        "drawCalls": 118,
-        "triangles": 175304,
+        "drawCalls": 132,
+        "triangles": 172192,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 82.4
+      "wallSeconds": 43.8
     },
     {
       "track": 6,
       "outcome": "finished",
-      "finishTime": 119.03333333332786,
+      "finishTime": 132.44999999999754,
       "falls": 0,
-      "airtime": 9,
+      "airtime": 12,
       "coasters": 3,
-      "maxLaunch": 45.46640097021542,
-      "minVis": 0.6150997246877878,
+      "maxLaunch": 44.93326009540071,
+      "minVis": 0.6425316458830622,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "❂Magnet-KirmesAchterbahn · Magnet-Katapu",
       "coaster": [
         {
           "s": 437,
-          "span": 266,
-          "kind": "super",
+          "span": 316,
+          "kind": "dragon",
           "launch": [
-            4,
-            40
+            5,
+            38
           ],
           "hills": [
             {
-              "c": 85,
-              "w": 40,
-              "h": 23.1
+              "c": 82,
+              "w": 38,
+              "h": 22
             },
             {
-              "c": 152,
-              "w": 25,
-              "h": 14.7
+              "c": 148,
+              "w": 27,
+              "h": 15.6
             },
             {
-              "c": 197,
-              "w": 19,
+              "c": 199,
+              "w": 16,
+              "h": 8
+            },
+            {
+              "c": 259,
+              "w": 32,
               "h": 9
             }
           ],
           "arches": [
-            4,
+            5,
             11,
             18,
-            26,
-            33,
-            40
+            25,
+            31,
+            38
           ],
           "assets": {
             "arch": true,
@@ -276,20 +299,21 @@
         }
       ],
       "state": "finished",
-      "place": 4,
-      "simulated": 130,
+      "fallAt": [],
+      "place": 2,
+      "simulated": 140,
       "perf": {
-        "drawCalls": 134,
-        "triangles": 369594,
+        "drawCalls": 178,
+        "triangles": 406858,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 121.3
+      "wallSeconds": 43.8
     }
   ],
   "errors": [],
   "networkFailures": [],
   "passed": true,
-  "completedAt": "2026-09-23T16:24:46.945Z"
+  "completedAt": "2026-09-24T04:45:26.434Z"
 }
