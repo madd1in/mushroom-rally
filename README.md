@@ -18,6 +18,15 @@ Live: https://madd1in.github.io/mushroom-rally/
 - **Gewaehlte Streckenkarte** wurde oben und links vom scrollenden Raster abgeschnitten - das Raster
   hat jetzt Luft fuer die angehobene Karte.
 - Doppelte `#speedlines`-ID in `index.html` entfernt.
+- **Startknopf wirkte grau:** Die Rand-Vignette des Renn-HUD lag ueber dem Menue und dunkelte
+  die Panel-Ecken ab - "Los geht's" unten links war dadurch grau statt weiss. Menue liegt jetzt
+  darueber.
+- **Countdown und Einblendungen** (3-2-1, LOS!, RUNDE 2) in der Display-Schrift mit Kontur und
+  rotem Schatten, springen bei jedem Wechsel auf, stehen tiefer und ueberlappen die
+  Streckeneinblendung nicht mehr.
+- **Handy:** "Los geht's" klebt unten am Menue, auch beim Scrollen der Streckenliste; "Grand Prix"
+  bricht nicht mehr um; im Rennen zeigt die Kopfleiste nur das Icon, Ton/Pause/Vollbild sind
+  einzeilige kleine Knoepfe statt gestreckter Ovale.
 
 ## Runde 40 (24.09.2026): Menue im Mario-Kart-World-Stil, Drache durchsichtig, keine Ruckler in Runde 1
 

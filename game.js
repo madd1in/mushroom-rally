@@ -199,7 +199,9 @@ const speckCache=new Map();
 function speckleTexture(base,spot,density=1200,size=256){const key=[base,spot,density,size].join();let t=speckCache.get(key);if(!t){t=speckleTextureRaw(base,spot,density,size);speckCache.set(key,t);}return t;}
 function speckleTextureRaw(base,spot,density,size){return canvasTex(size,size,(q)=>{q.fillStyle=base;q.fillRect(0,0,size,size);for(let i=0;i<density;i++){q.globalAlpha=.12+Math.random()*.25;q.fillStyle=Math.random()<.55?spot:'#00000022';q.fillRect(Math.random()*size,Math.random()*size,2,2);}q.globalAlpha=1;},true);}
 function clearGroup(g,keep){if(keep&&keep.parent===g)g.remove(keep);const disposed=new Set();g.traverse(o=>{if(o.isInstancedMesh)o.dispose();if(o.isMesh||o.isPoints){if(o.geometry&&!sharedGeo.has(o.geometry))o.geometry.dispose();for(const m of [].concat(o.material)){if(m&&!persistentMats.has(m)&&!sharedMat.has(m)&&!disposed.has(m)){m.map?.dispose();m.emissiveMap?.dispose?.();m.dispose();disposed.add(m);}}}});g.clear();if(keep)g.add(keep);}
-const HC={};function setText(id,v){if(HC[id]!==v){HC[id]=v;const e=$(id);if(e)e.textContent=v;}}
+const HC={};function setText(id,v){if(HC[id]!==v){HC[id]=v;const e=$(id);if(e){e.textContent=v;
+ // Countdown und Einblendungen springen bei jedem neuen Text kurz auf (R41)
+ if(id==='message'&&v){e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop');}}}}
 function notice(text,duration=1.3){setText('message',text);noticeTimer=duration;}
 function toast(text,duration=1.4,cls=''){const el=$('toast');el.textContent=text;el.className='show '+cls;toastTimer=duration;}
 

@@ -622,4 +622,22 @@ body #menu #tracks{padding:8px 7px 11px;margin:-8px -7px -11px}
  body .modal li{padding:4px 12px;font-size:13px}
  body .modal ol{gap:3px}
 }
-@media (prefers-reduced-motion:reduce){body .modal button,body #ceremony button{transition:none}}
+/* Countdown und Einblendungen (RUNDE 2, LOS!) in der Display-Schrift, etwas tiefer als die
+   Streckeneinblendung, damit sich beide nicht mehr ueberlappen; springen bei jedem Wechsel auf */
+body #message{top:41%;font-family:var(--mk-font);font-weight:900;font-style:italic;color:var(--mk-yellow);-webkit-text-stroke:9px var(--mk-ink);paint-order:stroke fill;text-shadow:0 7px 0 var(--mk-red),0 12px 22px #0006;letter-spacing:1px}
+body #message.pop{animation:mkPop .42s cubic-bezier(.2,1.6,.4,1)}
+@keyframes mkPop{0%{transform:translate(-50%,-50%) scale(.35) rotate(-8deg);opacity:0}60%{opacity:1}100%{transform:translate(-50%,-50%) scale(1) rotate(0)}}
+/* Die Rand-Vignette (z-index 2) lag ueber dem Menue und dunkelte die Ecken des Panels ab - der
+   Startknopf unten links wirkte dadurch grau statt weiss-rot. Menue liegt jetzt darueber. */
+body #menu{z-index:3}
+/* Handy: Startknopf klebt unten am Menue, auch wenn die Streckenliste gescrollt wird */
+@media (max-width:620px){
+ body #menu .menu-panel{overflow:visible}
+ body #menu #start{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
+ body #menu .seg button b{font-size:13px;white-space:nowrap}
+ /* Kopfleiste im Rennen: Marke nur als Icon, Knoepfe einzeilig statt gestreckter Ovale */
+ body.racing header .brand-name{display:none}
+ body header .top-actions{align-items:center}
+ body header .top-actions button{white-space:nowrap;height:auto;min-height:0;padding:8px 12px;line-height:1.1}
+}
+@media (prefers-reduced-motion:reduce){body .modal button,body #ceremony button{transition:none}body #message.pop{animation:none}}
