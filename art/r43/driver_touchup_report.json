@@ -1,0 +1,10 @@
+{
+  "driver.glb": {
+    "triangles": 7050,
+    "bytes": 260156
+  },
+  "driver_robot.glb": {
+    "triangles": 3380,
+    "bytes": 160760
+  }
+}

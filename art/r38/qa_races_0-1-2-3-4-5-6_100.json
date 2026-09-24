@@ -1,11 +1,11 @@
 {
-  "startedAt": "2026-09-24T15:30:56.926Z",
+  "startedAt": "2026-09-24T17:33:15.428Z",
   "cc": 100,
   "tracks": [
     {
       "track": 0,
       "outcome": "finished",
-      "finishTime": 112.64999999999489,
+      "finishTime": 111.04999999999498,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -17,21 +17,21 @@
       "coaster": [],
       "state": "finished",
       "fallAt": [],
-      "place": 2,
+      "place": 1,
       "simulated": 120,
       "perf": {
-        "drawCalls": 218,
-        "triangles": 102620,
+        "drawCalls": 42,
+        "triangles": 150472,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 66.3
+      "wallSeconds": 74.6
     },
     {
       "track": 1,
       "outcome": "finished",
-      "finishTime": 120.1833333333278,
+      "finishTime": 124.56666666666088,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -43,21 +43,21 @@
       "coaster": [],
       "state": "finished",
       "fallAt": [],
-      "place": 3,
+      "place": 4,
       "simulated": 130,
       "perf": {
-        "drawCalls": 141,
-        "triangles": 317516,
+        "drawCalls": 146,
+        "triangles": 357282,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 33.4
+      "wallSeconds": 38.9
     },
     {
       "track": 2,
       "outcome": "finished",
-      "finishTime": 117.63333333332794,
+      "finishTime": 117.01666666666131,
       "falls": 1,
       "airtime": 0,
       "coasters": 0,
@@ -75,26 +75,26 @@
           773
         ]
       ],
-      "place": 7,
+      "place": 3,
       "simulated": 130,
       "perf": {
-        "drawCalls": 196,
-        "triangles": 435682,
+        "drawCalls": 181,
+        "triangles": 446232,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 38.7
+      "wallSeconds": 50.4
     },
     {
       "track": 3,
       "outcome": "finished",
-      "finishTime": 91.96666666666273,
+      "finishTime": 90.34999999999616,
       "falls": 0,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 45.46369614968776,
-      "minVis": 0.8741566008101695,
+      "maxLaunch": 44.39852249775515,
+      "minVis": 0.8731901687652043,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "👻GeisterhausSpuk · Villa · Geisterbahn—",
@@ -136,21 +136,21 @@
       ],
       "state": "finished",
       "fallAt": [],
-      "place": 1,
+      "place": 2,
       "simulated": 100,
       "perf": {
-        "drawCalls": 163,
-        "triangles": 438616,
+        "drawCalls": 169,
+        "triangles": 479160,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 29.2
+      "wallSeconds": 33.2
     },
     {
       "track": 4,
       "outcome": "finished",
-      "finishTime": 107.7833333333285,
+      "finishTime": 117.41666666666129,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -162,26 +162,26 @@
       "coaster": [],
       "state": "finished",
       "fallAt": [],
-      "place": 1,
-      "simulated": 120,
+      "place": 2,
+      "simulated": 130,
       "perf": {
-        "drawCalls": 147,
-        "triangles": 341604,
+        "drawCalls": 151,
+        "triangles": 382100,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 29.6
+      "wallSeconds": 37.8
     },
     {
       "track": 5,
       "outcome": "finished",
-      "finishTime": 140.8666666666709,
-      "falls": 2,
+      "finishTime": 139.66666666666995,
+      "falls": 0,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 45.46322986933527,
-      "minVis": 0.8067526831101304,
+      "maxLaunch": 45.46515954064763,
+      "minVis": 0.8058529496940738,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "✧RegenbogenpisteWeltall · Looping · Ster",
@@ -222,38 +222,27 @@
         }
       ],
       "state": "finished",
-      "fallAt": [
-        [
-          678,
-          15.8,
-          630
-        ],
-        [
-          678,
-          16.2,
-          630
-        ]
-      ],
-      "place": 4,
+      "fallAt": [],
+      "place": 2,
       "simulated": 150,
       "perf": {
-        "drawCalls": 135,
-        "triangles": 172232,
+        "drawCalls": 134,
+        "triangles": 211944,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 32.1
+      "wallSeconds": 37.2
     },
     {
       "track": 6,
       "outcome": "finished",
-      "finishTime": 136.18333333333385,
+      "finishTime": 134.69999999999933,
       "falls": 0,
       "airtime": 12,
       "coasters": 3,
-      "maxLaunch": 43.774682782163424,
-      "minVis": 0.6405505841578191,
+      "maxLaunch": 45.466641080478425,
+      "minVis": 0.6410711010590457,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "❂Magnet-KirmesAchterbahn · Magnet-Katapu",
@@ -305,20 +294,20 @@
       ],
       "state": "finished",
       "fallAt": [],
-      "place": 3,
+      "place": 2,
       "simulated": 140,
       "perf": {
-        "drawCalls": 173,
-        "triangles": 434364,
+        "drawCalls": 172,
+        "triangles": 448388,
         "dpr": 0.8,
         "qualityLevel": 3
       },
       "errors": [],
-      "wallSeconds": 42.6
+      "wallSeconds": 50.6
     }
   ],
   "errors": [],
   "networkFailures": [],
   "passed": true,
-  "completedAt": "2026-09-24T15:35:37.219Z"
+  "completedAt": "2026-09-24T17:38:46.722Z"
 }

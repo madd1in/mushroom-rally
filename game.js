@@ -174,15 +174,16 @@ function markShared(root){root.traverse(o=>{if(o.isMesh){sharedGeo.add(o.geometr
 const KEEP_MATS=new Set(['BodyPaint','CapPaint','StonePaint','MossPaint','WoodPaint','PostPaint','RampPaint','FanCap','GliderPaint','GliderCream','GliderTrim','GliderRope','WindGlow','MagnetPaint','MagnetGlow','TrussPaint','WheelPaint','WheelLights','GondolaPaint','GondolaTrim']);
 function mergeByMaterial(root){root.updateMatrixWorld(true);const groups=new Map(),baked=[];let rough=0,metal=0,cnt=0;
  root.traverse(o=>{if(!o.isMesh||Array.isArray(o.material))return;const m=o.material,g=o.geometry.clone().applyMatrix4(o.matrixWorld),em=m.emissive&&m.emissiveIntensity>0&&(m.emissive.r+m.emissive.g+m.emissive.b)>.001;
+  if(m.name==='Baked'&&g.attributes.color){const n=g.attributes.position.count;baked.push(g);rough+=(m.roughness??.8)*n;metal+=(m.metalness??0)*n;cnt+=n;return;}
   if(!KEEP_MATS.has(m.name)&&!em&&!m.map&&!m.transparent&&m.opacity>=1&&m.color){const n=g.attributes.position.count,col=new Float32Array(n*3);for(let i=0;i<n;i++){col[i*3]=m.color.r;col[i*3+1]=m.color.g;col[i*3+2]=m.color.b;}g.setAttribute('color',new T.BufferAttribute(col,3));baked.push(g);rough+=(m.roughness??.8)*n;metal+=(m.metalness??0)*n;cnt+=n;return;}
-  const e=groups.get(m.uuid)||{m,g:[]};e.g.push(g);groups.set(m.uuid,e);});
+  const key=KEEP_MATS.has(m.name)?'n:'+m.name:m.uuid,e=groups.get(key)||{m,g:[]};e.g.push(g);groups.set(key,e);});
  if(baked.length)groups.set('baked',{m:new T.MeshStandardMaterial({name:'Baked',vertexColors:true,roughness:rough/cnt,metalness:Math.min(.35,metal/cnt)}),g:baked});
  const out=new T.Group();for(const e of groups.values()){const mixed=new Set(e.g.map(g=>!!g.index)).size>1;const gs=e.g.map(g=>{g=mixed&&g.index?g.toNonIndexed():g;if(!g.attributes.normal)g.computeVertexNormals();for(const k of Object.keys(g.attributes))if(k!=='position'&&k!=='normal'&&!(k==='uv'&&e.m.map)&&!(k==='color'&&e.m.vertexColors))g.deleteAttribute(k);return g;});const geo=mergeGeometries(gs,false);if(geo)out.add(new T.Mesh(geo,e.m));else for(const g of gs)out.add(new T.Mesh(g,e.m));}return out;}
-let loaded=0;const PROTO_FILES=['kart','mushroom','gate','tree','rock','balloon','itembox','banana','shell','ramp','grandstand','spectator','bouncepad','podium','trophy','ghost','gravestone','pumpkin','kartwheel','driver','driver_turtle','driver_robot','driver_cat','glider','crystal','windring'];
+let loaded=0;const PROTO_FILES=['kart','mushroom','gate','tree','rock','balloon','itembox','banana','shell','ramp','grandstand','spectator','bouncepad','podium','trophy','ghost','gravestone','pumpkin','kartwheel','driver','driver_turtle','driver_robot','driver_cat','glider','crystal','windring','kartkit'];
 // Villa und Burg sind gross und stehen nur auf je einer Strecke: erst nach dem Start nachladen
 const LATE_FILES=['mansion','castle','roottree','neongate','magnetarch','coastertruss','ferriswheel','dragon','transform','elements','ow'];
 // Ohne Materialverschmelzung laden: der Drache braucht seine Teile (Glied, Kopf, Kiefer, Schwanz) einzeln
-const NO_MERGE=new Set(['dragon','transform','elements','ow']);
+const NO_MERGE=new Set(['dragon','transform','elements','ow','kartkit']);
 // Asset-Laden robust (R31): schlug eine GLB beim ersten Versuch fehl (Deploy-Propagation,
 // Mobile-Netz), blieben die Block-Fallbacks fuer den Rest der Sitzung - Fahrer und Tor
 // als Bloeke. Jetzt zwei Wiederholungen mit Abstand, und wenn ein Prototyp nachtraeglich
@@ -461,7 +462,7 @@ function syncGlider(r,dt,spin){const g=r.mesh.userData.glider;if(!g)return;
  g.rotation.order='YXZ';g.rotation.set(-r.mesh.rotation.x*.75,-spin,-r.mesh.rotation.z*.65-(r.steerS||0)*.09+Math.sin(elapsed*3+r.id)*.025*open);
  g.scale.set(.09+.91*open,.17+.83*open,.28+.72*open);g.position.y=-1.1*(1-open)+Math.sin(elapsed*4+r.id)*.045*open;
  if(r.id===0&&r.gliding&&!r.gliderSeen&&state==='race'){r.gliderSeen=true;toast('PILZGLEITER!  DRIFT = TRICK',1.3,'good');}}
-function kart(color,goldLook=false,dtype=0){let g;if(P.kart){g=new T.Group();const body=cloneProto(P.kart);applyTint(body,'BodyPaint',color,goldLook?{metalness:.65,roughness:.28}:null);g.add(body);
+function kart(color,goldLook=false,dtype=0){let g;if(P.kart){g=new T.Group();const body=cloneProto(kartProto(dtype));applyTint(body,'BodyPaint',color,goldLook?{metalness:.65,roughness:.28}:null);g.add(body);
   const wheels=[];if(P.kartwheel)for(const [x,y,z,s,w] of [[-1,.42,1,1,1],[1,.42,1,1,1],[-1.05,.48,-.9,1.14,1.3],[1.05,.48,-.9,1.14,1.3]]){const piv=new T.Group(),wh=cloneProto(P.kartwheel);piv.position.set(x,y,z);wh.scale.set(w*(x>0?-1:1),s,s);piv.add(wh);g.add(piv);wheels.push({piv,wh,front:z>0,r:y,dir:1});}
   const dproto=P[(DRIVERS[dtype]||DRIVERS[0]).k]||P.driver;
   let driver=null;if(dproto){driver=cloneProto(dproto);applyTint(driver,'CapPaint',goldLook?0xffd23f:color);driver.position.set(0,.95,-.35);g.add(driver);}
@@ -481,36 +482,34 @@ function kart(color,goldLook=false,dtype=0){let g;if(P.kart){g=new T.Group();con
 const WHEEL_SLOTS=[[-1,.42,1,1,1],[1,.42,1,1,1],[-1.05,.48,-.9,1.14,1.3],[1.05,.48,-.9,1.14,1.3]];
 let kartInst=null,kartPool=null;
 const kartsG=new T.Group();actors.add(kartsG);
-// Anbauteile am Heck: haengen am Fahrermodell, damit sie auch bei instanzierten Karts mitlaufen
-function kartExtras(){for(let i=0;i<DRIVERS.length;i++){const p=P[DRIVERS[i].k];if(!p||p.userData.extras)continue;p.userData.extras=true;
-  const paint=()=>new T.MeshStandardMaterial({name:'CapPaint',color:0xffffff,roughness:.45,metalness:.1});
-  const dark=()=>new T.MeshStandardMaterial({name:'ExtraDark',color:0x2b2b33,roughness:.5,metalness:.4});
-  const g=new T.Group();g.position.set(0,-.35,0);
-  if(i===1){const w=new T.Mesh(new T.BoxGeometry(2.0,.14,.55),paint());w.position.set(0,.5,-1.25);g.add(w);
-   for(const x of [-.78,.78]){const s=new T.Mesh(new T.BoxGeometry(.16,.55,.42),paint());s.position.set(x,.18,-1.25);g.add(s);}}
-  if(i===2){for(const x of [-.45,.45]){const t=new T.Mesh(new T.CylinderGeometry(.16,.2,.9,8),dark());t.rotation.x=Math.PI/2;t.position.set(x,.1,-1.35);g.add(t);}
-   const bar=new T.Mesh(new T.BoxGeometry(1.5,.16,.16),dark());bar.position.set(0,.55,-1.0);g.add(bar);}
-  if(i===3){const d=new T.Mesh(new T.BoxGeometry(1.7,.12,.6),paint());d.position.set(0,-.05,-1.3);d.rotation.x=.25;g.add(d);
-   for(const x of [-1.0,1.0]){const s=new T.Mesh(new T.BoxGeometry(.12,.2,1.5),paint());s.position.set(x,-.1,-.2);g.add(s);}}
-  if(g.children.length){g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});p.add(g);}}}
-function buildKartInstances(types){kartExtras();kartInst=null;if(!types||!types.length||!P.kart||!P.driver||!P.kartwheel)return;const n=types.length,inst={n,body:[],wheel:[],groups:[],dmap:[]};
+// Kart je Fahrer (R43): Grundkarosserie plus Blender-Bausatz der Figur (kartkit.glb: Pilzhut-Spoiler,
+// Panzerplatten, Raketenbooster, Katzenohr-Fluegel) zu einem Prototyp verschmolzen. Der Bausatz sitzt
+// fest an der Karosserie (die alten Box-Anbauteile hingen am Fahrer und schwankten mit ihm mit, bei
+// instanzierten KI-Karts lagen sie sogar ohne Versatz im Fahrer) und kostet keinen eigenen Draw-Call.
+const kartProtos=new Map();
+function kartProto(t){if(!P.kart)return null;const k=DRIVERS[t]?t:0,kit=P.kartkit?.getObjectByName('KX_'+k);if(!kit)return P.kart;
+ let p=kartProtos.get(k);if(p)return p;const root=new T.Group();root.add(P.kart.clone(true),kit.clone(true));
+ p=mergeByMaterial(root);markShared(p);kartProtos.set(k,p);return p;}
+function buildKartInstances(types){kartInst=null;if(!types||!types.length||!P.kart||!P.driver||!P.kartwheel)return;const n=types.length,inst={n,wheel:[],groups:[],bodies:[],dmap:[],bmap:[]};
  const mk=(proto,arr,paint,count)=>proto.traverse(o=>{if(!o.isMesh)return;const isPaint=o.material.name===paint;const m=isPaint?o.material.clone():o.material;if(isPaint)m.color.set(0xffffff);const im=new T.InstancedMesh(o.geometry,m,count);im.frustumCulled=false;im.castShadow=true;im.receiveShadow=true;im.instanceMatrix.setUsage(T.DynamicDrawUsage);if(isPaint)for(let i=0;i<count;i++)im.setColorAt(i,_col.setHex(0xffffff));kartsG.add(im);arr.push({im,paint:isPaint});});
- mk(P.kart,inst.body,'BodyPaint',n);mk(P.kartwheel,inst.wheel,null,n*4);
+ mk(P.kartwheel,inst.wheel,null,n*4);
+ // Karosserien je Fahrertyp (eigener Bausatz), Fahrerfiguren ebenso
  // Fahrerfiguren: je Figurtyp ein Satz Instanzen, damit das Feld gemischt ist
  const seen=new Map();
  types.forEach((t,slot)=>{let gi=seen.get(t);if(gi===undefined){const proto=P[(DRIVERS[t]||DRIVERS[0]).k]||P.driver,meshes=[];mk(proto,meshes,'CapPaint',types.filter(x=>x===t).length);gi=inst.groups.length;inst.groups.push({meshes,used:0});seen.set(t,gi);}
-  const gr=inst.groups[gi];inst.dmap[slot]={g:gr,i:gr.used++};});
+  const gr=inst.groups[gi],br=inst.bodies[gi]||(inst.bodies[gi]=(()=>{const meshes=[];mk(kartProto(t),meshes,'BodyPaint',types.filter(x=>x===t).length);return {meshes,used:0};})());
+  inst.dmap[slot]={g:gr,i:gr.used++};inst.bmap[slot]={g:br,i:br.used++};});
  kartInst=inst;}
 function kartVirtual(color,slot){const g=new T.Group(),wheels=[];for(const [x,y,z,s,w] of WHEEL_SLOTS){const piv=new T.Group(),wh=new T.Object3D();piv.position.set(x,y,z);wh.rotation.order='YXZ';if(x>0)wh.rotation.y=Math.PI;wh.scale.set(w,s,s);piv.add(wh);g.add(piv);wheels.push({piv,wh,front:z>0,r:y,dir:x>0?-1:1});}
  const driver=new T.Object3D();driver.position.set(0,.95,-.35);g.add(driver);
  const shield=new T.Mesh(shieldGeo,shieldMat);shield.position.y=1;shield.visible=false;g.add(shield);const flames=[-.45,.45].map(x=>{const f=new T.Mesh(flameGeo,flameMat);f.position.set(x,.72,-1.72);f.visible=false;g.add(f);return f;});
  g.userData={parts:{wheels,driver},shield,flames,slot};attachGlider(g,color);attachTransform(g,color);
  const paint=(list,i)=>{for(const p of list)if(p.paint){p.im.setColorAt(i,_col.setHex(color));p.im.instanceColor.needsUpdate=true;}};
- paint(kartInst.body,slot);const dm=kartInst.dmap[slot];if(dm)paint(dm.g.meshes,dm.i);return g;}
+ const bm=kartInst.bmap[slot];if(bm)paint(bm.g.meshes,bm.i);const dm=kartInst.dmap[slot];if(dm)paint(dm.g.meshes,dm.i);return g;}
 function syncKartInstances(){if(!kartInst)return;for(const r of racers){const u=r.mesh.userData;if(u.slot===undefined)continue;r.mesh.updateMatrixWorld(true);const i=u.slot;
-  for(const p of kartInst.body)p.im.setMatrixAt(i,r.mesh.matrixWorld);const dm=kartInst.dmap[i];if(dm)for(const p of dm.g.meshes)p.im.setMatrixAt(dm.i,u.parts.driver.matrixWorld);u.parts.wheels.forEach((w,k)=>{for(const p of kartInst.wheel)p.im.setMatrixAt(i*4+k,w.wh.matrixWorld);});}
- for(const key of ['body','wheel'])for(const p of kartInst[key])p.im.instanceMatrix.needsUpdate=true;
- for(const gr of kartInst.groups)for(const p of gr.meshes)p.im.instanceMatrix.needsUpdate=true;}
+  const bm=kartInst.bmap[i];if(bm)for(const p of bm.g.meshes)p.im.setMatrixAt(bm.i,r.mesh.matrixWorld);const dm=kartInst.dmap[i];if(dm)for(const p of dm.g.meshes)p.im.setMatrixAt(dm.i,u.parts.driver.matrixWorld);u.parts.wheels.forEach((w,k)=>{for(const p of kartInst.wheel)p.im.setMatrixAt(i*4+k,w.wh.matrixWorld);});}
+ for(const p of kartInst.wheel)p.im.instanceMatrix.needsUpdate=true;
+ for(const gr of kartInst.groups.concat(kartInst.bodies))for(const p of gr.meshes)p.im.instanceMatrix.needsUpdate=true;}
 function boostTexture(){return canvasTex(64,128,(q,w,h)=>{q.fillStyle='#ffc93c';q.fillRect(0,0,w,h);q.strokeStyle='#ff5a1f';q.lineWidth=12;q.lineCap='round';for(let y=10;y<h;y+=64){q.beginPath();q.moveTo(8,y+34);q.lineTo(w/2,y+6);q.lineTo(w-8,y+34);q.stroke();}},true);}
 
 const bprof=[];let bprofT=0;const bm=l=>{const n=performance.now();bprof.push([l,+(n-bprofT).toFixed(1)]);bprofT=n;};
@@ -822,7 +821,7 @@ function placeRacers(){const cls=CLASSES[cc];racers=[];
  const order=isTT()?[0]:[1,2,3,4,5,0,6,7],ai=order.filter(id=>id!==0);
  // Karts bleiben zwischen Rennen stehen, solange Figur/Farbe/Feldgroesse gleich sind: spart Aufbau und Upload
  // Ladezustand mit in die Signatur: sonst bleiben notgebaute Karts im Zwischenspeicher haengen
- const sig=[order.length,colorIndex,driverIndex,KART_COLORS[colorIndex].gold?1:0,AI_DRIVERS.join(''),P.kart?1:0,P.driver?1:0,P.kartwheel?1:0,P.glider?1:0,P.transform?1:0].join('|');
+ const sig=[order.length,colorIndex,driverIndex,KART_COLORS[colorIndex].gold?1:0,AI_DRIVERS.join(''),P.kart?1:0,P.driver?1:0,P.kartwheel?1:0,P.glider?1:0,P.transform?1:0,P.kartkit?1:0].join('|');
  const reuse=!!kartPool&&kartPool.sig===sig&&kartPool.meshes.length===order.length;
  if(!reuse){clearGroup(kartsG);kartInst=null;kartPool=null;buildKartInstances(isTT()?null:ai.map(id=>AI_DRIVERS[id]));}// Startplatz 6 fuer den Spieler: der Sieg muss erfahren werden
  for(let s=0;s<order.length;s++){const id=order[s],r=racer(id,AI_NAMES[id],id===0?KART_COLORS[colorIndex].c:AI_COLORS[id-1]);const d=-(9+Math.floor(s/2)*7.5+(s%2)*3),off=s%2?-3.3:3.3,p=sample(d,off);r.x=p.p.x;r.z=p.p.z;r.h=p.angle;r.distance=d;r.offset=off;r.safeD=d;
@@ -2152,7 +2151,7 @@ function ceremony(){state='ceremony';worldDirty=true;clearGroup(actors);kartInst
  const standings=gpStandings(gp.points,racers.map(r=>r.id)),pos=sample(length*.035,-34).p,group=new T.Group();group.position.set(pos.x,0,pos.z);const look=sample(length*.035,0).p;
  world.traverse(o=>{if((o.isGroup||o.isMesh)&&o.parent===world&&!o.isInstancedMesh&&o.position.y<20&&Math.hypot(o.position.x-pos.x,o.position.z-pos.z)<26&&Math.hypot(o.position.x-pos.x,o.position.z-pos.z)>0.5)o.visible=false;});group.rotation.y=Math.atan2(look.x-pos.x,look.z-pos.z);actors.add(group);
  const S=2.2,podium=[];if(P.podium){const pd=cloneProto(P.podium);pd.scale.setScalar(S);group.add(pd);}else[[0,1.5],[-2.6,1],[2.6,.7]].forEach(([x,h])=>box(group,cream,x*S,h*S/2,0,2.5*S,h*S,2.2*S));
- [[0,1.5],[-2.6,1],[2.6,.7]].forEach(([x,h],i)=>{const r=racers[standings[i]],k=kart(r.color,r.id===0&&KART_COLORS[colorIndex].gold);k.position.set(x*S,h*S,0);k.scale.setScalar(1.25);group.add(k);podium.push(k);});
+ [[0,1.5],[-2.6,1],[2.6,.7]].forEach(([x,h],i)=>{const r=racers[standings[i]],k=kart(r.color,r.id===0&&KART_COLORS[colorIndex].gold,r.id===0?driverIndex:AI_DRIVERS[r.id]);k.position.set(x*S,h*S,0);k.scale.setScalar(1.25);group.add(k);podium.push(k);});
  let trophy=null;if(P.trophy){trophy=cloneProto(P.trophy);trophy.scale.setScalar(1.6);trophy.position.set(0,1.5*S+3.1,0);group.add(trophy);}
  group.updateMatrixWorld(true);cer={group,trophy,podium,t:0,burstT:0,center:new T.Vector3(pos.x,4,pos.z),angle:group.rotation.y};
  const mine=standings.indexOf(0)+1,tKey=`trophy-${cc}`,prevT=store.get(tKey,9);if(mine<=3&&mine<prevT)store.set(tKey,mine);

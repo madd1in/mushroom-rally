@@ -1,0 +1,37 @@
+[
+  {
+    "file": "kart.glb",
+    "triangles": 5246,
+    "bytes": 104864
+  },
+  {
+    "file": "kartwheel.glb",
+    "triangles": 1352,
+    "bytes": 33020
+  },
+  {
+    "file": "kartkit.glb",
+    "triangles": 5776,
+    "bytes": 127672
+  },
+  {
+    "kit": "KX_0",
+    "label": "Sporenflitzer",
+    "triangles": 2260
+  },
+  {
+    "kit": "KX_1",
+    "label": "Panzerwagen",
+    "triangles": 956
+  },
+  {
+    "kit": "KX_2",
+    "label": "Voltstoss",
+    "triangles": 1196
+  },
+  {
+    "kit": "KX_3",
+    "label": "Kurvenkatze",
+    "triangles": 1364
+  }
+]

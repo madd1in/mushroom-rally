@@ -4,6 +4,40 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 43 (24.09.2026): Karts und Fahrer neu in Blender - jede Figur mit eigenem Bausatz
+
+**Neue Karosserie (Blender, art/r43/create_karts.py):** Statt flacher Wanne mit dickem
+Rammrohr eine gerundete Karosserie aus Superellipsen-Querschnitten: gewoelbte Haube mit
+Zierstreifen und Pilz-Emblem, zwei leuchtende Scheinwerfer, flacher Frontfluegel mit
+Endplatten, Seitenkaesten mit Lufteinlass, Cockpitwangen, gepolsterter Sitz, Lenkrad mit
+Goldnabe, sichtbare Radaufhaengung, Chrom-Motorblock mit Kuehlrippen, Auspuffrohre genau an
+den Flammenpunkten, Rueckleuchten-Gehaeuse unter den Bremslichtern, schmale Heckstange.
+Masse, Radpositionen und Fahrerplatz unveraendert (Physik, Transformationen und Gleiter passen).
+
+**Neue Raeder:** Reifen mit gerundeter Schulter und flachem Pfeilprofil, weisser Flankenring,
+Fuenfspeichen-Felge mit Goldnabe (1352 Dreiecke).
+
+**Jede Figur faehrt ihr eigenes Kart (assets/kartkit.glb):**
+- Pilzi "Sporenflitzer": Heckspoiler als Pilzhut auf Stiel mit weissen Tupfen, Tupfen auf den Seitenkaesten
+- Schildi "Panzerwagen": schwerer Heckfluegel, Sechseck-Panzerplatten, Rammschild mit Goldnieten, Panzerkuppel ueberm Motor
+- Volt "Voltstoss": zwei Raketenbooster mit leuchtenden Duesen und Heckflossen, Blitzfinne
+- Mochi "Kurvenkatze": Pfeilfluegel mit Katzenohr-Endplatten, geschwungene Schwanzantenne, Pfotenabdruecke
+
+Die Bausaetze werden beim Laden mit der Karosserie zu einem Prototyp je Figur verschmolzen
+(auch fuer die instanzierten KI-Karts: Karosserie-Instanzen jetzt je Fahrertyp). Die alten
+Box-Anbauteile hingen am Fahrer und schwankten mit ihm - bei KI-Karts lagen sie wegen der
+Instanzierung sogar ohne Versatz mitten im Fahrer; beides ist damit weg. Die Siegerehrung
+zeigt jetzt jede Figur in ihrem eigenen Kart (vorher immer Pilzi).
+
+**Fahrer-Feinschliff (art/r43/driver_touchup.py):** Pilzi laechelt jetzt (gebogener Mund auf
+der Kopfoberflaeche mit Zungenspitze statt erschrockenem "O"), Volt hat gefaste Kastenteile
+mit gehaerteten Normalen, leuchtende LED-Augen und ein LED-Pixel-Laecheln.
+
+**Verifikation:** Blender-Workbench-Renders vorher/nachher (art/r43/before_*.png, v2_*.png),
+Kopflos-Chrome-Screenshots von Startaufstellung vorn/hinten, 71/71 Unit-Tests,
+Rennregression aller sieben Strecken. Blender-MCP war nicht erreichbar (Verbindungs-Timeout),
+deshalb Blender 5.2 ueber die Kommandozeile.
+
 ## Runde 42 (24.09.2026): Open World "Pilzland" mit Missionen, lange Boots- und Flugparcours
 
 Neuer Modus **Pilzland** im Menue: eine grosse Insel (680 m Radius) mit einer 3,7 km langen
