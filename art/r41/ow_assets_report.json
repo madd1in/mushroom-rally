@@ -1,0 +1,9 @@
+{
+  "triangles": 2040,
+  "bytes": 64420,
+  "objects": [
+    "EL_Coin",
+    "EL_PSwitch",
+    "EL_PSwitchCap"
+  ]
+}

@@ -4,6 +4,35 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 42 (24.09.2026): Open World "Pilzland" mit Missionen, lange Boots- und Flugparcours
+
+Neuer Modus **Pilzland** im Menue: eine grosse Insel (680 m Radius) mit einer 3,7 km langen
+Rundstrasse, die die Rennstrecken verbindet - wie in Mario Kart World. Kein Zieleinlauf, frei
+fahren, Missionen erledigen, Rennen ueber Portale starten.
+
+- **Portale zu allen 7 Rennstrecken:** Torbogen in der Farbe der Strecke mit Namensschild und
+  leuchtendem Schleier. Beim Durchfahren erscheint "▶ Strecke fahren" (Enter oder tippen) und
+  startet direkt das Rennen. Neben jedem Portal das Wahrzeichen der Strecke (Wurzelbaum,
+  Felsen, Neon-Tor, Villa, Burg, Kristalle, Riesenrad), in der Inselmitte der Pilzberg.
+- **Missionen (7, Fortschritt gespeichert):**
+  - **P-Schalter (4x):** Ueberfahren -> 8 blaue Muenzen erscheinen als Schlangenlinie auf der
+    Strasse, alle in 22 s einsammeln. Zeit um: Schalter setzt sich nach 3 s zurueck.
+  - **Bojen-Slalom (2x):** als Rennboot auf den Fluessen die Bojentore der Reihe nach
+    durchfahren; ein verpasstes Tor startet den Slalom neu.
+  - **Ringflug:** in der langen Flugschneise alle 8 Ringe in einem Flug.
+  Belohnung je Mission: Turbo und 3 Sporen, Anzeige oben links ("★ 3/7").
+- **Lange Bootsfahrten an der Wasseroberflaeche:** zwei Fluesse mit 293 m und 245 m Boot.
+- **Langer Flugparcours:** 314 m Flug in 26 m Hoehe mit 8 Ringen (Ringe jetzt alle ~34 m, auch
+  auf den Rennstrecken bei laengeren Fluegen).
+- Dazu See mit Tauch-Spirale, Looping, gekruemmte Dreifach-Helix, Wandfahrt und Rundgang.
+- Logik in `ow.mjs` (Tests `ow.test.mjs`), Modelle aus Blender (`art/r41/create_ow_assets.py`,
+  `assets/ow.glb`: P-Schalter mit eindrueckbarer Kappe, Muenze mit Pilz-Emblem).
+
+Technik: Inselgroesse, Meer, Streufelder, Kulisse und Kart-Inselgrenze haengen jetzt am
+Weltradius je Strecke (Rennstrecken unveraendert 210 m). Bojen als Instanzen (vorher bis 280
+Draw-Calls an langen Fluessen; Pilzland jetzt 150-230). Item-Boxen und Sporen lassen sich auch
+im Flug und auf dem See einsammeln. Autopilot 120 s durch Pilzland: 2,97 km, keine Stuerze, keine
+Fehler; alle 7 Rennstrecken weiter im Ziel. Tests: 71.
 ## Runde 41 (24.09.2026): Fenster im Menuestil, Handy-Menue repariert
 
 - **Pause, Ergebnis, Siegerehrung, Fehler- und Ladeanzeige** im Stil des neuen Menues: helle Karte

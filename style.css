@@ -553,8 +553,7 @@ body .loader-card b{font-family:var(--mk-font);font-style:italic;font-weight:900
 body #menu #tracks{flex-shrink:0;grid-template-columns:repeat(4,1fr)}
 @media (max-width:620px){body #menu #tracks{grid-template-columns:repeat(2,1fr)}}
 
-/* ============================================================================================
-   R41: Fenster (Pause, Ergebnis, Siegerehrung, Fehler, Laden) im Menuestil von R40 - helle Karte
+/* =====================================================================================   R41: Fenster (Pause, Ergebnis, Siegerehrung, Fehler, Laden) im Menuestil von R40 - helle Karte
    mit Zielflaggen-Streifen, kursive Display-Schrift mit Kontur, roter Hauptknopf, weisse
    Nebenknoepfe. Dazu Handy-Feinschliff im Menue.
    ============================================================================================ */
@@ -641,3 +640,16 @@ body #menu{z-index:3}
  body header .top-actions button{white-space:nowrap;height:auto;min-height:0;padding:8px 12px;line-height:1.1}
 }
 @media (prefers-reduced-motion:reduce){body .modal button,body #ceremony button{transition:none}body #message.pop{animation:none}}
+=======
+/* R41: Pilzland (Open World) - Missionsanzeige oben links, Portal-Knopf, keine Platz-/Rundenanzeige */
+#owPanel{display:none;position:fixed;left:18px;top:74px;z-index:3;padding:10px 16px 11px;border-radius:18px;background:linear-gradient(180deg,#ffffffee,#e7f3ffe6);box-shadow:0 0 0 3px var(--mk-ink),0 5px 0 3px var(--mk-ink);color:var(--mk-ink);pointer-events:none;max-width:min(360px,70vw);transform:skewX(-6deg)}
+body.ow #owPanel{display:block}
+#owPanel b{font-family:var(--mk-font);font-style:italic;font-weight:900;font-size:13px;letter-spacing:1px;color:var(--mk-red)}
+#owPanel span{display:block;font-family:var(--mk-font);font-style:italic;font-weight:900;font-size:30px;line-height:1.05;color:var(--mk-yellow);-webkit-text-stroke:6px var(--mk-ink);paint-order:stroke fill}
+#owPanel small{display:block;font-weight:800;font-size:13px;margin-top:3px}
+#owPortal{position:fixed;left:50%;bottom:22%;z-index:5;transform:translateX(-50%) skewX(-8deg);padding:14px 26px;border-radius:18px;border:3px solid #fff;background:linear-gradient(180deg,#ff4a4a,var(--mk-red) 55%,var(--mk-red2));box-shadow:0 0 0 3px var(--mk-ink),0 6px 0 3px var(--mk-ink);color:#fff;cursor:pointer;animation:mkPulse 1.2s ease-in-out infinite}
+#owPortal b{display:block;font-family:var(--mk-font);font-style:italic;font-weight:900;font-size:24px;-webkit-text-stroke:5px var(--mk-ink);paint-order:stroke fill}
+#owPortal span{display:block;font-size:12px;font-weight:800;opacity:.9}
+body.ow .position,body.ow #lap,body.ow #gpBadge{display:none!important}
+body.ow .race-top>div:first-child{display:none!important}
+body #menu #tracks.locked,body #menu #classes.locked{opacity:.38;pointer-events:none;filter:saturate(.4)}
