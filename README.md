@@ -109,6 +109,17 @@ geht nicht mehr nur unter Wasser: je 20 % an die Bootsfahrt an der Oberflaeche d
 Hoernern und gluehenden Augen ueber beiden Toren, Fallgitter-Zaehne in der Durchfahrt, Fackeln an Toren und
 Fluegeln, gluehendes Lavaband am Fuss, Stachelkraenze und goldene Spitzen auf den Tuermen.
 
+**Themen-Wahrzeichen aus Blender (art/r44/create_landmarks.py, assets/landmarks.glb):**
+- Pilz-Promenade mit Bayern-Note: Maerchenschloss im Neuschwanstein-Stil (weisse Mauern, schlanke Tuerme mit
+  schieferblauen Kegeldaechern, roter Torbau) auf einem Felssockel am Inselrand, Maibaeume, blau-weisse Wimpel.
+- Neon-Pilzwald mit Oktoberfest: Festzelt mit blau-weiss gestreiftem Dach und Leuchtschild "O'ZAPFT IS!",
+  Maibaeume, Lebkuchenherzen und Riesenbrezeln als Neonschilder am Streckenrand.
+- Sonnen-Canyon: Dampf-Gueterzug (Lok mit Schlot, Dampfdom, roten Speichenraedern und Dampfwolken, drei Wagen mit
+  Kisten und Faessern) auf einem Gleisring - eine Sehne quer durch die Insel mit zwei Bahnuebergaengen ueber die
+  Strasse, zurueck am Inselrand. Blinksignale und Glocke, wenn er kommt; wer erwischt wird, fliegt seitlich weg.
+  Die KI wartet am Uebergang. Die Uebergaenge werden automatisch auf freie Strecke gelegt (keine Luecken,
+  Loopings, Tunnel, Rampen, Abzweigungen).
+
 **Neon-Pilzwald:** die enge Ecke wieder entfernt - direkt dahinter liegt eine Schanze, das fuehrte zu Abstuerzen
 (Regression 3 -> 0).
 
