@@ -165,4 +165,26 @@ report.push(wav('ink', render(.62, [{type: 'noise', f0: 700, vol: .3, decay: 1.8
 report.push(wav('daily', render(1.3, [{type: 'sq', duty: .25, steps: [[0, note('G5')], [.1, note('C6')], [.2, note('E6')], [.3, note('G6')], [.5, note('E6')], [.6, note('G6')], [.7, note('C7')]], vol: .22, hold: .75, decay: 1.2},
   {type: 'sq', duty: .5, steps: [[0, note('E5')], [.3, note('G5')], [.7, note('E6')]], vol: .1, hold: .75}, {type: 'tri', steps: [[0, note('C3')], [.3, note('G3')], [.7, note('C4')]], vol: .32, hold: .75},
   {type: 'noise', f0: 9000, short: true, at: .7, len: .5, vol: .05, decay: 2}])));
+// R48 Riesenpilz-Schleife: stampfender Marsch in a-Moll (a - F - G - a/E, 140 bpm, 4 Takte, 6,9 s), laeuft solange das
+// Kart gross ist. Rechteck-Melodie in punktierten Achteln, Quinten-Begleitung, Dreieck-Bass im Oktavsprung, auf jedem
+// Schlag ein tiefer "Stampfer" (Dreieck-Rutsch nach unten), Rauschen auf 2 und 4. Noten enden bei null (nahtlos).
+{
+  const E = 60 / 140 / 2, voices = [];
+  const seq = (list, mk) => { let t = 0; for (const [n, len] of list) { if (n) voices.push(mk(n, t, len * E)); t += len * E; } return t; };
+  const lead = [['A5', 2], ['E5', 1], ['A5', 1], ['C6', 2], ['B5', 1], ['A5', 1],
+    ['F5', 2], ['C5', 1], ['F5', 1], ['A5', 2], ['G5', 1], ['F5', 1],
+    ['G5', 2], ['D5', 1], ['G5', 1], ['B5', 2], ['A5', 1], ['G5', 1],
+    ['A5', 1], ['C6', 1], ['E6', 2], ['D6', 1], ['C6', 1], ['B5', 1], ['G#5', 1]];
+  const loop = seq(lead, (n, at, len) => ({type: 'sq', duty: .5, f0: note(n), at, len, vol: .17, hold: .5, decay: 1.2}));
+  seq(lead, (n, at, len) => ({type: 'sq', duty: .125, f0: note(n) / 2, at, len, vol: .06, hold: .4, decay: 1.4}));
+  seq([['E5', 8], ['C5', 8], ['D5', 8], ['E5', 4], ['G#4', 4]], (n, at, len) => ({type: 'sq', duty: .25, f0: note(n), at, len, vol: .05, attack: .01, hold: .8, decay: 1.1}));
+  const bass = []; for (const [lo, hi] of [['A2', 'A3'], ['F2', 'F3'], ['G2', 'G3'], ['A2', 'E3']]) for (let i = 0; i < 4; i++) bass.push([i % 2 ? hi : lo, 2]);
+  seq(bass, (n, at, len) => ({type: 'tri', f0: note(n), at, len, vol: .34, hold: .55, decay: 1}));
+  for (let b = 0; b < 16; b++) {
+    voices.push({type: 'tri', f0: 150, f1: 42, slide: .12, at: b * 2 * E, len: .16, vol: .5, decay: 1.4});
+    if (b % 2) voices.push({type: 'noise', f0: 2200, at: b * 2 * E, len: E * .9, vol: .13, decay: 1.8});
+    voices.push({type: 'noise', f0: 10000, short: true, at: (b * 2 + 1) * E, len: E * .4, vol: .04, decay: 2.4});
+  }
+  report.push(wav('megaloop', render(loop, voices)));
+}
 console.log(JSON.stringify(report));

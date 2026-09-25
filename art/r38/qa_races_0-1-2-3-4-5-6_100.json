@@ -1,11 +1,11 @@
 {
-  "startedAt": "2026-09-25T21:52:03.326Z",
+  "startedAt": "2026-09-25T23:29:20.357Z",
   "cc": 100,
   "tracks": [
     {
       "track": 0,
       "outcome": "finished",
-      "finishTime": 112.21666666666158,
+      "finishTime": 108.61666666666179,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -20,18 +20,18 @@
       "place": 1,
       "simulated": 120,
       "perf": {
-        "drawCalls": 255,
-        "triangles": 706501,
+        "drawCalls": 158,
+        "triangles": 248558,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 47.4
+      "wallSeconds": 73.3
     },
     {
       "track": 1,
       "outcome": "finished",
-      "finishTime": 108.98333333332843,
+      "finishTime": 120.14999999999446,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -43,22 +43,22 @@
       "coaster": [],
       "state": "finished",
       "fallAt": [],
-      "place": 1,
-      "simulated": 120,
+      "place": 4,
+      "simulated": 130,
       "perf": {
-        "drawCalls": 181,
-        "triangles": 480543,
+        "drawCalls": 188,
+        "triangles": 492006,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 21.1
+      "wallSeconds": 41.4
     },
     {
       "track": 2,
       "outcome": "finished",
-      "finishTime": 108.3666666666618,
-      "falls": 1,
+      "finishTime": 105.64999999999529,
+      "falls": 0,
       "airtime": 0,
       "coasters": 0,
       "maxLaunch": 0,
@@ -68,33 +68,27 @@
       "name": "✦Neon-PilzwaldBeat · Taktschranken · Okt",
       "coaster": [],
       "state": "finished",
-      "fallAt": [
-        [
-          84,
-          7.2,
-          84
-        ]
-      ],
-      "place": 3,
-      "simulated": 120,
+      "fallAt": [],
+      "place": 2,
+      "simulated": 110,
       "perf": {
-        "drawCalls": 190,
-        "triangles": 512417,
+        "drawCalls": 195,
+        "triangles": 536471,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 22.4
+      "wallSeconds": 50.5
     },
     {
       "track": 3,
       "outcome": "finished",
-      "finishTime": 102.4333333333288,
-      "falls": 1,
+      "finishTime": 101.28333333332887,
+      "falls": 0,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 45.45873528469984,
-      "minVis": 0.8800089519351906,
+      "maxLaunch": 45.46196236568776,
+      "minVis": 0.8973763566227447,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "👻GeisterhausSpuk · Gewitter · Geisterhä",
@@ -135,28 +129,22 @@
         }
       ],
       "state": "finished",
-      "fallAt": [
-        [
-          300,
-          15.1,
-          291
-        ]
-      ],
-      "place": 5,
+      "fallAt": [],
+      "place": 4,
       "simulated": 110,
       "perf": {
-        "drawCalls": 188,
-        "triangles": 518090,
+        "drawCalls": 183,
+        "triangles": 517394,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 20.7
+      "wallSeconds": 38.9
     },
     {
       "track": 4,
       "outcome": "finished",
-      "finishTime": 117.46666666666128,
+      "finishTime": 122.14999999999435,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -168,26 +156,26 @@
       "coaster": [],
       "state": "finished",
       "fallAt": [],
-      "place": 1,
+      "place": 2,
       "simulated": 130,
       "perf": {
-        "drawCalls": 183,
-        "triangles": 481157,
+        "drawCalls": 164,
+        "triangles": 461050,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 22.3
+      "wallSeconds": 33.1
     },
     {
       "track": 5,
       "outcome": "finished",
-      "finishTime": 125.3333333333275,
+      "finishTime": 128.38333333332764,
       "falls": 0,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 44.92812011798027,
-      "minVis": 0.8060685580083626,
+      "maxLaunch": 45.46430866292185,
+      "minVis": 0.8084731683013782,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "✧Regenbogen­pisteSternenstrasse · Stampf",
@@ -229,26 +217,26 @@
       ],
       "state": "finished",
       "fallAt": [],
-      "place": 3,
-      "simulated": 130,
+      "place": 2,
+      "simulated": 140,
       "perf": {
-        "drawCalls": 137,
-        "triangles": 237684,
+        "drawCalls": 136,
+        "triangles": 236876,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 18.1
+      "wallSeconds": 32.1
     },
     {
       "track": 6,
       "outcome": "finished",
-      "finishTime": 141.83333333333835,
+      "finishTime": 137.26666666666804,
       "falls": 0,
       "airtime": 9,
       "coasters": 3,
-      "maxLaunch": 45.28398217973414,
-      "minVis": 0.6413783641134362,
+      "maxLaunch": 45.46628844286249,
+      "minVis": 0.6401985608166263,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "❂Magnet-KirmesAchterbahn · Magnet-Katapu",
@@ -300,20 +288,20 @@
       ],
       "state": "finished",
       "fallAt": [],
-      "place": 4,
+      "place": 2,
       "simulated": 150,
       "perf": {
-        "drawCalls": 174,
-        "triangles": 556536,
+        "drawCalls": 169,
+        "triangles": 546036,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 27.1
+      "wallSeconds": 47.1
     }
   ],
   "errors": [],
   "networkFailures": [],
   "passed": true,
-  "completedAt": "2026-09-25T21:55:12.821Z"
+  "completedAt": "2026-09-25T23:34:45.424Z"
 }

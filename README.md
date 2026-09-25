@@ -4,6 +4,20 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 48 (26.09.2026): Riesenpilz-Marsch, Neon-Tunnel im Takt, KI weicht aus, Update-Video
+
+- **Riesenpilz-Marsch:** solange das Kart gross ist, laeuft eine eigene Chiptune-Schleife (stampfender Marsch in
+  a-Moll, 140 bpm, Bass-Stampfer auf jedem Schlag; art/r44/make_chiptune.mjs) statt der Sternenschild-Melodie -
+  der Riesenpilz setzt intern das Schild, dadurch lief vorher die falsche Musik.
+- **Riesenpilz besser sichtbar:** die Kamera zieht kaum noch mit zurueck, das grosse Kart fuellt jetzt das Bild.
+  KI-Fahrer weichen einem Riesenpilz dicht hinter ihnen zur Seite aus (je geschickter, desto frueher).
+- **Tintlinge groesser** (1,45-fach), damit sie auch ueber weiter entfernten Karts lesbar sind.
+- **Neon-Tunnel:** er liegt in einer Rollzone und hat deshalb keine Deckenoeffnungen - dafuer dichtere Leuchtrippen,
+  die im Takt der Musik aufblitzen (Farbwechsel tuerkis -> pink auf jedem Schlag).
+- **Update-Video** (art/r47/capture_frames.mjs, edit_video_blender.py): drei Tunnel mit Lichtschaechten,
+  Riesenpilz, Tinte aus Sicht des Getroffenen (Kleckse auf dem Bild, Tintlinge ueber den Karts vorne),
+  Spiegel-Modus; Post-Texte in media/social-texte-r47.md.
+
 ## Runde 47 (25.09.2026): Riesenpilz und Tintenpilz, laengere Tunnel mit Licht-Durchbruechen, Spiegel-Modus
 
 **Zwei neue Items (core.mjs, eigene Entwuerfe):**

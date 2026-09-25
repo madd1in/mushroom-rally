@@ -165,6 +165,8 @@ const sun=new T.DirectionalLight(0xfff7db,3);sun.castShadow=!LITE;sun.shadow.map
 const headlight=new T.PointLight(0xfff0d8,0,30,1.4);if(!LITE)scene.add(headlight);
 const fill=new T.DirectionalLight(0xbfd4ff,.45);fill.position.set(-60,40,-90);scene.add(fill);
 const shaderTime={value:0};
+// R48: Takt-Puls (1 auf dem Schlag, faellt bis zum naechsten) fuer Neon-Elemente, die im Rennen mitblinken
+const beatPulse={value:0};
 function radialSprite(stops,scale,pos){const c=document.createElement('canvas');c.width=c.height=128;const q=c.getContext('2d'),g=q.createRadialGradient(64,64,6,64,64,63);for(const [o,col] of stops)g.addColorStop(o,col);q.fillStyle=g;q.fillRect(0,0,128,128);const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;const s=new T.Sprite(new T.SpriteMaterial({map:t,transparent:true,depthWrite:false,fog:false}));s.scale.set(scale,scale,1);s.position.set(...pos);scene.add(s);return s;}
 const sunGlow=radialSprite([[0,'rgba(255,250,230,1)'],[.25,'rgba(255,244,200,.85)'],[1,'rgba(255,244,200,0)']],190,[-320,240,-400]);
 const moon=radialSprite([[0,'rgba(255,251,230,1)'],[.45,'rgba(252,243,214,.95)'],[1,'rgba(252,243,214,0)']],95,[230,300,-390]);
@@ -1113,8 +1115,12 @@ function buildTunnels(){if(!tunnels.length)return;
   const lamps=[];for(let d=t.s+5;d<t.s+span-2;d+=9)for(const side of [-1,1]){const p=samplePos(d,side*11.6,new T.Vector3());lamps.push([p.x,p.y+5.4,p.z]);}
   if(lamps.length){const li=new T.InstancedMesh(new T.SphereGeometry(.42,8,6),lampMat,lamps.length);lamps.forEach(([x,y,z],i)=>{_m.makeTranslation(x,y,z);li.setMatrixAt(i,_m);});li.frustumCulled=false;world.add(li);
    const gg=new T.BufferGeometry();gg.setAttribute('position',new T.Float32BufferAttribute(lamps.flat(),3));const gp=new T.Points(gg,new T.PointsMaterial({map:glowTex(),color:st.lamp,size:6,sizeAttenuation:true,transparent:true,depthWrite:false,blending:T.AdditiveBlending}));gp.frustumCulled=false;world.add(gp);}
-  const glowRib=st.rings,ribMat=glowRib?new T.MeshBasicMaterial({color:st.rim,side:T.DoubleSide}):stdMat({color:new T.Color(st.rim).multiplyScalar(.8),roughness:.9,side:T.DoubleSide}),bands=[];
-  for(let d=t.s+4;d<t.s+span-2;d+=8){if(holes.some(h=>{const hc=t.s+stepL*(h+1);return Math.abs(hc-d)<4;}))continue;bands.push(archRing(d,R-.6,R-.1));bands.push(archRing(d+.9,R-.6,R-.1));}
+  // R48: im Neon-Tunnel (Rollzone, ohne Deckenoeffnungen) blinken dichtere Leuchtrippen im Takt der Musik
+  const beatRibs=rolled&&t.style==='neon',glowRib=st.rings,ribMat=beatRibs?new T.ShaderMaterial({uniforms:{uCol:{value:new T.Color(st.rim)},uCol2:{value:new T.Color(st.lamp)},uBeat:beatPulse},side:T.DoubleSide,
+    vertexShader:'varying float vX;void main(){vX=position.y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'uniform vec3 uCol;uniform vec3 uCol2;uniform float uBeat;void main(){float p=uBeat*uBeat*uBeat;gl_FragColor=vec4(mix(uCol*.55,uCol2*1.3,p),1.);}'})
+   :glowRib?new T.MeshBasicMaterial({color:st.rim,side:T.DoubleSide}):stdMat({color:new T.Color(st.rim).multiplyScalar(.8),roughness:.9,side:T.DoubleSide}),bands=[];
+  for(let d=t.s+4;d<t.s+span-2;d+=beatRibs?5:8){if(holes.some(h=>{const hc=t.s+stepL*(h+1);return Math.abs(hc-d)<4;}))continue;bands.push(archRing(d,R-.6,R-.1));bands.push(archRing(d+.9,R-.6,R-.1));}
   if(bands.length){const bm=new T.Mesh(mergeGeometries(bands),ribMat);bm.frustumCulled=false;world.add(bm);}
   if(!st.rings){const stripMat=new T.MeshBasicMaterial({color:st.lamp,side:T.DoubleSide});
    for(const side of [-1,1])world.add(new T.Mesh(wallStrip(t.s+1.5,t.e-1.5,side*12.9,5.0,5.45,Math.ceil(span/3)),stripMat));}
@@ -2057,6 +2063,8 @@ function ohTick(dt,p){if(oh.id===null){oh.drift=false;oh.full=0;return;}const s=
 function aiInput(r,dt){const sk=r.skill,sp=Math.max(0,r.speed),look=5+sp*.38;
  let kap=0;for(let s=10;s<=26;s+=8)kap+=trackAt(r.distance+s).kap;kap/=3;
  let line=clamp(kap*90,-4,4)*sk+r.laneBias*(1-sk*.6);
+ // R48: ein Riesenpilz dicht dahinter - geschickte Fahrer weichen zur Seite aus (je besser, desto frueher)
+ if(!r.mega){for(const q of racers)if(q!==r&&q.mega>0){const gap=r.distance-q.distance;if(gap>0&&gap<14+sk*22){line+=(r.offset>=q.offset?1:-1)*(3+sk*3);break;}}}
  const fkNear=forkAt(r.distance+22)||forkAt(r.distance);let onFork=false;if(fkNear){if(r.forkFor!==fkNear.f){r.forkFor=fkNear.f;r.forkPick=Math.random()<.2+sk*.4;}onFork=r.forkPick;}else r.forkFor=null;
  // Schanzen/Schlucht: Ideallinie auf die Rampe; Bananen und Pendelpilzen ausweichen
  for(const rp of ramps){const ahead=wrapDiff(rp.d,r.distance);if(ahead>0&&ahead<(rp.gap?95:30))line=rp.off;}
@@ -2116,10 +2124,10 @@ const AUDIO_MIX={effects:.78,voice:.95,music:.49,world:.82};
 const SFX_RMS={c_star:.085,hit:.095,bump:.075,drift:.075,cheer:.075,boost:.105,rocket:.105,ramp:.095,spore:.09,jingle:.14,goodtry:.12,finallap:.115,launch:.11};
 const CLIPS={};for(const k of Object.keys(VOICE))CLIPS['v_'+k]='assets/audio/voice/'+k+'.mp3';for(const k of Object.keys(SFX_MAX))CLIPS['s_'+k]='assets/audio/sfx/'+k+'.mp3';
 // R44: selbst synthetisierte Chiptune-Effekte (art/r44/make_chiptune.mjs) haben Vorrang vor den Samples
-const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder','levelup','unlock','star','mega','shrink','squash','ink'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
+const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder','levelup','unlock','star','mega','shrink','squash','ink','megaloop'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
 const clipData={},clipBuf={},clipFail={},clipNorm={},clipPlayed={},effectSources=new Set();let echoSend=null,ambSrc=null,ambGain=null,ambLfo=null,voiceGain=null,sfxGain=null,effectsOut=null,voiceSrc=null,voiceKey=null,voiceQueue=null,pendingVoice=null,duckUntil=0,ducked=false,engine=null,raceFilter=null,masterGain=null,worldGain=null,mixMuted=false,duckLevel=1,duckTick=0;
 for(const [k,url] of Object.entries(CLIPS))clipData[k]=fetch(url).then(r=>{if(!r.ok)throw new Error(url);return r.arrayBuffer();}).catch(()=>{clipFail[k]=true;return null;});
-const LOOP_CLIPS=new Set(['s_c_star']);
+const LOOP_CLIPS=new Set(['s_c_star','s_c_megaloop']);
 function prepClip(k,b){if(LOOP_CLIPS.has(k)){let sum=0,n=0;const d=b.getChannelData(0);for(let i=0;i<d.length;i+=3){sum+=d[i]*d[i];n++;}clipNorm[k]=Math.min(2.5,(SFX_RMS[k.slice(2)]||.11)/Math.max(Math.sqrt(sum/Math.max(1,n)),1e-4));return b;}
  const sr=b.sampleRate,ch=b.numberOfChannels,channels=Array.from({length:ch},(_,i)=>b.getChannelData(i)),d0=channels[0],audible=i=>channels.some(d=>Math.abs(d[i])>=.004);let start=0;while(start<d0.length&&!audible(start))start++;start=Math.max(0,start-Math.floor(sr*.005));const max=k.startsWith('s_')?(SFX_MAX[k.slice(2)]??2):10;let end=Math.min(d0.length,start+Math.floor(sr*max)),e=end-1;while(e>start&&!audible(e))e--;end=Math.min(end,e+Math.floor(sr*.03));
  const len=Math.max(1,end-start),out=ctx.createBuffer(ch,len,sr),fade=Math.min(len,Math.floor(sr*.04));let sum=0,n=0,peak=0;for(let c=0;c<ch;c++){const dst=out.getChannelData(c);dst.set(b.getChannelData(c).subarray(start,end));for(let i=0;i<fade;i++)dst[len-1-i]*=i/fade;for(let i=0;i<len;i++){peak=Math.max(peak,Math.abs(dst[i]));if(i%3===0){sum+=dst[i]*dst[i];n++;}}}
@@ -2147,8 +2155,10 @@ function syncAudioMix(){if(!ctx)return;const quiet=!soundOn||state==='paused',t=
  aset(sfxGain.gain,quiet?0:AUDIO_MIX.effects,t,.045);aset(effectsOut.gain,quiet?0:1,t,.035);aset(worldGain.gain,quiet||!['race','countdown'].includes(state)?0:AUDIO_MIX.world,t,.08);aset(masterGain.gain,soundOn?.92:0,t,.035);}
 // Sternenschild (R45): eigene Chiptune-Schleife solange der Schild haelt, die Streckenmusik tritt so lange zurueck
 let starSrc=null,starOut=null;
-function starTick(p){const want=soundOn&&!!ctx&&!!p&&p.shield>0&&(state==='race'||state==='paused');
- if(want&&!starSrc&&clipBuf.s_c_star){starSrc=ctx.createBufferSource();starSrc.buffer=clipBuf.s_c_star;starSrc.loop=true;starOut=ctx.createGain();starOut.gain.value=.95*(clipNorm.s_c_star||1);starSrc.connect(starOut);starOut.connect(sfxGain||masterGain);starSrc.start();}
+// R48: waehrend des Riesenpilzes laeuft statt der Stern-Melodie ein eigener Marsch (der Riesenpilz setzt intern das Schild)
+function starTick(p){const k=p&&p.mega>0?'s_c_megaloop':p&&p.shield>0?'s_c_star':null,want=soundOn&&!!ctx&&!!k&&(state==='race'||state==='paused');
+ if(want&&starSrc&&starSrc._k!==k&&clipBuf[k]){const t=ctx.currentTime,s0=starSrc,g0=starOut;g0.gain.setTargetAtTime(0,t,.04);try{s0.stop(t+.2);}catch{}s0.onended=()=>{s0.disconnect();g0.disconnect();};starSrc=starOut=null;}
+ if(want&&!starSrc&&clipBuf[k]){starSrc=ctx.createBufferSource();starSrc._k=k;starSrc.buffer=clipBuf[k];starSrc.loop=true;starOut=ctx.createGain();starOut.gain.value=.95*(clipNorm[k]||1);starSrc.connect(starOut);starOut.connect(sfxGain||masterGain);starSrc.start();}
  else if(!want&&starSrc){const t=ctx.currentTime,s=starSrc,g=starOut;g.gain.setTargetAtTime(0,t,.05);try{s.stop(t+.3);}catch{}s.onended=()=>{s.disconnect();g.disconnect();};starSrc=starOut=null;}}
 // Drift-Knistern (R46): solange der Spieler driftet, ein leises Chiptune-Trillern plus Funkenrauschen. Jede
 // Mini-Turbo-Stufe hebt Tonhoehe und Tempo (blau -> rot -> lila) und klickt kurz - man hoert, wann loslassen lohnt.
@@ -2329,7 +2339,7 @@ function spawnInkcap(r){if(!P.inkcap||!r)return;let e=inkcaps.find(q=>!q.g.visib
  e.r=r;e.t=0;e.g.visible=true;e.g.scale.setScalar(.01);burst(r,0x15121c,10);}
 function updateInk(dt){const pl=racers[0];if(pl){if(pl.ink>0&&pl.boost>0)pl.ink=Math.max(0,pl.ink-dt*1.4);const o=pl.ink>0?Math.min(1,pl.ink/1.1):0;if(inkEl._o!==o){inkEl.style.opacity=o.toFixed(2);inkEl._o=o;}if(!(pl.ink>0)&&inkEl.innerHTML&&o===0)inkEl.innerHTML='';}
  for(const e of inkcaps){if(!e.g.visible)continue;e.t+=dt;const t=e.t,r=e.r,p=r.mesh.position,life=1.5;if(t>life||!r.mesh.visible){e.g.visible=false;continue;}
-  const pop=Math.min(1,t/.18),melt=Math.max(0,(t-.9)/(life-.9)),s=(t<.18?pop*1.15:1+Math.sin(t*22)*.06*(1-melt))*1.1;
+  const pop=Math.min(1,t/.18),melt=Math.max(0,(t-.9)/(life-.9)),s=(t<.18?pop*1.15:1+Math.sin(t*22)*.06*(1-melt))*1.45;
   e.g.scale.set(s*(1+melt*.6),s*(1-melt*.85),s*(1+melt*.6));e.g.position.set(p.x,p.y+2.2+(1-pop)*.6-melt*1.6,p.z);e.g.rotation.set(0,camH+Math.PI,Math.sin(t*14)*.18*(1-melt));
   if(melt>0&&Math.random()<dt*25)emit(p.x+(Math.random()-.5)*1.6,p.y+1.2,p.z+(Math.random()-.5)*1.6,0x15121c,0,-3,0,.5);}}
 function dropBanana(r){if(hazards.length>=MAX_HAZARDS){const old=hazards.shift();actors.remove(old.mesh);}const x=r.x-Math.sin(r.h)*3.2,z=r.z-Math.cos(r.h)*3.2,g=new T.Group();actors.add(g);g.position.set(x,r.y,z);
@@ -2731,7 +2741,7 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  if(!racers.length)return;const p=racers[0];
  // Verfolgerkamera haengt am Kart (nicht an der Strecke): man sieht, wohin man wirklich faehrt
  const targetH=p.h+(p.driftDir?-p.driftDir*.12:0);camH=snap?targetH:camH+angleDiff(targetH,camH)*Math.min(1,dt*(p.driftDir?3.2:5));
- const mgC=(p.megaS||1)-1,back0=(dbg.camBack??(portrait?10.5:8.4))*(1+mgC*.4),up0=(dbg.camUp??(portrait?4.8:3.7))*(1+mgC*.35),sx=Math.sin(camH),cz=Math.cos(camH),py=p.y??0;
+ const mgC=(p.megaS||1)-1,back0=(dbg.camBack??(portrait?10.5:8.4))*(1+mgC*.14),up0=(dbg.camUp??(portrait?4.8:3.7))*(1+mgC*.18),sx=Math.sin(camH),cz=Math.cos(camH),py=p.y??0;
 
  // Anti-Grav: Kamera folgt der gedrehten Fahrbahn (Versatz und Hochachse um die Fahrtrichtung gedreht)
  // Feed-Forward: das analytische Roll-Delta wird direkt uebernommen, nur der Restfehler wird geglaettet.
@@ -2860,7 +2870,7 @@ function loop(now){requestAnimationFrame(loop);if(dbg.manual)return;const dt=Mat
 const prof={upd:0,anim:0,hud:0,ren:0,n:0};
 function frameStep(dt,now){if(dbg.freeze)return;frame++;
  if(shadowEvery>1&&renderer.shadowMap.enabled){renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=frame%shadowEvery===0;}
- if(revealQueue){const n=Math.max(10,Math.ceil(revealQueue.length/8));for(let i=0;i<n&&revealQueue.length;i++)revealQueue.shift().visible=true;if(!revealQueue.length)revealQueue=null;}shaderTime.value=now/1000;starTick(racers[0]);{const p=racers[0];driftTick(p&&p.driftDir&&!p.air&&!autopilot?({mini:1,super:2,ultra:3}[miniTurbo(p.drift)?.[2]]||0):-1);}duckBgm(now);
+ if(revealQueue){const n=Math.max(10,Math.ceil(revealQueue.length/8));for(let i=0;i<n&&revealQueue.length;i++)revealQueue.shift().visible=true;if(!revealQueue.length)revealQueue=null;}shaderTime.value=now/1000;beatPulse.value=(state==='race'||state==='countdown')&&theme.glow?1-beatPhase(elapsed):0;starTick(racers[0]);{const p=racers[0];driftTick(p&&p.driftDir&&!p.air&&!autopilot?({mini:1,super:2,ultra:3}[miniTurbo(p.drift)?.[2]]||0):-1);}duckBgm(now);
  const p0=performance.now();if(state!=='paused'){update(dt);const p1=performance.now();prof.upd+=p1-p0;animateWorld(dt,now);updateCamera(dt);prof.anim+=performance.now()-p1;}
  if(frame%3===0){hud();if(state==='race'||state==='countdown')drawMap();}
  if(racers[0]&&headlight.intensity>0){const p=racers[0];headlight.position.set(p.x+Math.sin(p.h)*5,(p.y||0)+3.2,p.z+Math.cos(p.h)*5);}
@@ -3067,7 +3077,7 @@ if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,hud,oh:()=>({...oh,
   let m=1e9;for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){if(Math.abs(pts[i][1]-pts[j][1])<far)continue;const dd=pts[i][0].distanceTo(pts[j][0]);if(dd<m)m=dd;}
   return {s:Math.round(q.s),span:Math.round(q.span),n:q.n,R:+q.R.toFixed(1),style:q.style,len:Math.round(sl),min:+m.toFixed(2)};}),
  autopilot:v=>{autopilot=v;},finishNow:()=>{racers[0].distance=length*LAPS+1;finish(racers[0],length,elapsed);end();},
- state:()=>({state,length,mode,cc,gp,stats,racers:racers.map(({mesh,...r})=>r)}),setItem:item=>{racers[0].item=item;racers[0].charges=item==='triple'?3:0;},inkMe:()=>{racers[0].ink=INK_T;inkSplash();},
+ state:()=>({state,length,mode,cc,gp,stats,racers:racers.map(({mesh,...r})=>r)}),setItem:item=>{racers[0].item=item;racers[0].charges=item==='triple'?3:0;},inkMe:()=>{racers[0].ink=INK_T;inkSplash();},inkcaps:()=>({proto:!!P.inkcap,list:inkcaps.map(e=>({vis:e.g.visible,t:+(e.t||0).toFixed(2),y:+e.g.position.y.toFixed(1),s:+e.g.scale.y.toFixed(2),parent:!!e.g.parent}))}),
  perf:()=>({drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,dpr:renderer.getPixelRatio(),qualityLevel:quality.level}),
  bgm:()=>({ready:bgm.ready,failed:bgm.failed,playing:bgm.current,rate:bgm.rate}),
  chr:()=>chr&&{cows:chr.cows.map(c=>[Math.round(c.x),Math.round(c.z),Math.round(c.d)]),gates:chr.gates.map(g=>Math.round(g.d)),hands:chr.hands.map(h=>[Math.round(h.x),Math.round(h.z),+h.up.toFixed(2),Math.round(h.d)]),mets:chr.mets.map(m=>[Math.round(m.x),Math.round(m.z),Math.round(m.d)])},desert:()=>desert&&{tw:desert.twisters.map(q=>[Math.round(q.x),Math.round(q.z),Math.round(q.dd||q.d)]),pits:desert.pits.map(q=>[Math.round(q.x),Math.round(q.z),q.r,Math.round(q.d)])},train:()=>trainFx&&{len:Math.round(trainFx.len),cross:trainFx.crossings.map(c=>Math.round(c.d)),loco:[+trainFx.cars[0].x.toFixed(1),+trainFx.cars[0].z.toFixed(1)]},lm:()=>!!P.landmarks,hz:()=>hz&&{stampers:hz.stampers.map(q=>[Math.round(q.d),q.off,q.g.position.toArray().map(v=>+v.toFixed(1))]),plants:hz.plants.map(q=>[Math.round(q.d),q.side,+q.x.toFixed(1),+q.y.toFixed(1),+q.z.toFixed(1)]),cannons:hz.cannons.map(q=>[Math.round(q.d),q.g.position.toArray().map(v=>+v.toFixed(1))]),missiles:hz.missiles.length,statues:swingers.filter(q=>q.statue).map(q=>q.statue.position.toArray().map(v=>+v.toFixed(1))),loaded:!!P.hazards},jumps:()=>({ramps:ramps.map(r=>[+r.start.toFixed(1),+r.end.toFixed(1),r.gap?1:0,+r.off.toFixed(1)]),gaps:gaps.map(g=>[+g.start.toFixed(1),+g.end.toFixed(1)]),length}),items:()=>({hazards:hazards.length,shots:shots.length,ramps:ramps.length,pads:pads.length,rings:rings.length,spores:spores.length,swingers:swingers.length,gaps:gaps.length,obstacles:[...obsGrid.values()].reduce((a,c)=>a+c.length,0),crowd:crowd?crowd.fans.length:0,protos:Object.fromEntries(PROTO_FILES.map(n=>[n,!!P[n]]))}),
