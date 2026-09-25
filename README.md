@@ -4,6 +4,51 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 45 (25.09.2026): Ein-Hand-Steuerung hochkant, neue Felsen, Stern-Melodie, Menue v6
+
+**Ein-Hand-Steuerung (Handy hochkant, Standard):** keine Fahrknoepfe mehr - das ganze Bild ist eine Wischflaeche.
+Ein Finger wischt links/rechts und lenkt stufenlos (der Nullpunkt wandert mit, wenn man ueber den vollen Ausschlag
+hinaus wischt - Gegenlenken wirkt sofort), eine Schiene mit Knopf zeigt den Ausschlag. Gas gibt das Spiel selbst,
+**Tippen = Bunny-Hop** (in der Luft = Trick), **weit wischen und kurz halten = Drift** (Loslassen gibt den Mini-Turbo,
+voll zur Gegenseite gewischt loest den Drift und driftet andersherum weiter), **nach oben wischen = Item**. Ein
+zweiter Finger kann ebenfalls tippen. Im Countdown zaehlt der aufgelegte Finger als Gas - bei der "1" auflegen gibt
+den Raketenstart (ein schon frueher aufgelegter Daumen wuergt den Motor nicht ab). Die Item-Blase sitzt oben rechts (antippbar), eine Kurzanleitung erscheint in den ersten fuenf
+Rennen ab dem Countdown. Tippen wird ueber die Ereignis-Zeitstempel erkannt, damit es auch bei ruckelnden Bildern
+zaehlt. Umschalten im Menue und in der Pause ("Hochkant: Ein-Hand / Knoepfe"); quer bleiben die Knoepfe.
+
+**Handy drehen machte alles winzig:** Beim Wechsel hochkant/quer zoomte der Browser heraus, weil Elemente breiter
+als der Schirm waren (die drehenden Tempo-Streifen ragten 12 % ueber jeden Rand, im Menue liefen die Kartfarben
+rechts hinaus). Jetzt: Viewport ohne Zoom (minimum/maximum-scale 1), `html` und `body` schneiden ab,
+`text-size-adjust:100%`, Tempo-Streifen in einem Rahmen mit `overflow:hidden`, Einblendungen hoechstens schirmbreit.
+Nach dem Drehen wird zweimal nachgemessen (150/500 ms) und ein trotzdem verbliebener Zoom per neu geschriebenem
+Viewport-Tag auf 1 gesetzt.
+
+**Felsen neu aus Blender (art/r45/create_rock.py, assets/rock.glb und assets/lo/rock.glb):** statt drei
+20-Flaechen-Ikosaedern gemeisselte Brocken - verbeulte Kugel, ein schraeges Gipfelplateau und 9-13 Seitenschnitte
+(alles jenseits einer Ebene wird auf sie projiziert), gleich ausgerichtete Dreiecke verschmolzen. Moospolster mit
+Wulst auf dem Plateau, Kiesel am Fuss, Schattierung als Vertexfarbe (oben hell und warm, unten dunkler und kuehler,
+Gesteinsschichten, Kontaktschatten). Materialnamen bleiben (StonePaint/MossPaint): Canyonrot mit Sandkappe,
+Lavabasalt und Tunnelwaende faerben weiter ein. 929 Dreiecke, Leicht-Fassung 332. Gebaut mit dem bpy-Modul
+(`pip install bpy==5.0.1`, laeuft ohne Blender-Installation).
+
+**Stern-Melodie:** Solange der Sternenschild haelt, laeuft eine eigene Chiptune-Schleife (art/r44/make_chiptune.mjs,
+assets/audio/sfx/chip/star.wav, 4,8 s, 200 bpm): Akkorde C - As - B - C, Rechteck-Arpeggio mit NES-Echo, Gegenstimme,
+Dreieck-Bass im Oktavsprung, Rausch-Schlagzeug; jede Note endet bei null, die Naht knackt nicht. Die Streckenmusik
+tritt so lange auf 28 % zurueck, bei Ende oder abgewehrtem Treffer blendet die Schleife in 0,3 s aus. Test in
+audio.test.mjs.
+
+**Menue v6:** dunkle Kontur und feines Diagonalmuster am Panel, Abschnittsnamen als Tinten-Schilder, Fahrer, Kart,
+Lenkhilfe und Grafik in einer "Garage"-Karte. Breit: Modus und Klasse in einer Zeile, vier Strecken je Reihe und die
+letzte Reihe fuellt die Breite (keine Luecke mehr), die Grafikwahl wird nicht mehr rechts abgeschnitten. Hochkant:
+drei Karten je Reihe, alles passt auf einen 412x915-Schirm (vorher lagen Lenkhilfe, Grafik und Erfolge hinter dem
+Startknopf). Quer: zwei Spalten - links Titel, Modus, Klasse, Garage und Erfolge/Umschalter, rechts Strecken und
+Startknopf (vorher lag der Startknopf unter dem Bildrand); kompakte Stufe bis 667x375. Streckenvorschauen nie
+verzerrt (`object-fit:cover`).
+
+**Nebenbei:** In style.css stand seit Runde 41 ein uebrig gebliebener Merge-Marker (`=======`), der die folgende
+Regel ungueltig machte - die Pilzland-Missionsanzeige war dadurch nicht fixiert, sondern lag unsichtbar hinter dem
+Spielbild. Entfernt.
+
 ## Runde 44 (25.09.2026): Fluessig auf Handys, Bunny-Hop-Drift, Touch-Steuerung im Mario-Kart-Stil
 
 **Ruckeln in Runde 1 - Ursache gefunden (Profil auf echter GPU, Kopflos-Chrome mit Intel UHD):**

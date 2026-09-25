@@ -228,7 +228,7 @@ function createPrototypeRecovery(names,prototypes,onRecovered){
    handled=true;onRecovered();return true;}};
 }
 // Leicht-Modus: Low-Poly-Fassungen aus art/r44/make_lod.py (Blender Decimate, gleiche Objekt- und Materialnamen)
-const LO_FILES=new Set(['balloon', 'castle', 'coastertruss', 'coin', 'dragon', 'driver', 'driver_cat', 'driver_robot', 'driver_turtle', 'elements', 'ferriswheel', 'gate', 'ghost', 'glider', 'grandstand', 'gravestone', 'itembox', 'kart', 'kartkit', 'kartwheel', 'mansion', 'mushroom', 'pumpkin', 'roottree', 'spectator', 'tree', 'clouds']);
+const LO_FILES=new Set(['balloon', 'castle', 'rock', 'coastertruss', 'coin', 'dragon', 'driver', 'driver_cat', 'driver_robot', 'driver_turtle', 'elements', 'ferriswheel', 'gate', 'ghost', 'glider', 'grandstand', 'gravestone', 'itembox', 'kart', 'kartkit', 'kartwheel', 'mansion', 'mushroom', 'pumpkin', 'roottree', 'spectator', 'tree', 'clouds']);
 function loadProto(name){return new Promise(resolve=>{
  const tryLoad=attempt=>{new GLTFLoader().load(`assets/${LITE&&LO_FILES.has(name)?'lo/':''}${name}.glb`,g=>{let root=NO_MERGE.has(name)?g.scene:mergeByMaterial(g.scene);if(PREP[name])root=PREP[name](root);const merged=liteRoot(root);markShared(merged);P[name]=merged;progress();resolve();},undefined,
   ()=>{if(attempt<2){setTimeout(()=>tryLoad(attempt+1),1200);}else{P[name]=null;progress();resolve();}});};
@@ -1950,7 +1950,17 @@ function steerAssist(r){const sp=Math.max(0,r.speed),look=6+sp*.34,tgt=flatPt(r.
  return clamp(Math.max(sp,4)*2*Math.sin(err)/L/(PHYS.turn*Math.max(.2,turnCurve(sp))),-1,1);}
 // Kurventempo voraus (wie die KI, ohne Drift): so schnell geht die engste Kurve im Bremsweg noch
 function assistTop(r){const sp=Math.max(0,r.speed);let t=99;for(let s=6;s<=14+sp*1.2;s+=4){const v=trackAt(r.distance+s).v;t=Math.min(t,Math.sqrt(v*v+2*PHYS.coast*6*s));}return t;}
-const keys=new Set(),tkeys=new Set(),touchPtr=new Map(),held=c=>keys.has(c)||tkeys.has(c);function steering(){return (held('ArrowLeft')||held('KeyA')?1:0)-(held('ArrowRight')||held('KeyD')?1:0);}
+const keys=new Set(),tkeys=new Set(),touchPtr=new Map(),held=c=>keys.has(c)||tkeys.has(c);function steering(){return (held('ArrowLeft')||held('KeyA')?1:0)-(held('ArrowRight')||held('KeyD')?1:0)||(oh.on?oh.steer:0);}
+// Ein-Hand-Steuerung (R45, Handy hochkant): ein Finger wischt links/rechts (stufenlos, der Nullpunkt wandert mit),
+// Auto-Gas, Tippen = Hops (in der Luft Trick), weit wischen und kurz halten = Drift (Loslassen = Turbo),
+// nach oben wischen = Item. Im Countdown zaehlt der aufgelegte Finger als Gas (Raketenstart).
+const oh={on:false,id:null,x0:0,y0:0,t0:0,ax:0,moved:0,steer:0,full:0,opp:0,drift:false,dir:0,hop:0,item:false,taps:new Map()};
+// Kurzanleitung: ab dem Countdown bis 4 s nach dem Start, in den ersten fuenf Rennen mit Ein-Hand-Steuerung
+let ohHintOn=false;function ohHint(v){if(v===ohHintOn)return;ohHintOn=v;$('ohHint').classList.toggle('show',v);if(!v&&state==='race')store.set('ohHints',store.get('ohHints',0)+1);}
+function ohTick(dt,p){if(oh.id===null){oh.drift=false;oh.full=0;return;}const s=oh.steer;
+ if(!oh.drift){if(Math.abs(s)>=.9&&p.speed>12&&!p.air&&p.stun<=0){oh.full+=dt;if(oh.full>=.14){oh.drift=true;oh.dir=Math.sign(s);oh.opp=0;}}else oh.full=0;}
+ // voll zur Gegenseite gewischt: Drift loesen (Turbo) - bleibt der Finger dort, driftet es gleich andersherum weiter
+ else if(s*oh.dir<-.6){oh.opp+=dt;if(oh.opp>.22){oh.drift=false;oh.full=0;}}else oh.opp=0;}
 
 // ---------------------------------------------------------------- KI-Fahrer: Ideallinie, Bremspunkte, Drifts (Koennen je Klasse)
 function aiInput(r,dt){const sk=r.skill,sp=Math.max(0,r.speed),look=5+sp*.38;
@@ -2009,13 +2019,15 @@ const VIP=new Set(['start','lap2','lastlap','win','podium','finish','best','gpne
 const SFX_MAX={pickup:1.2,banana:1.6,hit:1,cheer:4,jingle:8,goodtry:6,finallap:4,spore:.6,ramp:1.3,trick:1.1,rocket:1.8,boost:1.4,lap:1.6,bump:.8,drift:1.2,launch:2.4};
 // Musik bleibt das Fundament. Kurze Hinweise liegen darueber, Kollisionen und Jubel dahinter.
 const AUDIO_MIX={effects:.78,voice:.95,music:.49,world:.82};
-const SFX_RMS={hit:.095,bump:.075,drift:.075,cheer:.075,boost:.105,rocket:.105,ramp:.095,spore:.09,jingle:.14,goodtry:.12,finallap:.115,launch:.11};
+const SFX_RMS={c_star:.085,hit:.095,bump:.075,drift:.075,cheer:.075,boost:.105,rocket:.105,ramp:.095,spore:.09,jingle:.14,goodtry:.12,finallap:.115,launch:.11};
 const CLIPS={};for(const k of Object.keys(VOICE))CLIPS['v_'+k]='assets/audio/voice/'+k+'.mp3';for(const k of Object.keys(SFX_MAX))CLIPS['s_'+k]='assets/audio/sfx/'+k+'.mp3';
 // R44: selbst synthetisierte Chiptune-Effekte (art/r44/make_chiptune.mjs) haben Vorrang vor den Samples
-const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder','levelup','unlock'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
+const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder','levelup','unlock','star'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
 const clipData={},clipBuf={},clipFail={},clipNorm={},clipPlayed={},effectSources=new Set();let echoSend=null,ambSrc=null,ambGain=null,ambLfo=null,voiceGain=null,sfxGain=null,effectsOut=null,voiceSrc=null,voiceKey=null,voiceQueue=null,pendingVoice=null,duckUntil=0,ducked=false,engine=null,raceFilter=null,masterGain=null,worldGain=null,mixMuted=false,duckLevel=1,duckTick=0;
 for(const [k,url] of Object.entries(CLIPS))clipData[k]=fetch(url).then(r=>{if(!r.ok)throw new Error(url);return r.arrayBuffer();}).catch(()=>{clipFail[k]=true;return null;});
-function prepClip(k,b){const sr=b.sampleRate,ch=b.numberOfChannels,channels=Array.from({length:ch},(_,i)=>b.getChannelData(i)),d0=channels[0],audible=i=>channels.some(d=>Math.abs(d[i])>=.004);let start=0;while(start<d0.length&&!audible(start))start++;start=Math.max(0,start-Math.floor(sr*.005));const max=k.startsWith('s_')?(SFX_MAX[k.slice(2)]??2):10;let end=Math.min(d0.length,start+Math.floor(sr*max)),e=end-1;while(e>start&&!audible(e))e--;end=Math.min(end,e+Math.floor(sr*.03));
+const LOOP_CLIPS=new Set(['s_c_star']);
+function prepClip(k,b){if(LOOP_CLIPS.has(k)){let sum=0,n=0;const d=b.getChannelData(0);for(let i=0;i<d.length;i+=3){sum+=d[i]*d[i];n++;}clipNorm[k]=Math.min(2.5,(SFX_RMS[k.slice(2)]||.11)/Math.max(Math.sqrt(sum/Math.max(1,n)),1e-4));return b;}
+ const sr=b.sampleRate,ch=b.numberOfChannels,channels=Array.from({length:ch},(_,i)=>b.getChannelData(i)),d0=channels[0],audible=i=>channels.some(d=>Math.abs(d[i])>=.004);let start=0;while(start<d0.length&&!audible(start))start++;start=Math.max(0,start-Math.floor(sr*.005));const max=k.startsWith('s_')?(SFX_MAX[k.slice(2)]??2):10;let end=Math.min(d0.length,start+Math.floor(sr*max)),e=end-1;while(e>start&&!audible(e))e--;end=Math.min(end,e+Math.floor(sr*.03));
  const len=Math.max(1,end-start),out=ctx.createBuffer(ch,len,sr),fade=Math.min(len,Math.floor(sr*.04));let sum=0,n=0,peak=0;for(let c=0;c<ch;c++){const dst=out.getChannelData(c);dst.set(b.getChannelData(c).subarray(start,end));for(let i=0;i<fade;i++)dst[len-1-i]*=i/fade;for(let i=0;i<len;i++){peak=Math.max(peak,Math.abs(dst[i]));if(i%3===0){sum+=dst[i]*dst[i];n++;}}}
  const target=k.startsWith('v_')?.16:(SFX_RMS[k.slice(2)]||.11);
  // Spitzen begrenzen, statt leise Dateien samt Rauschen beliebig hochzuziehen.
@@ -2039,7 +2051,12 @@ function aset(p,v,t,tc){if(ctx.state!=='running')return;const tol=Math.abs(v)*.0
 function syncAudioMix(){if(!ctx)return;const quiet=!soundOn||state==='paused',t=ctx.currentTime;
  if(quiet!==mixMuted){if(quiet){for(const s of effectSources){try{s.stop();}catch{}}effectSources.clear();}mixMuted=quiet;}
  aset(sfxGain.gain,quiet?0:AUDIO_MIX.effects,t,.045);aset(effectsOut.gain,quiet?0:1,t,.035);aset(worldGain.gain,quiet||!['race','countdown'].includes(state)?0:AUDIO_MIX.world,t,.08);aset(masterGain.gain,soundOn?.92:0,t,.035);}
-function duckBgm(now){if(voiceQueue&&now>=duckUntil){const k=voiceQueue;voiceQueue=null;say(k);}ducked=now<duckUntil;const dt=duckTick?Math.min(.1,Math.max(0,(now-duckTick)/1000)):1/60;duckTick=now;const target=ducked?.66:1;duckLevel+=(target-duckLevel)*(1-Math.exp(-dt/(ducked?.12:.48)));syncAudioMix();bgmTick(now);}
+// Sternenschild (R45): eigene Chiptune-Schleife solange der Schild haelt, die Streckenmusik tritt so lange zurueck
+let starSrc=null,starOut=null;
+function starTick(p){const want=soundOn&&!!ctx&&!!p&&p.shield>0&&(state==='race'||state==='paused');
+ if(want&&!starSrc&&clipBuf.s_c_star){starSrc=ctx.createBufferSource();starSrc.buffer=clipBuf.s_c_star;starSrc.loop=true;starOut=ctx.createGain();starOut.gain.value=.95*(clipNorm.s_c_star||1);starSrc.connect(starOut);starOut.connect(sfxGain||masterGain);starSrc.start();}
+ else if(!want&&starSrc){const t=ctx.currentTime,s=starSrc,g=starOut;g.gain.setTargetAtTime(0,t,.05);try{s.stop(t+.3);}catch{}s.onended=()=>{s.disconnect();g.disconnect();};starSrc=starOut=null;}}
+function duckBgm(now){if(voiceQueue&&now>=duckUntil){const k=voiceQueue;voiceQueue=null;say(k);}ducked=now<duckUntil;const dt=duckTick?Math.min(.1,Math.max(0,(now-duckTick)/1000)):1/60;duckTick=now;const target=(ducked?.66:1)*(starSrc?.28:1);duckLevel+=(target-duckLevel)*(1-Math.exp(-dt/(ducked||starSrc?.12:.48)));syncAudioMix();bgmTick(now);}
 function audioInit(){if(ctx){if(ctx.state==='suspended')ctx.resume().catch(()=>{});return;}ctx=new (window.AudioContext||window.webkitAudioContext)();ctx.resume().catch(()=>{});
  masterGain=ctx.createGain();masterGain.gain.value=.92;masterGain.connect(ctx.destination);worldGain=ctx.createGain();worldGain.gain.value=AUDIO_MIX.world;worldGain.connect(masterGain);
  const o1=ctx.createOscillator();o1.type='sawtooth';const o2=ctx.createOscillator();o2.type='square';const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=700;f.Q.value=1.1;const g=ctx.createGain();g.gain.value=0;o1.connect(f);o2.connect(f);f.connect(g);g.connect(worldGain);o1.start();o2.start();
@@ -2208,18 +2225,19 @@ function update(dt){
  for(const f of fworks)if(!f.done&&elapsed>=f.at){f.done=1;try{const p=posAt(0,f.off,f.h,new T.Vector3());burstAt(p.x,p.y,p.z,f.col);}catch(e){}}
  if(state==='ceremony'){updateCeremony(dt);return;}
  if(state!=='race'&&state!=='countdown')return;
- const player=racers[0],gasHeld=held('ArrowUp')||held('KeyW');
- if(state==='countdown'){if(!worldReady){setText('message','');return;}const prev=Math.ceil(countdown);countdown-=dt;if(gasHeld){if(startPress<0)startPress=countdown;}else startPress=-1;
+ const player=racers[0],ohGas=state==='countdown'&&oh.on&&oh.id!==null,gasHeld=held('ArrowUp')||held('KeyW')||ohGas;
+ if(state==='countdown'){oh.hop=0;if(!worldReady){setText('message','');return;}ohHint(oh.on&&store.get('ohHints',0)<5);const prev=Math.ceil(countdown);countdown-=dt;if(gasHeld){if(startPress<0)startPress=countdown;}else startPress=-1;
   if(Math.ceil(countdown)!==prev)SFX.count(countdown<=0);setLights(countdown>2?1:countdown>1?2:countdown>0?3:4);setText('message',countdown>0?String(Math.ceil(countdown)):'LOS!');
   if(engine&&ctx){const t=ctx.currentTime;aset(engine.o1.frequency,gasHeld?170:60,t,.08);aset(engine.o2.frequency,gasHeld?85:30,t,.08);aset(engine.f.frequency,gasHeld?1500:500,t,.1);aset(engine.g.gain,soundOn?.008:0,t,.1);}
   if(countdown<=0){state='race';notice('LOS!',.8);stats.lapStart=0;if(isTT()){player.item='triple';player.charges=3;}
    const fx=Math.sin(player.h),fz=Math.cos(player.h);
    if(gasHeld&&startPress>0&&startPress<=1.0){player.boost=Math.max(player.boost,1.5);player.vx=fx*16;player.vz=fz*16;SFX.rocket();say('rocket');toast('RAKETENSTART!',1.2,'good');stats.rocket++;burst(player,0xffa53d,20);}
-   else if(gasHeld&&startPress>=2.2){player.stall=1.1;say('early');toast('ZU FRÜH! Motor abgewürgt',1.4,'bad');}
+   else if(gasHeld&&startPress>=2.2&&!ohGas){player.stall=1.1;say('early');toast('ZU FRÜH! Motor abgewürgt',1.4,'bad');}
    for(const r of racers)if(r.id&&Math.random()<CLASSES[cc].skill*.6){r.boost=.9;}}
   for(const r of racers)syncKart(r,dt);syncKartInstances();return;}
  elapsed+=dt;updateSwingers();updateHazards(dt);updateTrain(dt,elapsed);updateDesert(dt,elapsed);updateCharacter(dt,elapsed);setLights(elapsed<2.5?4:0);recordGhost(player);updateGhost();
- const order=ranking(racers),placeOf=r=>order.indexOf(r)+1,driftKey=held('ShiftLeft')||held('ShiftRight');
+ if(oh.on)ohTick(dt,player);const ohHop=oh.hop>0;oh.hop=0;if(ohHintOn&&(elapsed>4||!oh.on))ohHint(false);
+ const order=ranking(racers),placeOf=r=>order.indexOf(r)+1,driftKey=held('ShiftLeft')||held('ShiftRight')||(oh.on&&(oh.drift||ohHop));
  if(!autopilot&&driftKey&&!prevDrift&&player.air&&player.airT>.06&&!player.trick)startTrick(player);prevDrift=driftKey;
  if(roulette){roulette.t-=dt;roulette.tick-=dt;if(roulette.tick<=0){roulette.tick=.075;SFX.tick();}if(roulette.t<=0){player.item=roulette.final;player.charges=player.item==='triple'?3:0;player.itemPending=false;SFX.pickup();toast(ITEM_NAMES[player.item]+'!',.9);roulette=null;}}
  const cls=CLASSES[cc];
@@ -2227,7 +2245,7 @@ function update(dt){
   r.stall=Math.max(0,(r.stall||0)-dt);r.padCd=Math.max(0,(r.padCd||0)-dt);r.ringCd=Math.max(0,(r.ringCd||0)-dt);
   let input;
   if(me&&!autopilot){const target=steering(),rate=(Math.sign(target)!==Math.sign(r.steerS||0)&&target!==0)?11:7;r.steerS=(r.steerS||0)+clamp(target-(r.steerS||0),-dt*rate,dt*rate);
-   let st=r.steerS,gas=(autoGas||gasHeld)&&r.stall<=0;
+   let st=r.steerS,gas=(autoGas||gasHeld||oh.on)&&r.stall<=0;
    let brk=held('ArrowDown')||held('KeyS');
    if(assistOn&&!r.driftDir&&r.stun<=0){st=clamp(st+steerAssist(r)*(1-.55*Math.abs(st)),-1,1);const top=assistTop(r);if(r.boost<=0&&r.speed>top+1.5)gas=false;if(r.speed>top+5)brk=true;}
    input={gas,brake:brk,steer:st,drift:driftKey};}
@@ -2520,7 +2538,7 @@ function hud(){if(state==='menu'||state==='ceremony'||!racers.length)return;cons
  setText('itemName',name);const ready=p.item?'1':'0';if(HC.ready!==ready){HC.ready=ready;$('titem').classList.toggle('ready',!!p.item);$('item').classList.toggle('ready',!!p.item);}
  const full=p.spores>=MAX_SPORES?'1':'0';if(HC.full!==full){HC.full=full;$('spores').classList.toggle('full',full==='1');}
  const lvl=p.drift>=2.3?'ultra':p.drift>=1.4?'super':p.drift>=.7?'mini':'';const w=(p.driftDir?Math.min(100,p.drift/2.3*100):0).toFixed(0)+'%';if(HC.dw!==w){HC.dw=w;$('driftbar').style.width=w;}const dc=lvl?'#'+MT_COLORS[lvl].toString(16).padStart(6,'0'):'#9fb4c2';if(HC.dc!==dc){HC.dc=dc;$('driftbar').style.background=dc;}
- setText('driftlabel',p.boost>0?'TURBO!':p.air?(p.trick?'TRICK!':p.gliding?'PILZGLEITER · DRIFT = TRICK':'IN DER LUFT · DRIFT = TRICK'):p.driftDir?(lvl?MT_LABEL[lvl]+' BEREIT':'DRIFT HALTEN …'):p.hopT>0?'HOPS! JETZT LENKEN':(p.draft||0)>.25?'WINDSCHATTEN …':coarseInput?'DRIFT + LENKEN':'SHIFT + LENKEN = DRIFT');}
+ setText('driftlabel',p.boost>0?'TURBO!':p.air?(p.trick?'TRICK!':oh.on?'IN DER LUFT · TIPPEN = TRICK':p.gliding?'PILZGLEITER · DRIFT = TRICK':'IN DER LUFT · DRIFT = TRICK'):p.driftDir?(lvl?MT_LABEL[lvl]+' BEREIT':oh.on?'FINGER HALTEN …':'DRIFT HALTEN …'):p.hopT>0?'HOPS! JETZT LENKEN':(p.draft||0)>.25?'WINDSCHATTEN …':oh.on?'WEIT WISCHEN = DRIFT':coarseInput?'DRIFT + LENKEN':'SHIFT + LENKEN = DRIFT');}
 function refreshBest(){document.querySelectorAll('#tracks .track').forEach((b,i)=>{let span=b.querySelector('.best');if(!span){span=document.createElement('span');span.className='best';b.append(span);}
  if(mode==='tt'){const t=store.get(`tt-${i}`,null),md=store.get(`medal-${i}`,3);span.textContent=(md<3?['🥇','🥈','🥉'][md]+' ':'')+(t?format(t):'—');return;}
  const t=store.get(`best-${i}-${cc}`,null),stars=store.get(`stars-${i}-${cc}`,0);span.textContent=(stars?'★'.repeat(stars)+' ':'')+(t?format(t):'—');});}
@@ -2686,7 +2704,7 @@ function loop(now){requestAnimationFrame(loop);if(dbg.manual)return;const dt=Mat
 const prof={upd:0,anim:0,hud:0,ren:0,n:0};
 function frameStep(dt,now){if(dbg.freeze)return;frame++;
  if(shadowEvery>1&&renderer.shadowMap.enabled){renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=frame%shadowEvery===0;}
- if(revealQueue){const n=Math.max(10,Math.ceil(revealQueue.length/8));for(let i=0;i<n&&revealQueue.length;i++)revealQueue.shift().visible=true;if(!revealQueue.length)revealQueue=null;}shaderTime.value=now/1000;duckBgm(now);
+ if(revealQueue){const n=Math.max(10,Math.ceil(revealQueue.length/8));for(let i=0;i<n&&revealQueue.length;i++)revealQueue.shift().visible=true;if(!revealQueue.length)revealQueue=null;}shaderTime.value=now/1000;starTick(racers[0]);duckBgm(now);
  const p0=performance.now();if(state!=='paused'){update(dt);const p1=performance.now();prof.upd+=p1-p0;animateWorld(dt,now);updateCamera(dt);prof.anim+=performance.now()-p1;}
  if(frame%3===0){hud();if(state==='race'||state==='countdown')drawMap();}
  if(racers[0]&&headlight.intensity>0){const p=racers[0];headlight.position.set(p.x+Math.sin(p.h)*5,(p.y||0)+3.2,p.z+Math.cos(p.h)*5);}
@@ -2780,7 +2798,7 @@ function trackThumb(cv,c){const q=cv.getContext('2d'),W=cv.width,H=cv.height,th=
  q.strokeStyle='#ffffffcc';q.lineWidth=1.6;q.stroke();}
 courses.forEach((c,i)=>{const b=document.createElement('button'),th=THEMES[c.theme];b.className='track'+(i===0?' selected':'');
  const wide=courses.length%2===1&&i===courses.length-1;   // letzte Karte einer ungeraden Anzahl geht ueber die ganze Breite
- b.innerHTML=`<canvas width="${wide?520:240}" height="${wide?150:126}"></canvas><i>${c.icon}</i><em class="medal"></em><b>${c.name}</b><u class="kind">${c.kind}</u><span class="best"></span>`;
+ b.innerHTML=`<canvas width="${wide?520:240}" height="${wide?150:126}"></canvas><i>${c.icon}</i><em class="medal"></em><b>${c.name.replace('Regenbogenpiste','Regenbogen&shy;piste')}</b><u class="kind">${c.kind}</u><span class="best"></span>`;
  b.style.setProperty('--c1',hex(th.skyBottom));b.style.setProperty('--c2',hex(th.road));b.style.setProperty('--acc',th.curbA);
  b.title=c.kind;b.setAttribute('aria-pressed',String(i===0));b.onclick=()=>{if(mode==='gp')return;selected=i;syncTrackButtons();buildCourse();};
  $('tracks').append(b);try{trackThumb(b.querySelector('canvas'),c);}catch(e){}});
@@ -2816,13 +2834,46 @@ for(const b of keyButtons)b.oncontextmenu=e=>e.preventDefault();
 let wantFs=false;
 function enterFs(){const d=document.documentElement;if(!wantFs||document.fullscreenElement||!d.requestFullscreen)return;d.requestFullscreen({navigationUI:'hide'}).catch(()=>{});}
 function armFs(){if(wantFs&&!document.fullscreenElement)addEventListener('pointerdown',enterFs,{once:true,capture:true});}
-function onRotate(){setTimeout(()=>{enterFs();armFs();resize();},150);}
+// Nach dem Drehen melden manche Browser die neue Groesse erst spaeter: zweimal nachmessen, Seite nie verschoben lassen
+function onRotate(){for(const ms of [150,500])setTimeout(()=>{scrollTo(0,0);fixZoom();enterFs();armFs();resize();ohSync();},ms);}
+// Blieb der Browser nach dem Drehen trotzdem gezoomt, setzt ein neu geschriebenes Viewport-Tag den Massstab auf 1 zurueck
+function fixZoom(){const m=document.querySelector('meta[name=viewport]'),vv=window.visualViewport;if(!m||!vv||Math.abs(vv.scale-1)<.02)return;const c=m.content;m.content=c.replace('initial-scale=1','initial-scale=1.0001');requestAnimationFrame(()=>{m.content=c;});}
+visualViewport?.addEventListener?.('resize',()=>{if(visualViewport.scale>1.01||visualViewport.scale<.99||scrollX||scrollY)scrollTo(0,0);resize();});
 addEventListener('orientationchange',onRotate);screen.orientation?.addEventListener?.('change',onRotate);
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)armFs();setTimeout(resize,80);});
 $('full').onclick=()=>{if(document.fullscreenElement){wantFs=false;document.exitFullscreen().catch(()=>{});}else{wantFs=true;enterFs();}};
 const autoButton=document.createElement('button');autoButton.id='autoGas';
 function setAutoGas(v){autoGas=v;store.set('autogas',v);document.body.classList.toggle('autogas',v);for(const b of [autoButton,$('pauseAutoGas')]){if(!b)continue;b.textContent='Auto-Gas: '+(v?'AN':'AUS');b.setAttribute('aria-pressed',String(v));}}
-autoButton.onclick=()=>setAutoGas(!autoGas);document.querySelector('.controls').after(autoButton);if($('pauseAutoGas'))$('pauseAutoGas').onclick=()=>setAutoGas(!autoGas);if(store.get('autogasV',0)<44){store.set('autogas',false);store.set('autogasV',44);}setAutoGas(store.get('autogas',false));
+// Ein-Hand-Steuerung: Wischflaeche ueber dem Spielbild (unter Kopfzeile und Item-Blase), nur hochkant auf Touch
+const ohPad=$('ohPad'),ohStick=$('ohStick'),ohKnob=ohStick.firstElementChild,ctrlButton=document.createElement('button');ctrlButton.id='ctrlMode';
+const ohRadius=()=>clamp(innerWidth*.15,44,80);
+function ohRelease(){oh.id=null;oh.steer=0;oh.drift=false;oh.full=0;oh.taps.clear();ohStick.classList.remove('on');}
+let ohPref=store.get('onehand',true);
+function ohSync(){const pref=ohPref,on=coarseInput&&pref&&innerHeight>innerWidth;if(on!==oh.on){oh.on=on;if(!on)ohRelease();}
+ document.body.classList.toggle('onehand',on);
+ for(const b of [ctrlButton,$('pauseCtrl')]){if(!b)continue;b.hidden=!coarseInput;b.textContent='Hochkant: '+(pref?'Ein-Hand':'Knöpfe');b.setAttribute('aria-pressed',String(pref));}}
+function ohDraw(x,y){const R=ohRadius(),dx=clamp(x-oh.ax,-R,R);ohStick.style.transform=`translate(${oh.ax}px,${y}px)`;ohStick.style.setProperty('--r',R+'px');ohKnob.style.transform=`translateX(${dx}px)`;}
+// Zeiten aus dem Ereignis-Zeitstempel (Beruehrung selbst), nicht aus dem Handler-Aufruf: ruckelt ein Bild, kaemen
+// Aufsetzen und Loslassen sonst verspaetet an und ein kurzes Tippen zaehlte nicht als Hops
+const evT=e=>e.timeStamp>0?e.timeStamp:performance.now();
+ohPad.addEventListener('pointerdown',e=>{e.preventDefault();try{ohPad.setPointerCapture(e.pointerId);}catch{}const now=evT(e);
+ if(oh.id!==null){oh.taps.set(e.pointerId,{x:e.clientX,y:e.clientY,t:now});return;}
+ Object.assign(oh,{id:e.pointerId,x0:e.clientX,y0:e.clientY,ax:e.clientX,t0:now,moved:0,steer:0,full:0,item:false});ohStick.classList.add('on');ohDraw(e.clientX,e.clientY);});
+ohPad.addEventListener('pointermove',e=>{if(e.pointerId!==oh.id)return;const R=ohRadius(),x=e.clientX,y=e.clientY;
+ // Nullpunkt folgt dem Finger, sobald er ueber den vollen Ausschlag hinaus wischt: Gegenlenken wirkt sofort
+ if(x-oh.ax>R)oh.ax=x-R;else if(oh.ax-x>R)oh.ax=x+R;
+ oh.moved=Math.max(oh.moved,Math.hypot(x-oh.x0,y-oh.y0));const d=(x-oh.ax)/R,a=Math.abs(d);oh.steer=a<.08?0:-Math.sign(d)*Math.min(1,(a-.08)/.84);
+ const up=oh.y0-y;if(!oh.item&&evT(e)-oh.t0<600&&up>54&&Math.abs(x-oh.x0)<up*.7){oh.item=true;use();}
+ ohDraw(x,oh.y0);},{passive:true});
+function ohUp(e){const now=evT(e);
+ if(e.pointerId===oh.id){const tap=!oh.item&&now-oh.t0<280&&oh.moved<16;ohRelease();if(tap&&e.type==='pointerup')oh.hop=1;return;}
+ const t=oh.taps.get(e.pointerId);if(t){oh.taps.delete(e.pointerId);if(e.type==='pointerup'&&now-t.t<280&&Math.hypot(e.clientX-t.x,e.clientY-t.y)<16)oh.hop=1;}}
+ohPad.addEventListener('pointerup',ohUp);ohPad.addEventListener('pointercancel',ohUp);ohPad.oncontextmenu=e=>e.preventDefault();
+// Flaeche verschwindet mit dem Finger drauf (Ziel, Pause): kein Finger darf "kleben" bleiben
+ohPad.addEventListener('lostpointercapture',e=>{if(e.pointerId===oh.id)ohRelease();else oh.taps.delete(e.pointerId);});
+addEventListener('blur',ohRelease);addEventListener('resize',ohSync);
+ctrlButton.onclick=$('pauseCtrl').onclick=()=>{ohPref=!ohPref;store.set('onehand',ohPref);ohSync();};
+autoButton.onclick=()=>setAutoGas(!autoGas);document.querySelector('.controls').after(autoButton,ctrlButton);ohSync();if($('pauseAutoGas'))$('pauseAutoGas').onclick=()=>setAutoGas(!autoGas);if(store.get('autogasV',0)<44){store.set('autogas',false);store.set('autogasV',44);}setAutoGas(store.get('autogas',false));
 
 // ---------------------------------------------------------------- Laden & Start
 const protoRecovery=createPrototypeRecovery(PROTO_FILES,P,()=>{
@@ -2839,7 +2890,7 @@ Promise.race([protoAll,new Promise(r=>setTimeout(r,9000))]).finally(()=>{protoRe
   Promise.all(LATE_FILES.map(loadProto)).then(()=>{for(let i=0;i<courses.length;i++){const hzC=courses[i].stampers||courses[i].pipes||courses[i].cannons||courses[i].landmarks||courses[i].train||courses[i].towers||courses[i].cows||courses[i].beatgates||courses[i].hands||courses[i].lowgrav||courses[i].meteors||courses[i].theme==='lava'||courses[i].theme==='forest';if(!hzC&&courses[i].mansion===undefined&&courses[i].castle===undefined&&!(courses[i].builds||[]).length&&!(courses[i].coaster||[]).length)continue;if(i===builtSel){if(state==='menu')buildCourse(true);else worldDirty=true;}else disposeCourse(i);}});});});});
 
 // Testschnittstelle nur mit ?test=1
-if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,hud,
+if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,hud,oh:()=>({...oh,taps:oh.taps.size}),star:()=>({playing:!!starSrc,loaded:!!clipBuf.s_c_star,dur:clipBuf.s_c_star?.duration,duck:+duckLevel.toFixed(2)}),
  windringInfo:()=>rings.filter(r=>!r.ag).map(r=>({d:r.d,off:r.off,y:r.y,asset:!!P.windring,materials:r.glow?.length||0,precision:r.precision})),
  gliderState:()=>racers.map(r=>({id:r.id,armed:!!r.glideArmed,gliding:!!r.gliding,open:r.gliderOpen||0,visible:!!r.mesh.userData.glider?.visible,asset:!!P.glider})),
  gliderPose:(phase='flight')=>{if(!racers.length)return null;const r=racers[0],rp=ramps.find(q=>!q.gap&&!hasRoll(q.end+7))||ramps[0],d=rp?rp.end+7:20,off=rp?.off||0,s=sample(d,off),gy=groundAt(d,off).y;r.distance=d;r.offset=off;r.x=s.p.x;r.z=s.p.z;r.h=s.angle;r.speed=28;r.vx=Math.sin(r.h)*28;r.vz=Math.cos(r.h)*28;r.y=gy+(phase==='ground'?0:3.4);r.vy=-2;r.air=phase!=='ground';r.airT=.35;r.stun=0;r.trick=0;r.finishTime=null;r.steerS=.3;r.lastGround=gy;resetGlider(r,true);armGlider(r,phase==='respawn'?'respawn':'ramp');state='inspect';for(let i=0;i<40;i++)syncKart(r,1/60);syncKartInstances();updateCamera(1/60,true);hud();renderer.render(scene,camera);return window.rallyTest.gliderState()[0];},next:nextAfterResult,track:d=>({...trackAt(d),x:sample(d).p.x,z:sample(d).p.z}),zones:()=>zones,cp:v=>cpDist(v),
