@@ -13,7 +13,7 @@ function harness(){
  class Context{constructor(){this.destination=new Node('destination');this.currentTime=1;this.sampleRate=1000;this.state='running';this.resumes=0;}resume(){this.resumes++;this.state='running';return Promise.resolve();}createGain(){return new Node('gain');}createBiquadFilter(){return new Node('filter');}createOscillator(){return new Node('oscillator');}createBufferSource(){return new Node('bufferSource');}createDynamicsCompressor(){return new Node('compressor');}createDelay(){return new Node('delay');}createMediaElementSource(){return new Node('media');}createBuffer(ch,len,sr){const data=Array.from({length:ch},()=>new Float32Array(len));return {sampleRate:sr,numberOfChannels:ch,length:len,duration:len/sr,getChannelData:i=>data[i]};}}
  class Media{constructor(src){this.src=src;this.currentTime=0;this.duration=96;this.volume=0;}addEventListener(){}play(){this.paused=false;return Promise.resolve();}pause(){this.paused=true;}load(){}}
  const context=vm.createContext({console,Math,Set,Audio:Media,window:{AudioContext:Context},ctx:null,state:'race',soundOn:true,performance:{now:()=>1000},addEventListener(){},fetch:()=>new Promise(()=>{}),setTimeout:(fn,ms)=>timers.push({fn,ms}),clamp:(v,a,b)=>Math.max(a,Math.min(b,v)),courses:[{music:'race'}],selected:0,$:()=>({setAttribute(){}})});
- vm.runInContext(audio+'\nglobalThis.audioApi={audioInit,prepClip,playClip,sfxNoise,sfxTone,syncAudioMix,duckBgm,starTick,star:()=>starSrc,setAmbience,setSound,SFX,clipBuf,clipNorm,bgm,effectSources,get:()=>({ctx,sfxGain,effectsOut,worldGain,masterGain,voiceGain,raceFilter,duckLevel,ambSrc,ambLfo}),duck:v=>duckUntil=v};',context);
+ vm.runInContext(audio+'\nglobalThis.audioApi={audioInit,prepClip,playClip,sfxNoise,sfxTone,syncAudioMix,duckBgm,starTick,star:()=>starSrc,driftTick,drift:()=>driftSnd,setAmbience,setSound,SFX,clipBuf,clipNorm,bgm,effectSources,get:()=>({ctx,sfxGain,effectsOut,worldGain,masterGain,voiceGain,raceFilter,duckLevel,ambSrc,ambLfo}),duck:v=>duckUntil=v};',context);
  const api=context.audioApi;api.audioInit();return {api,context,nodes,timers};
 }
 function reaches(node,target,seen=new Set()){if(node===target)return true;if(seen.has(node))return false;seen.add(node);return node.out.some(n=>reaches(n,target,seen));}
@@ -59,6 +59,14 @@ test('star shield loop plays seamlessly while the shield holds, ducks the music 
  context.state='paused';api.starTick(p);assert.equal(api.star(),src,'pause keeps the loop (the effects bus is muted)');context.state='race';
  p.shield=0;api.starTick(p);assert.equal(api.star(),null);assert.ok(src.stopAt>ctx.currentTime,'fades out instead of cutting');
  api.starTick(null);assert.equal(api.star(),null);
+});
+
+test('drift sizzle climbs with each mini-turbo level and stops with the drift',()=>{
+ const {api,context}=harness();api.driftTick(0);const d=api.drift();assert.ok(d&&d.src.every(s=>s.started),'starts on drift');const f0=d.o.frequency.value,v0=d.g.gain.value;
+ api.driftTick(0);assert.equal(api.drift(),d,'one voice only');
+ api.driftTick(2);assert.ok(d.o.frequency.value>f0&&d.g.gain.value>v0,'red sparks sound higher and louder');assert.equal(d.lvl,2);
+ api.driftTick(-1);assert.equal(api.drift(),null);assert.ok(d.src.every(s=>s.stopAt!==undefined),'all sources scheduled to stop');
+ context.state='paused';api.driftTick(1);assert.equal(api.drift(),null,'silent while paused');
 });
 
 test('ambience oscillator is released after its fade-out',()=>{

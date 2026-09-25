@@ -4,6 +4,40 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 46 (25.09.2026): Gewitterwolke, Rivale, Tagesaufgabe, Drift-Sound, Startnummern
+
+**Neues Item Gewitterwolke:** Blitze aus dunklen Wolken treffen alle Karts vor dem Nutzer - kurzer Dreher,
+Item weg, 4 s klein und langsamer (72 % Hoechsttempo). Kleine Karts werden von grossen plattgefahren
+("PLATT GEFAHREN!" / "UEBERROLLT!"), der Sternenschild blockt. Nur fuer die hintere Haelfte des Feldes
+(Gewicht 0 bis Platz 5, dann steigend), die KI setzt sie sofort ein. Optik: Wolke und Zickzack-Blitz ueber jedem
+getroffenen Kart in Sichtweite, Donner und Bildblitz; das Modell schrumpft sichtbar (Rennlogik in core.mjs,
+`SHRINK_T`, `flattenSmall`, 2 Unit-Tests). Neuer Erfolg "Wettermacher" (4 Karts mit einer Wolke).
+
+**Rivale je Rennen:** einer aus den ersten drei Startplaetzen, faehrt etwas besser als seine Klasse. Rotes
+"RIVALE"-Schild ueber seinem Kart (waechst mit der Entfernung mit), im HUD "⚔ ▲ NAME" (rot: vor dir, gruen:
+hinter dir), Ansage zum Start. Im Ergebnis "Rivale geschlagen" +25 XP und der Erfolg "Rivalen-Bezwinger".
+
+**Tages-Herausforderung:** Karte ueber dem Startknopf - aus dem Datum folgen Strecke, Klasse und Aufgabe (Treppchen,
+Sieg, 8 Mini-Turbos, ohne Treffer, 10 Muenzen, 4 Tricks, 8-mal ueberholen, Rivale schlagen), fuer alle gleich und
+ohne Server. Antippen waehlt Modus, Strecke und Klasse. Geschafft: +60 XP einmal am Tag, Erfolg "Tagesheld",
+die Karte zeigt "GESCHAFFT". Reine Funktionen in progress.mjs (3 Unit-Tests).
+
+**Drift-Knistern:** waehrend des Drifts ein leises Chiptune-Trillern mit Funkenrauschen, das je Mini-Turbo-Stufe
+eine Quinte hoeher und schneller wird und beim Stufenwechsel klickt - man hoert, wann Loslassen lohnt (Test in
+audio.test.mjs). Dabei aufgefallen: Funkenfarbe und Anzeige nutzten andere Schwellen (0,7/1,4/2,3) als die echte
+Turbo-Logik (0,55/1,15/1,9) - jetzt beide aus `miniTurbo()`.
+
+**Schwindel-Sterne:** nach Dreher, Treffer oder Blitz kreisen drei gelbe Sterne ueber dem Kopf (eine instanzierte
+Geometrie fuer alle Karts).
+
+**Fahrer und Karts aufgehuebscht (art/r46/polish_karts.py, Anbauten per Strahltest auf die bestehenden Modelle):**
+- Startnummern je Figur (Pilzi 7, Schildi 3, Volt 9, Mochi 5): Rundschild mit Goldrand auf der Haube und
+  Nummernschild am Heck - im Rennen sieht man die Karts meist von hinten.
+- Pilzi traegt eine Rennbrille: Gummiband, das der Hutform folgt, zwei Glaeser mit Goldrand auf der Krempe.
+- Volt: das fast weisse Visier ueberstrahlte die LED-Augen - jetzt dunkles Glas, groessere leuchtende Augen,
+  gluehende Antennenkugel.
+Leicht-Fassungen neu (art/r44/make_lod.py fuer kartkit, driver, driver_robot), Sicherungen in art/r46/.
+
 ## Runde 45 (25.09.2026): Ein-Hand-Steuerung hochkant, neue Felsen, Stern-Melodie, Menue v6
 
 **Ein-Hand-Steuerung (Handy hochkant, Standard):** keine Fahrknoepfe mehr - das ganze Bild ist eine Wischflaeche.
