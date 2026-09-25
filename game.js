@@ -5,6 +5,7 @@ import {armGlider,resetGlider,stepGlider} from './glider.mjs';
 import {isPrecisionFlight,ringBoostDuration} from './windring.mjs';
 import {COASTER,BANK,coasterSpec,coasterProfile,coasterSpeedFactor,coasterG,airtimeFloat,launchKick,launchArches,coasterRating,twistAt,bankAngle,bankEnvelope,bankAxis} from './coaster.mjs';
 import {ELEM,elemPlan,elemState,elemHeight} from './elem.mjs';
+import {ACH,achById,recordRace,levelOf} from './progress.mjs';
 import {STAMP,stamperState,stamperCrushes,stamperBlocks,fireballAt,CANNON,cannonLane,missileAt} from './hazards.mjs';
 import {OW,pswitchMission,pswitchPress,pswitchCollect,pswitchTick,timeLeft,slalomMission,slalomPass,ringsMission,ringsHit,ringsLand,progressAdd} from './ow.mjs';
 import {LOOP,loopSpec,loopFrame as loopFrameAt,agravSegments,agravRoll,agravRings} from './loop.mjs';
@@ -107,7 +108,10 @@ const LAYOUT_VER=18;if(store.get('layoutVer',0)!==LAYOUT_VER){try{for(let i=0;i<
 // R39: alle Strecken - Schraeg- und Mehrfach-Loopings, laengere Wand- und Ueberkopffahrten.
 const TRACK_VER={0:1,1:1,2:1,3:2,4:1,5:2,6:1};
 for(const [i,v] of Object.entries(TRACK_VER))if(store.get('trackVer-'+i,0)!==v){try{for(const k of ['tt-','medal-','ghost-','bestlap-'])localStorage.removeItem('mr-'+k+i);for(const cc2 of [50,100,150]){localStorage.removeItem('mr-best-'+i+'-'+cc2);localStorage.removeItem('mr-stars-'+i+'-'+cc2);}}catch(e){}store.set('trackVer-'+i,v);}
-const KART_COLORS=[{c:0xff3b30,n:'Ruby / Rot'},{c:0xffc400,n:'Sunny / Gelb'},{c:0x00c2a8,n:'Mint / Türkis'},{c:0x8b5cff,n:'Nova / Violett'},{c:0xffc93c,n:'Goldpilz',gold:true}];
+const KART_COLORS=[{c:0xff3b30,n:'Ruby / Rot'},{c:0xffc400,n:'Sunny / Gelb'},{c:0x00c2a8,n:'Mint / Türkis'},{c:0x8b5cff,n:'Nova / Violett'},{c:0xffc93c,n:'Goldpilz',gold:true},
+ // R44: Lackierungen, die mit der Fahrerstufe freigeschaltet werden
+ {c:0x2f8cff,n:'Blitz / Blau',lvl:2},{c:0xff7a1a,n:'Lava / Orange',lvl:3},{c:0x22c55e,n:'Wald / Grün',lvl:5},{c:0xff5fc8,n:'Bonbon / Pink',lvl:7},{c:0xeef1f6,n:'Diamant / Weiß',lvl:10}];
+const progLevel=()=>levelOf(store.get('prog',{xp:0}).xp||0).level;
 // Jede Figur faehrt ihr eigenes Kart: Beschleunigung, Hoechsttempo, Grip, Lenkung und Bauform
 const DRIVERS=[
  {k:'driver',n:'Pilzi',i:'🍄',kart:'Sporenflitzer',acc:1,top:1,grip:1,turn:1,sc:[1,1,1],tip:'ausgewogen'},
@@ -1305,7 +1309,9 @@ function owReset(){const fx=owFx;if(!fx)return;fx.done=store.get('owDone',[]);fx
  for(const r of fx.ringMs){r.m=ringsMission(r.m.id,r.m.count);if(fx.done.includes(r.m.id))r.m.state='done';}
  for(const im of fx.coinParts){for(let i=0;i<OW.coins;i++)im.setMatrixAt(i,_zeroM);im.instanceMatrix.needsUpdate=true;}
  owHud();}
-function owComplete(id,label){const fx=owFx;fx.done=progressAdd(fx.done,id);store.set('owDone',fx.done);const p=racers[0];
+// Erfolg direkt gutschreiben (Grand Prix, Pilzland-Missionen)
+function grantAch(id){const pr=store.get('prog',{xp:0,ach:[],done:[],won:[]});if((pr.ach||[]).includes(id))return;pr.ach=[...(pr.ach||[]),id];store.set('prog',pr);const a=achById(id);if(a){toast('🏅 ERFOLG: '+a.n,2.4,'good');playClip('s_c_unlock',sfxGain,.8);}}
+function owComplete(id,label){const fx=owFx;fx.done=progressAdd(fx.done,id);store.set('owDone',fx.done);if(fx.done.length>=3)grantAch('ow');const p=racers[0];
  if(p){p.boost=Math.max(p.boost,1.6);p.spores=Math.min(MAX_SPORES,(p.spores||0)+3);}
  SFX.boost();toast(`${label} GESCHAFFT! ★ ${fx.done.length}/${fx.total}`,2,'good');elemBurst(p,[0xffe45c,0x5ad1ff,0xffffff],24,1);owHud();}
 function owRingHit(ring){const fx=owFx;if(!fx)return;const rm=fx.ringMs.find(x=>x.zi===ring.zone);if(!rm||rm.m.state==='done')return;
@@ -1629,7 +1635,7 @@ function updateHazards(dt,t=elapsed,live=true){if(!hz)return;const pl=racers[0];
 // Treffer und Kollision je Kart (Stampfer quetscht/sperrt, Schnappblume beisst, Kugelblitz explodiert)
 function hazardHits(r,me){if(!hz)return;
  for(const s of hz.stampers){const st=s.st;if(!st||!stamperBlocks(st))continue;const dd=wrapDiff(r.distance,s.d),doff=r.offset-s.off;if(Math.abs(dd)>STAMP.half+1.2||Math.abs(doff)>STAMP.half+1.3)continue;
-  if(stamperCrushes(st)&&!((r.crushCd||0)>elapsed)){r.crushCd=elapsed+1.6;if(r.shield>0){r.shield=0;burst(r,0xffe263,12);continue;}hitKart(r,1.35,.12);r.squash=.6;loseSpores(r,2);if(me){SFX.hit();shake=.6;toast('PLATT!',.9,'bad');}}
+  if(stamperCrushes(st)&&!((r.crushCd||0)>elapsed)){r.crushCd=elapsed+1.6;if(r.shield>0){r.shield=0;burst(r,0xffe263,12);continue;}hitKart(r,1.35,.12);r.squash=.6;loseSpores(r,2);if(me){stats.squashed++;SFX.hit();shake=.6;toast('PLATT!',.9,'bad');}}
   else{const p=s.g.position,dx=r.x-p.x,dz=r.z-p.z,dl=Math.hypot(dx,dz)||1,rr=3.3;if(dl<rr){r.x=p.x+dx/dl*rr;r.z=p.z+dz/dl*rr;bounce(r,dx/dl,dz/dl,true);}}}
  for(const f of hz.plants){if(f.lunge<.55)continue;const dx=r.x-f.head.x,dz=r.z-f.head.z;if(dx*dx+dz*dz>4.4||Math.abs((r.y||0)+.9-f.head.y)>2.6||(r.biteCd||0)>elapsed)continue;r.biteCd=elapsed+1.8;
   if(r.shield>0){r.shield=0;burst(r,0xffe263,10);continue;}hitKart(r,.95,.45);loseSpores(r,1);if(me){SFX.hit(.8);toast('GESCHNAPPT!',.9,'bad');}}
@@ -1698,7 +1704,7 @@ function updateTrain(dt,t){const f=trainFx;if(!f)return;f.s=(f.s+f.speed*dt)%f.l
  if(pl&&frame%3===0&&Math.hypot(lo.x-pl.x,lo.z-pl.z)<120)emit(lo.x+Math.sin(lo.yaw)*3.1,5.2,lo.z+Math.cos(lo.yaw)*3.1,0xe8e4dc,(Math.random()-.5)*1.5,3+Math.random()*2,(Math.random()-.5)*1.5,1.1);}
 // Zug erwischt ein Kart: seitlich wegschleudern und Dreher
 function trainHits(r,me){const f=trainFx;if(!f||(r.trainCd||0)>elapsed)return;for(const c of f.cars){const dx=r.x-c.x,dz=r.z-c.z,fx=Math.sin(c.yaw),fz=Math.cos(c.yaw),along=dx*fx+dz*fz,lat=dx*fz-dz*fx;
-  if(Math.abs(along)<c.half+.9&&Math.abs(lat)<2.2&&(r.y||0)<4){r.trainCd=elapsed+1.6;const sgn=Math.sign(lat)||1;r.vx=fz*sgn*14+fx*f.speed;r.vz=-fx*sgn*14+fz*f.speed;hitKart(r,1.5,1);loseSpores(r,2);burst(r,0xe8e4dc,18);if(me){SFX.hit();shake=.7;toast('VOM ZUG ERWISCHT!',1,'bad');}return;}}}
+  if(Math.abs(along)<c.half+.9&&Math.abs(lat)<2.2&&(r.y||0)<4){r.trainCd=elapsed+1.6;const sgn=Math.sign(lat)||1;r.vx=fz*sgn*14+fx*f.speed;r.vz=-fx*sgn*14+fz*f.speed;hitKart(r,1.5,1);loseSpores(r,2);burst(r,0xe8e4dc,18);if(me){stats.trainHits++;SFX.hit();shake=.7;toast('VOM ZUG ERWISCHT!',1,'bad');}return;}}}
 // ---------------------------------------------------------------- R44: Wuestensturm (Sonnen-Canyon)
 // Duenen: rhythmische Sandkaemme auf der Geraden (Hoehenprofil), ab ~28 m/s hebt man auf jedem Kamm ab - Hops/Drift
 // in der Luft = Trick-Turbo bei der Landung. Sandhosen: wandernde Wirbelstuerme quer ueber die Bahn, heben das Kart
@@ -1723,7 +1729,7 @@ function updateDesert(dt,t){if(!desert)return;const pl=racers[0];
  for(const q of desert.pits)q.disc.rotation.y+=dt*.35;}
 function desertHits(r,me,dt){if(!desert)return;
  for(const s of desert.twisters){const dx=r.x-s.x,dz=r.z-s.z;if(dx*dx+dz*dz>11.5||(r.twCd||0)>elapsed||(r.y||0)>trackAt(s.d).h+7)continue;r.twCd=elapsed+1.8;
-  if(r.shield>0){r.shield=0;burst(r,0xffe263,10);continue;}r.air=true;r.airT=0;r.vy=10.5;r.y=(r.y||0)+.1;hitKart(r,.8,.6);loseSpores(r,1);burst(r,0xe6b77a,16);if(me){toast('SANDHOSE!',.9,'bad');shake=.4;}}
+  if(r.shield>0){r.shield=0;burst(r,0xffe263,10);continue;}r.air=true;r.airT=0;r.vy=10.5;r.y=(r.y||0)+.1;hitKart(r,.8,.6);loseSpores(r,1);burst(r,0xe6b77a,16);if(me){stats.twisterHits++;toast('SANDHOSE!',.9,'bad');shake=.4;}}
  for(const q of desert.pits){const dx=q.x-r.x,dz=q.z-r.z,dl=Math.hypot(dx,dz);if(dl>q.r||r.air)continue;const k=1-dl/q.r;
   if(r.boost<=0){const cap=9+10*(1-k);const sp=Math.hypot(r.vx,r.vz);if(sp>cap){const f=Math.max(cap/sp,Math.exp(-2.6*dt));r.vx*=f;r.vz*=f;}}
   r.vx+=dx/(dl||1)*3.2*k*dt*6;r.vz+=dz/(dl||1)*3.2*k*dt*6;if(me&&frame%10===0){SFX.sand();if(frame%40===0)toast('TREIBSAND!',.7,'bad');}}}
@@ -1772,12 +1778,12 @@ function updateCharacter(dt,t,live=true){if(!chr)return;const pl=racers[0];
   flashEl.style.opacity=String(chr.flash>.3?(chr.flash-.3)*4:chr.flash>.12&&chr.flash<.2?.35:0);}
  else if(flashEl)flashEl.style.opacity='0';}
 function characterHits(r,me){if(!chr)return;
- for(const c of chr.cows){const dx=r.x-c.x,dz=r.z-c.z,d2=dx*dx+dz*dz;if(d2<8.4&&(r.y||0)<trackAt(c.d).h+2.5){const dl=Math.sqrt(d2)||1,nx=dx/dl,nz=dz/dl;r.x=c.x+nx*2.9;r.z=c.z+nz*2.9;bounce(r,nx,nz,true);if((r.cowCd||0)<elapsed){r.cowCd=elapsed+1.5;hitKart(r,.6,.55);if(me){SFX.moo();toast('MUH!',.8,'bad');}}}}
+ for(const c of chr.cows){const dx=r.x-c.x,dz=r.z-c.z,d2=dx*dx+dz*dz;if(d2<8.4&&(r.y||0)<trackAt(c.d).h+2.5){const dl=Math.sqrt(d2)||1,nx=dx/dl,nz=dz/dl;r.x=c.x+nx*2.9;r.z=c.z+nz*2.9;bounce(r,nx,nz,true);if((r.cowCd||0)<elapsed){r.cowCd=elapsed+1.5;hitKart(r,.6,.55);if(me){stats.cowHits++;SFX.moo();toast('MUH!',.8,'bad');}}}}
  for(const gt of chr.gates){if(Math.abs(wrapDiff(r.distance,gt.d))>1.4)continue;for(const h of gt.halves){if(!h.down||r.offset*h.side<1.2)continue;
    const t=tanAt(r.distance),back=Math.sign(wrapDiff(r.distance,gt.d))||-1;r.x+=t.x*back*.8;r.z+=t.z*back*.8;const vf=r.vx*t.x+r.vz*t.z;r.vx-=t.x*vf*1.3;r.vz-=t.z*vf*1.3;if((r.gateCd||0)<elapsed){r.gateCd=elapsed+1;hitKart(r,.4,.4);if(me){SFX.bump(1);toast('SCHRANKE!',.7,'bad');}}}}
  for(const h of chr.hands){if(h.up<.6)continue;const dx=r.x-h.x,dz=r.z-h.z;if(dx*dx+dz*dz>5.3||(r.handCd||0)>elapsed)continue;r.handCd=elapsed+2;if(r.shield>0){r.shield=0;burst(r,0xffe263,10);continue;}
-  hitKart(r,.9,.3);loseSpores(r,1);burst(r,0x7dffb0,14);if(me){SFX.grab();toast('GEPACKT!',.9,'bad');}}
- for(const m of chr.mets){if(!m.boom)continue;const dx=r.x-m.x,dz=r.z-m.z;if(dx*dx+dz*dz>16||(r.metCd||0)>elapsed)continue;r.metCd=elapsed+1.5;if(r.shield>0){r.shield=0;continue;}r.air=true;r.airT=0;r.vy=8;r.y=(r.y||0)+.1;hitKart(r,1,.5);loseSpores(r,1);if(me){SFX.hit();toast('STERNSCHNUPPE!',.9,'bad');}}}
+  hitKart(r,.9,.3);loseSpores(r,1);burst(r,0x7dffb0,14);if(me){stats.grabs++;SFX.grab();toast('GEPACKT!',.9,'bad');}}
+ for(const m of chr.mets){if(!m.boom)continue;const dx=r.x-m.x,dz=r.z-m.z;if(dx*dx+dz*dz>16||(r.metCd||0)>elapsed)continue;r.metCd=elapsed+1.5;if(r.shield>0){r.shield=0;continue;}r.air=true;r.airT=0;r.vy=8;r.y=(r.y||0)+.1;hitKart(r,1,.5);loseSpores(r,1);if(me){stats.meteorHits++;SFX.hit();toast('STERNSCHNUPPE!',.9,'bad');}}}
 function updateSwingers(t=elapsed){const pl=racers[0];for(const s of swingers){const fb=s.fire&&s.side?fireballAt(t,s.ph,s.side):null,off=fb?fb.off:Math.sin(t*s.spd+s.ph)*s.amp,p=samplePos(s.d,off,_sp);s.x=p.x;s.z=p.z;if(fb){s.active=fb.vis&&fb.y<2.4;s.mesh.visible=fb.vis;}
  if(s.kind==='ghost'){s.y=p.y+.9+Math.sin(t*2.2+s.ph)*.45;s.mesh.position.set(p.x,s.y,p.z);const face=pl?Math.atan2(pl.x-p.x,pl.z-p.z):t;s.mesh.rotation.set(0,face,-Math.cos(t*s.spd+s.ph)*.25);const near=pl&&Math.hypot(pl.x-p.x,pl.z-p.z)<18;s.boo=(s.boo||0)+((near?1:0)-(s.boo||0))*.08;s.mesh.scale.setScalar(1.2+s.boo*.35);}
  else{s.mesh.position.copy(p);s.mesh.rotation.y=t*1.5+s.ph;
@@ -1964,7 +1970,7 @@ const AUDIO_MIX={effects:.78,voice:.95,music:.49,world:.82};
 const SFX_RMS={hit:.095,bump:.075,drift:.075,cheer:.075,boost:.105,rocket:.105,ramp:.095,spore:.09,jingle:.14,goodtry:.12,finallap:.115,launch:.11};
 const CLIPS={};for(const k of Object.keys(VOICE))CLIPS['v_'+k]='assets/audio/voice/'+k+'.mp3';for(const k of Object.keys(SFX_MAX))CLIPS['s_'+k]='assets/audio/sfx/'+k+'.mp3';
 // R44: selbst synthetisierte Chiptune-Effekte (art/r44/make_chiptune.mjs) haben Vorrang vor den Samples
-const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
+const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder','levelup','unlock'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
 const clipData={},clipBuf={},clipFail={},clipNorm={},clipPlayed={},effectSources=new Set();let echoSend=null,ambSrc=null,ambGain=null,ambLfo=null,voiceGain=null,sfxGain=null,effectsOut=null,voiceSrc=null,voiceKey=null,voiceQueue=null,pendingVoice=null,duckUntil=0,ducked=false,engine=null,raceFilter=null,masterGain=null,worldGain=null,mixMuted=false,duckLevel=1,duckTick=0;
 for(const [k,url] of Object.entries(CLIPS))clipData[k]=fetch(url).then(r=>{if(!r.ok)throw new Error(url);return r.arrayBuffer();}).catch(()=>{clipFail[k]=true;return null;});
 function prepClip(k,b){const sr=b.sampleRate,ch=b.numberOfChannels,channels=Array.from({length:ch},(_,i)=>b.getChannelData(i)),d0=channels[0],audible=i=>channels.some(d=>Math.abs(d[i])>=.004);let start=0;while(start<d0.length&&!audible(start))start++;start=Math.max(0,start-Math.floor(sr*.005));const max=k.startsWith('s_')?(SFX_MAX[k.slice(2)]??2):10;let end=Math.min(d0.length,start+Math.floor(sr*max)),e=end-1;while(e>start&&!audible(e))e--;end=Math.min(end,e+Math.floor(sr*.03));
@@ -2108,7 +2114,7 @@ function bgmTick(now){const tr=bgm.tracks[bgm.current];if(!tr)return;const a=tr.
 function setSound(){soundOn=!soundOn;if(soundOn)audioInit();if(engine)engine.g.gain.value=0;if(!soundOn){stopBgm();stopVoice();}else playBgm(state==='menu'||state==='finished'||state==='ceremony'?'menu':raceTrack());syncAudioMix();$('sound').textContent=soundOn?'♪ AN':'♪ AUS';$('sound').setAttribute('aria-label',soundOn?'Ton ausschalten':'Ton einschalten');}
 
 // ---------------------------------------------------------------- Spielablauf
-function newStats(){return {mt:{mini:0,super:0,ultra:0},maxCombo:0,drafts:0,tricks:0,rings:0,precisionRings:0,airtime:0,coasters:0,hitsDealt:0,hitsTaken:0,overtakes:0,bestLap:Infinity,lapStart:0,falls:0,bumps:0,maxSpores:0};}
+function newStats(){return {cowHits:0,twisterHits:0,trainHits:0,grabs:0,squashed:0,meteorHits:0,beatBoosts:0,rocket:0,mt:{mini:0,super:0,ultra:0},maxCombo:0,drafts:0,tricks:0,rings:0,precisionRings:0,airtime:0,coasters:0,hitsDealt:0,hitsTaken:0,overtakes:0,bestLap:Infinity,lapStart:0,falls:0,bumps:0,maxSpores:0};}
 function start(){if(gp.active)selected=gp.race;worldMode=mode==='world'&&!gp.active;if(worldMode){if(selected!==WORLD_IDX)lastRaceSel=selected;selected=WORLD_IDX;}else if(selected===WORLD_IDX)selected=lastRaceSel;document.body.classList.toggle('ow',worldMode);if(!worldMode)owPortalHide();syncTrackButtons();keys.clear();buildCourse();if(worldMode)owReset();setAmbience(!!theme.ember);state='countdown';elapsed=0;countdown=3;startPress=-1;noticeTimer=0;stats=newStats();
  for(const id of ['menu','result','ceremony','pausePanel'])$(id).hidden=true;$('hud').hidden=false;$('pause').hidden=false;$('touch').hidden=false;$('gpBadge').hidden=!gp.active;$('hud').classList.toggle('tt',isTT());$('ttGhost').hidden=$('ttMedal').hidden=!isTT();if(isTT())for(const b of boxes)b.cooldown=1e9;
  document.body.classList.add('racing');document.body.classList.remove('cer');if(soundOn)audioInit();finishMusicAt=0;playBgm(raceTrack());setBgmRate(course.bgmRate||1);stopVoice();say('start');updateCamera(1,true);
@@ -2166,7 +2172,7 @@ function update(dt){
   if(engine&&ctx){const t=ctx.currentTime;aset(engine.o1.frequency,gasHeld?170:60,t,.08);aset(engine.o2.frequency,gasHeld?85:30,t,.08);aset(engine.f.frequency,gasHeld?1500:500,t,.1);aset(engine.g.gain,soundOn?.008:0,t,.1);}
   if(countdown<=0){state='race';notice('LOS!',.8);stats.lapStart=0;if(isTT()){player.item='triple';player.charges=3;}
    const fx=Math.sin(player.h),fz=Math.cos(player.h);
-   if(gasHeld&&startPress>0&&startPress<=1.0){player.boost=Math.max(player.boost,1.5);player.vx=fx*16;player.vz=fz*16;SFX.rocket();say('rocket');toast('RAKETENSTART!',1.2,'good');burst(player,0xffa53d,20);}
+   if(gasHeld&&startPress>0&&startPress<=1.0){player.boost=Math.max(player.boost,1.5);player.vx=fx*16;player.vz=fz*16;SFX.rocket();say('rocket');toast('RAKETENSTART!',1.2,'good');stats.rocket++;burst(player,0xffa53d,20);}
    else if(gasHeld&&startPress>=2.2){player.stall=1.1;say('early');toast('ZU FRÜH! Motor abgewürgt',1.4,'bad');}
    for(const r of racers)if(r.id&&Math.random()<CLASSES[cc].skill*.6){r.boost=.9;}}
   for(const r of racers)syncKart(r,dt);syncKartInstances();return;}
@@ -2303,7 +2309,7 @@ function update(dt){
    if(r.draft>1.3){r.draft=0;r.boost=Math.max(r.boost,1);if(me){stats.drafts++;SFX.whoosh();toast('WINDSCHATTEN-BOOST!',.9,'good');}}}else if(r.air)r.draft=0;
   // In Rollzonen zaehlt ein breiteres Band, sonst verfehlt man den Streifen beim Drehen
   if(!r.air){const pw=inRoll?7.4:5.6,pl=inRoll?3.7:2.4;
-   for(const d of boostPads)if(Math.abs(wrapDiff(r.distance,d))<pl&&Math.abs(r.offset)<pw){const onBeat=course.beatgates&&beatPhase(elapsed)<.24;if(onBeat&&r.boost<1.5&&me){toast('IM TAKT! +TURBO',.8,'good');SFX.mt('super');}r.boost=Math.max(r.boost,onBeat?1.7:1);}}
+   for(const d of boostPads)if(Math.abs(wrapDiff(r.distance,d))<pl&&Math.abs(r.offset)<pw){const onBeat=course.beatgates&&beatPhase(elapsed)<.24;if(onBeat&&r.boost<1.5&&me){stats.beatBoosts++;toast('IM TAKT! +TURBO',.8,'good');SFX.mt('super');}r.boost=Math.max(r.boost,onBeat?1.7:1);}}
   if(me&&r.boost>oldBoost&&oldBoost===0)SFX.boost();
   if(me&&r.stall>0&&frame%5===0)dropPuff(r);
   for(const pad of pads)if(!r.air&&r.padCd<=0&&Math.abs(wrapDiff(r.distance,pad.d))<1.9&&Math.abs(r.offset-pad.off)<2){armGlider(r,'bounce');r.air=true;r.airT=0;r.vy=11+Math.max(0,r.speed)*.1;r.y+=.1;r.boost=Math.max(r.boost,.5);r.padCd=.6;pad.squash=.45;if(nearPlayer(r,50))SFX.boing(me?1:.4);}
@@ -2389,6 +2395,15 @@ function takeRidePhoto(){photoPending=false;const p=racers[0];if(!p)return;
  const f=$('flash');if(f){f.style.transition='none';f.style.opacity='.8';requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition='opacity .5s';f.style.opacity='0';}));}
  SFX.shutter();}
 function showRidePhoto(){const rp=$('ridePhoto');if(!rp)return;rp.hidden=!ridePhoto;if(ridePhoto){rp.querySelector('img').src=ridePhoto;rp.querySelector('figcaption').textContent='ON-RIDE-FOTO · '+course.name.toUpperCase();}}
+// R44: Fortschritt nach dem Rennen - XP-Balken fuellt sich (auch ueber Stufen hinweg), neue Erfolge und Lackierungen
+function showProgress(res){store.set('prog',res.prog);const el=$('resultProg');if(!el)return;const lv0=levelOf(res.prog.xp-res.xp.total),lv1=levelOf(res.prog.xp);
+ const unl=res.levelUp?KART_COLORS.filter(k=>k.lvl&&k.lvl>res.before&&k.lvl<=res.after):[];
+ el.innerHTML=`<div class="xp-head"><b>STUFE <span id="xpLvl">${lv0.level}</span></b><span>+${res.xp.total} XP${res.xp.mul>1?` (×${res.xp.mul})`:''}</span></div><div class="xp-bar"><i id="xpFill" style="width:${Math.round(lv0.into/lv0.need*100)}%"></i></div>`+
+  `<div class="xp-parts">${res.xp.parts.map(([k,v])=>`<span>${k} <b>+${v}</b></span>`).join('')}</div>`+
+  (res.levelUp?`<div class="xp-up">⬆ FAHRERSTUFE ${res.after}!${unl.length?' · Neue Lackierung: '+unl.map(k=>k.n.split(' /')[0]).join(', '):''}</div>`:'')+
+  (res.fresh.length?`<div class="ach-new">${res.fresh.map(id=>{const a=achById(id);return `<div class="ach"><i>🏅</i><b>${a.n}</b><small>${a.d}</small></div>`;}).join('')}</div>`:'');
+ const fill=$('xpFill');setTimeout(()=>{if(res.levelUp){fill.style.width='100%';setTimeout(()=>{setText('xpLvl',String(lv1.level));fill.style.transition='none';fill.style.width='0%';void fill.offsetWidth;fill.style.transition='';fill.style.width=Math.round(lv1.into/lv1.need*100)+'%';playClip('s_c_levelup',sfxGain,.9);},700);}else fill.style.width=Math.round(lv1.into/lv1.need*100)+'%';},450);
+ if(res.fresh.length)setTimeout(()=>playClip('s_c_unlock',sfxGain,.8),res.levelUp?1600:900);}
 function end(){elapsed=racers[0].finishTime??elapsed;qualityRaceEnd();if(isTT())return endTT();state='finished';keys.clear();roulette=null;SFX.hum(false);burst(racers[0],0xffd452,26);burst(racers[0],0xed6350,16);burst(racers[0],0x55bdb2,16);
  $('result').hidden=false;$('touch').hidden=true;showRidePhoto();const order=ranking(racers),place=order.indexOf(racers[0])+1,board=$('leaderboard'),rs=raceStars(place,stats.hitsTaken);
  $('resultTitle').textContent=place===1?(rs.perfect?'Perfektes Rennen!':'Der Pokal gehört dir!'):place<=3?`Platz ${place} – aufs Treppchen!`:`Platz ${place}. Da geht noch was!`;
@@ -2399,6 +2414,7 @@ function end(){elapsed=racers[0].finishTime??elapsed;qualityRaceEnd();if(isTT())
  const bestKey=`bestlap-${selected}`,oldBestLap=store.get(bestKey,Infinity),newBestLap=stats.bestLap<oldBestLap;if(newBestLap)store.set(bestKey,stats.bestLap);
  const st=[['Beste Runde',format(stats.bestLap)+(newBestLap?' ★ NEU':'')],['Mini-Turbos · beste Combo',`${stats.mt.mini} · ${stats.mt.super} · ${stats.mt.ultra} · ×${stats.maxCombo||0}`],['Tricks · Ringe · Windschatten',`${stats.tricks} · ${stats.rings} · ${stats.drafts}`],['Präzisionsflüge',stats.precisionRings||0],...(coasters.length?[['Airtime · Achterbahn',`${stats.airtime||0} · ${stats.coasters||0}`]]:[]),['Überholt',stats.overtakes],['Treffer gelandet / kassiert',`${stats.hitsDealt} / ${stats.hitsTaken}`],['Rempler / Stürze',`${stats.bumps} / ${stats.falls}`]];
  $('resultStats').innerHTML=st.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('');
+ showProgress(recordRace(store.get('prog',{xp:0,ach:[],done:[],won:[]}),{track:selected,cc,place,finished:true,stats:{...stats}}));
  if(gp.active){const gained={};order.forEach((r,i)=>gained[r.id]=GP_POINTS[i]);addGpPoints(gp.points,order);$('resultEyebrow').textContent=`GRAND PRIX ${cc}cc · RENNEN ${gp.race+1} / ${courses.length}`;
   gpStandings(gp.points,racers.map(r=>r.id)).forEach((id,i)=>{const li=document.createElement('li');if(id===0)li.className='me';li.innerHTML=`<span>${i+1}.</span><span>${racers[id].name}</span><span class="gain">+${gained[id]}</span><span>${gp.points[id]} P</span>`;board.append(li);});
   $('again').textContent=gp.race<courses.length-1?'Nächstes Rennen →':'Zur Siegerehrung 🏆';if(gp.race<courses.length-1)say('gpnext');}
@@ -2433,7 +2449,7 @@ function ceremony(){state='ceremony';worldDirty=true;clearGroup(actors);kartInst
  let trophy=null;if(P.trophy){trophy=cloneProto(P.trophy);trophy.scale.setScalar(1.6);trophy.position.set(0,1.5*S+3.1,0);group.add(trophy);}
  group.updateMatrixWorld(true);cer={group,trophy,podium,t:0,burstT:0,center:new T.Vector3(pos.x,4,pos.z),angle:group.rotation.y};
  const mine=standings.indexOf(0)+1,tKey=`trophy-${cc}`,prevT=store.get(tKey,9);if(mine<=3&&mine<prevT)store.set(tKey,mine);
- let unlock='';if(mine===1&&cc>=100&&!store.get('gold',false)){store.set('gold',true);unlock='🔓 GOLDPILZ-KART FREIGESCHALTET!';}
+ let unlock='';if(mine===1)grantAch('gp');if(mine===1&&cc>=100&&!store.get('gold',false)){store.set('gold',true);unlock='🔓 GOLDPILZ-KART FREIGESCHALTET!';}
  $('cerTitle').textContent=mine===1?`Grand-Prix-Sieger ${cc}cc! 🏆`:mine<=3?`Platz ${mine} im Grand Prix ${cc}cc!`:`Grand Prix beendet – Platz ${mine}`;
  $('cerUnlock').textContent=unlock||(mine===1&&cc<150?`Nächste Herausforderung: ${cc===50?100:150}cc`:mine>1?'Hol dir Gold – drifte die Kurven sauberer!':'');
  const board=$('cerBoard');board.replaceChildren();standings.forEach((id,i)=>{const li=document.createElement('li');if(id===0)li.className='me';li.innerHTML=`<span>${['🥇','🥈','🥉'][i]||(i+1)+'.'}</span><span>${racers[id].name}</span><span>${gp.points[id]} P</span>`;board.append(li);});
@@ -2693,14 +2709,20 @@ function buildItemThumbs(){if(!renderer||itemThumbs.done)return;
   q.putImageData(img,0,0);itemThumbs[key]=cv.toDataURL('image/png');}
  renderer.setClearColor(oldC,oldA);rt.dispose();
  itemThumbs.done=['empty','boost','triple','shell','banana','shield','bomb'].every(k=>itemThumbs[k]);}
-function refreshMenu(){const goldOk=store.get('gold',false);$('colors').querySelectorAll('button').forEach((b,i)=>{const locked=!!(KART_COLORS[i].gold&&!goldOk);b.classList.toggle('locked',locked);b.title=locked?'Gewinne einen Grand Prix ab 100cc':KART_COLORS[i].n;});
+function openAchievements(){const pr=store.get('prog',{xp:0,ach:[]}),lv=levelOf(pr.xp||0),got=new Set(pr.ach||[]);
+ setText('achLevel',`Fahrerstufe ${lv.level}`);$('achBar').innerHTML=`<i style="width:${Math.round(lv.into/lv.need*100)}%"></i><span>${lv.into} / ${lv.need} XP</span>`;
+ $('achCount').textContent=`${got.size} / ${ACH.length} Erfolge`;
+ $('achList').innerHTML=ACH.map(a=>`<div class="ach ${got.has(a.id)?'on':''}"><i>${got.has(a.id)?'🏅':'🔒'}</i><b>${a.n}</b><small>${a.d}</small></div>`).join('')+
+  `<div class="ach-colors">${KART_COLORS.filter(k=>k.lvl).map(k=>`<span class="${lv.level>=k.lvl?'on':''}" style="--c:#${k.c.toString(16).padStart(6,'0')}">${lv.level>=k.lvl?'':'🔒 '}${k.n.split(' /')[0]} · Stufe ${k.lvl}</span>`).join('')}</div>`;
+ $('achPanel').hidden=false;}
+function refreshMenu(){const goldOk=store.get('gold',false),lv=progLevel();$('colors').querySelectorAll('button').forEach((b,i)=>{const k=KART_COLORS[i],locked=!!(k.gold&&!goldOk)||!!(k.lvl&&lv<k.lvl);b.classList.toggle('locked',locked);b.title=locked?(k.lvl?`Ab Fahrerstufe ${k.lvl}`:'Gewinne einen Grand Prix ab 100cc'):k.n;});setText('achBtnLvl','Stufe '+lv);
  const tro=[50,100,150].map(c=>{const t=store.get(`trophy-${c}`,9);return t<=3?`${['🏆','🥈','🥉'][t-1]} ${c}cc`:'';}).filter(Boolean).join('  ');const medals=courses.map((_,i)=>store.get(`medal-${i}`,3)),mc=[0,1,2].map(k=>medals.filter(x=>x===k).length);setText('trophies',[tro,mc.some(Boolean)?`🥇${mc[0]} 🥈${mc[1]} 🥉${mc[2]}`:''].filter(Boolean).join('   '));$('classes').classList.toggle('locked',mode==='tt');
  document.querySelectorAll('#classes .cls').forEach(b=>{const on=Number(b.dataset.cc)===cc;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});$('tracks').classList.toggle('locked',mode==='gp');
  // Medaille je Strecke auf die Karte
  $('tracks').querySelectorAll('.track').forEach((b,i)=>{const m=medals[i];b.dataset.medal=String(m);const em=b.querySelector('.medal');if(em)em.textContent=m<3?['\ud83e\udd47','\ud83e\udd48','\ud83e\udd49'][m]:'';});
  refreshBest();}
 KART_COLORS.forEach((k,i)=>{const b=document.createElement('button');b.className='swatch'+(i===0?' selected':'')+(k.gold?' gold':'');b.style.setProperty('--swatch','#'+k.c.toString(16).padStart(6,'0'));b.setAttribute('aria-label',k.n);b.setAttribute('aria-pressed',String(i===0));
- b.onclick=()=>{if(k.gold&&!store.get('gold',false)){toast('🔒 Gewinne einen Grand Prix ab 100cc',2,'bad');return;}colorIndex=i;$('colors').querySelectorAll('button').forEach((x,j)=>{x.classList.toggle('selected',i===j);x.setAttribute('aria-pressed',String(i===j));});try{driverThumbs();}catch(e){}buildCourse();};$('colors').append(b);});
+ b.onclick=()=>{if(k.gold&&!store.get('gold',false)){toast('🔒 Gewinne einen Grand Prix ab 100cc',2,'bad');return;}if(k.lvl&&progLevel()<k.lvl){toast(`🔒 Ab Fahrerstufe ${k.lvl}`,2,'bad');return;}colorIndex=i;$('colors').querySelectorAll('button').forEach((x,j)=>{x.classList.toggle('selected',i===j);x.setAttribute('aria-pressed',String(i===j));});try{driverThumbs();}catch(e){}buildCourse();};$('colors').append(b);});
 // Mini-Streckenplan fuer die Auswahlkarten: dieselbe Mittellinie wie im Spiel, nur flach gezeichnet
 function trackThumb(cv,c){const q=cv.getContext('2d'),W=cv.width,H=cv.height,th=THEMES[c.theme];
  const cur=new T.CatmullRomCurve3(c.points.map(([x,z])=>new T.Vector3(x,0,z)),true,'catmullrom',.38),p=cur.getSpacedPoints(220);
@@ -2720,6 +2742,7 @@ courses.forEach((c,i)=>{const b=document.createElement('button'),th=THEMES[c.the
  b.title=c.kind;b.setAttribute('aria-pressed',String(i===0));b.onclick=()=>{if(mode==='gp')return;selected=i;syncTrackButtons();buildCourse();};
  $('tracks').append(b);try{trackThumb(b.querySelector('canvas'),c);}catch(e){}});
 {const pb=$('owPortal');if(pb)pb.onclick=()=>{if(owPortalAt)owEnterTrack(owPortalAt.ti);};}
+{const ab=$('achBtn');if(ab)ab.onclick=()=>{SFX.pickup();openAchievements();};const ac=$('achClose');if(ac)ac.onclick=()=>{$('achPanel').hidden=true;};}
 {const box=$('assist');if(box)[[true,'An'],[false,'Aus']].forEach(([v,n])=>{const b=document.createElement('button');b.textContent=n;b.className=v===assistOn?'selected':'';b.setAttribute('aria-pressed',String(v===assistOn));
  b.onclick=()=>{assistOn=v;store.set('assist',v);box.querySelectorAll('button').forEach((x,j)=>{const on=j===(v?0:1);x.classList.toggle('selected',on);x.setAttribute('aria-pressed',String(on));});toast('Lenkhilfe: '+n,1.1);};box.append(b);});}
 {const box=$('gfx');if(box)Object.keys(GFX).forEach(k=>{const b=document.createElement('button');b.textContent=GFX[k].n;b.className=k===gfxMode?'selected':'';

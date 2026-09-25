@@ -117,4 +117,9 @@ report.push(wav('meteor', render(1.3, [{type: 'sq', duty: .125, f0: 2400, f1: 50
 report.push(wav('boom', render(.7, [{type: 'noise', f0: 900, vol: .3, decay: 1.4}, {type: 'tri', f0: 120, f1: 40, vol: .45, decay: 1.2}])));
 // Donner: langes Grollen mit Knistern
 report.push(wav('thunder', render(1.8, [{type: 'noise', f0: 380, vol: .3, attack: .02, hold: .2, decay: 1.1}, {type: 'noise', f0: 2600, short: true, claps: 24, seed: 5, vol: .08, hold: .15, decay: 1.6}, {type: 'tri', f0: 70, f1: 45, vol: .3, hold: .3, decay: 1.2}])));
+// Stufenaufstieg: Fanfare (Arpeggio aufwaerts, Schlussakkord)
+report.push(wav('levelup', render(1.1, [{type: 'sq', duty: .25, steps: arp(['C5', 'E5', 'G5', 'C6', 'E6', 'G6', 'C7'], .07), vol: .22, hold: .7, decay: 1.1},
+  {type: 'sq', duty: .5, steps: [[0, note('C4')], [.28, note('G4')], [.49, note('C5')]], vol: .12, hold: .7}, {type: 'tri', steps: [[0, note('C3')], [.49, note('C4')]], vol: .3, hold: .7}])));
+// Erfolg: heller Doppelklang
+report.push(wav('unlock', render(.6, [{type: 'sq', duty: .125, steps: [[0, note('E6')], [.1, note('B6')]], vol: .2, hold: .4, decay: 1.6}, {type: 'sq', duty: .25, steps: [[0, note('E5')], [.1, note('B5')]], vol: .08, hold: .4}])));
 console.log(JSON.stringify(report));

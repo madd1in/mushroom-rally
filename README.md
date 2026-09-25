@@ -109,6 +109,17 @@ geht nicht mehr nur unter Wasser: je 20 % an die Bootsfahrt an der Oberflaeche d
 Hoernern und gluehenden Augen ueber beiden Toren, Fallgitter-Zaehne in der Durchfahrt, Fackeln an Toren und
 Fluegeln, gluehendes Lavaband am Fuss, Stachelkraenze und goldene Spitzen auf den Tuermen.
 
+**Mehr Erfolgserlebnis - Fahrerstufen, Erfolge, Lackierungen (progress.mjs, 4 Unit-Tests):**
+- Jedes Rennen bringt **XP**: Platzierung (100 bis 28) plus Mini-Turbos (blau 4, rot 8, lila 15), Tricks, Windschatten,
+  Ueberholen, Ringe, +30 ohne Treffer; mal 1 / 1,25 / 1,6 je Klasse. Der Ergebnisschirm zeigt die Aufschluesselung und
+  einen XP-Balken, der sich fuellt (auch ueber einen Stufenaufstieg hinweg, mit Chiptune-Fanfare).
+- **Fahrerstufen** schalten neue Lackierungen frei: Blitz (Stufe 2), Lava (3), Wald (5), Bonbon (7), Diamant (10).
+- **23 Erfolge** mit Abzeichen: Erster Sieg, Treppchen, Turbo-Profi, Lila Funken, Combo-Koenig, Unberuehrbar,
+  Luftakrobat, Windschatten-Jaeger, Ueberholkuenstler, Muenzsammler, Raketenstart, 150cc-Champion, Grand-Prix-Sieger,
+  Weltenbummler, Pokalsammler, Achterbahn-Fan, Entdecker (Pilzland) - und je Strecke einer zur eigenen Idee:
+  Kuhfluesterer, Wuestenfuchs, Taktgefuehl, Geisterjaeger, Stampfer-Taenzer, Sternenkind.
+- Im Menue zeigt **"ERFOLGE"** Stufe, XP-Balken, alle Erfolge und die Lackierungen mit ihrer Stufe.
+
 **Jede Strecke mit eigener Idee (art/r44/create_critters.py, assets/critters.glb):**
 - **Pilz-Promenade "Almwiese":** drei Kuehe (Fleckvieh mit Glocke, Hoernern, grasendem Kopf und laufenden Beinen)
   wandern nach der engen Ecke ueber die Strasse und bleiben zum Grasen stehen - ausweichen, sonst Dreher und "Muh".
