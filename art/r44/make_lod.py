@@ -15,9 +15,9 @@ MIN_MODEL = 2500      # Modelle darunter lohnen nicht
 MIN_TRIS = 180        # Objekte darunter bleiben unveraendert
 TARGET = .42
 FLOOR = .25
-SKIP = {'kart_merged.glb'}
+SKIP = {'kart_merged.glb', 'hazards.glb'}
 # Kleine Modelle, die hundertfach instanziert stehen: halbieren, auch wenn sie unter MIN_MODEL liegen
-MANY = {'tree', 'mushroom', 'rock', 'fence', 'spectator', 'pumpkin', 'gravestone', 'crystal', 'balloon', 'kartwheel', 'grandstand', 'coastertruss', 'elements', 'itembox'}
+MANY = {'coin', 'tree', 'mushroom', 'rock', 'fence', 'spectator', 'pumpkin', 'gravestone', 'crystal', 'balloon', 'kartwheel', 'grandstand', 'coastertruss', 'elements', 'itembox'}
 report = {}
 
 def tris_of(o):

@@ -24,6 +24,8 @@ function render(dur, voices) {
       const a = v.attack ?? .004, env = t < a ? t / a : Math.pow(Math.max(0, 1 - (u - (v.hold ?? 0)) / (1 - (v.hold ?? 0))), v.decay ?? 1.4);
       const stepEnv = Math.round(Math.min(1, env) * 15) / 15;
       let s;
+      // Klatschen: Rauschen, das in zufaelligen kurzen Stoessen an- und abschwillt (8-Bit-Applaus)
+      if (v.claps) { const slot = Math.floor(t * v.claps), h = Math.sin(slot * 12.9898 + (v.seed || 0) * 78.233) * 43758.5453, r = h - Math.floor(h), ph2 = t * v.claps - slot; if (r < .35 || ph2 > .55) { buf[i] += 0; continue; } }
       if (v.type === 'noise') {
         noiseAcc += f / SR;
         while (noiseAcc >= 1) { noiseAcc -= 1; const bit = ((lfsr ^ (lfsr >> (v.short ? 6 : 1))) & 1); lfsr = (lfsr >> 1) | (bit << 14); noiseVal = (lfsr & 1) ? 1 : -1; }
@@ -86,4 +88,12 @@ report.push(wav('rocket', render(.8, [{type: 'noise', f0: 2400, vol: .2, decay: 
 // Countdown-Piep und LOS
 report.push(wav('beep', render(.14, [{type: 'sq', duty: .5, f0: note('A4'), vol: .24, hold: .6}])));
 report.push(wav('go', render(.42, [{type: 'sq', duty: .5, f0: note('A5'), vol: .26, hold: .55}, {type: 'sq', duty: .25, f0: note('A6'), vol: .08, hold: .5}])));
+// Jubel der Tribuene: drei Klatsch-Schichten, aufsteigende Pfiffe, ein kleines Hurra-Arpeggio
+report.push(wav('cheer', render(1.7, [
+  {type: 'noise', f0: 7000, claps: 17, seed: 1, vol: .16, hold: .55, decay: 1.2},
+  {type: 'noise', f0: 4200, claps: 13, seed: 2, vol: .13, hold: .55, decay: 1.2},
+  {type: 'noise', f0: 9500, short: true, claps: 21, seed: 3, vol: .07, hold: .5, decay: 1.4},
+  {type: 'sq', duty: .125, f0: 1150, f1: 1900, slide: .22, vib: [9, .02], at: .05, len: .38, vol: .09, hold: .5},
+  {type: 'sq', duty: .125, f0: 1300, f1: 2100, slide: .2, vib: [11, .02], at: .55, len: .34, vol: .08, hold: .5},
+  {type: 'sq', duty: .25, steps: arp(['C6', 'E6', 'G6', 'E6', 'G6', 'C7'], .07), at: .2, len: .6, vol: .08, hold: .6}])));
 console.log(JSON.stringify(report));

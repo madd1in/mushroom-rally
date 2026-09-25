@@ -2,7 +2,7 @@
 Aufruf: blender -b --factory-startup --python art/r44/create_coin.py
 Export assets/coin.glb mit einem Objekt RC_Coin (ein Material 'CoinGold', damit alle Muenzen einer Strecke
 in einem Instanz-Draw-Call bleiben): dicke Scheibe mit erhabenem Rand, gepraegtem Pilz (Hut mit Tupfen, Stiel)
-auf beiden Seiten und geriffelter Kante. Steht aufrecht (Achse Spiel-z), dreht sich im Spiel um die Hochachse.
+auf beiden Seiten. Steht aufrecht (Achse Spiel-z), dreht sich im Spiel um die Hochachse.
 """
 import bpy, bmesh, math, pathlib, json
 from mathutils import Vector, Matrix
@@ -37,11 +37,6 @@ cyl_z(-T, T, R * .94, R * .94, 20)                   # Kern
 for s in (-1, 1):
     cyl_z(s * T, s * (T + .045), R, R * .97, 20)        # erhabener Rand
     cyl_z(s * T, s * (T + .012), R * .8, R * .8, 20)    # Spiegelflaeche leicht erhaben
-# geriffelte Kante: 24 flache Rippen
-for k in range(0):
-    a = 2 * math.pi * k / 24
-    g = bmesh.ops.create_cube(bm, size=1)
-    xf(g['verts'], Matrix.Translation(G(math.cos(a) * R * .97, math.sin(a) * R * .97, 0)) @ Matrix.Rotation(a, 4, 'Y') @ Matrix.Diagonal((.05, T * 1.9, .05, 1)))
 # gepraegter Pilz beidseitig: Hut (abgeflachte Halbkugel), Stiel, drei Tupfen als Mulden-Buckel
 for s in (-1, 1):
     zc = s * (T + .012)

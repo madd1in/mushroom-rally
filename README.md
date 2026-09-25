@@ -61,6 +61,32 @@ selbst synthetisierte Chiptune-Effekte (art/r44/make_chiptune.mjs, NES-artig: Re
 LFSR-Rauschen): Muenze (H5 -> E6), Item-Box, Rundenfanfare, Mini-Turbo in drei Stufen, Turbo, Treffer,
 Rempler, Banane, Trick, Ring, Raketenstart, Countdown - 15 WAVs, zusammen 270 KB.
 
+**Neue Hindernisse aus Blender (art/r44/create_hazards.py, assets/hazards.glb, eigene Entwuerfe):**
+- **Stampfer** - zorniger Stachel-Steinblock mit Gesicht. Wartet oben (Schatten auf der Bahn wird dunkler, kurzes
+  Zittern), kracht herunter (Staub, Wackelkamera), liegt kurz als Hindernis und zieht sich hoch. Wer im Fall darunter
+  ist, wird plattgedrueckt. Regenbogenpiste (drei, wie auf der SNES-Regenbogenstrasse) und Lava-Feste (zwei vor dem Ziel),
+  abwechselnd links und rechts - Spurwahl und Timing entscheiden.
+- **Roehren mit Schnappblume** am Fahrbahnrand (Pilz-Promenade, Neon-Pilzwald): die Pflanze dreht sich zum naechsten
+  Kart, lehnt sich heraus und schnappt zu - wer die Kurve zu weit aussen nimmt, wird erwischt. Dazu Roehrengruppen
+  als Deko im Wald.
+- **Feuerkoenig-Statuen** (Lava-Feste): riesige gehoernte Steinbuesten mit gluehenden Augen spucken die Feuerbaelle,
+  die im Bogen auf Fahrhoehe fallen und quer ueber die Bahn fliegen; Treffer = Dreher. Jetzt drei statt einem.
+- **Roehrenkanone mit Kugelblitzen** (Lava-Feste, Ende der Burggeraden): feuert alle 1,6 s ein Geschoss mit Augen die
+  Gerade hinunter, jedes leicht versetzt (Spuren -3,5 / 0 / 3,5 / -1,5 / 2 ...) - ausweichen!
+- **Befahrbare Roehre** statt Magmaschacht auf der Lava-Feste, **"Achtung Lava"-Schilder** als Blender-Modell.
+Takte und Bahnen in hazards.mjs (4 Unit-Tests), die KI weicht Stampfern, Kugelblitzen und Feuerbaellen aus.
+
+**Tribuene neu (art/r44/create_grandstand.py):** Betonstufen mit farbigen Setzstufen und Baenken, niedrige Bruestung
+mit Sponsorband und Schachbrettstreifen (die Zuschauer sind jetzt sichtbar), gestufte Seitenwaende mit Gelaender,
+geschwungenes rot-weiss gestreiftes Dach mit Bogenkante, Wimpelkette, Fahnenmasten und Pilz-Schild. Sitzgeometrie
+unveraendert. **Sporentor neu (art/r44/create_gate.py):** Pilztuerme auf Steinsockeln mit Goldringen und
+Schachbrettband, getupfte Huete mit Wimpeln, Bannerbalken mit Schachbrettleisten und Gluehbirnenreihe; der
+Schriftzug ist jetzt ganz lesbar (vorher verdeckten die Huete M und Y). **Jubel als Chiptune:** 8-Bit-Applaus
+(Rauschen in zufaelligen Stoessen), Pfiffe und Hurra-Arpeggio.
+
+**Neon-Pilzwald:** die enge Ecke wieder entfernt - direkt dahinter liegt eine Schanze, das fuehrte zu Abstuerzen
+(Regression 3 -> 0).
+
 **Fehler behoben:** Der Portal-Knopf der Open World ("... fahren") blieb nach dem Antippen im Rennen
 und sogar im Hauptmenue sichtbar.
 
