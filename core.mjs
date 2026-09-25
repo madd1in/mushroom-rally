@@ -9,6 +9,9 @@ export const SPORE_BONUS=.35,MAX_SPORES=10;
 export const MT_LEVELS=[[1.9,1.6,'ultra'],[1.15,1.05,'super'],[.55,.6,'mini']];
 // Bunny-Hop (R44, wie Mario Kart): die Drifttaste laesst das Kart hopsen. Waehrend des Hopsers legt die Lenkung die
 // Richtung fest (und dreht etwas williger), bei der Landung mit gehaltener Taste beginnt der Funkendrift.
+// Gewitterwolke (R46): Blitze treffen alle Karts vor dem Nutzer - kurzer Dreher, Item weg, SHRINK_T Sekunden klein
+// und langsamer (SHRINK_TOP); klein darf man ueberfahren werden. Der Sternenschild blockt.
+export const SHRINK_T=4,SHRINK_TOP=.72;
 export const HOP_T=.3,HOP_GRACE=.22,HOP_TURN=1.3;
 // KI-Klassen: Tempo-Faktor und Fahrkoennen (Linienwahl, Bremspunkte, Drift-Nutzung, Fehlerrate).
 export const CLASSES={50:{ai:.76,skill:.34,rubber:.06},100:{ai:.855,skill:.52,rubber:.055},150:{ai:1,skill:.9,rubber:.02}};
@@ -20,11 +23,12 @@ export function miniTurbo(charge){for(const l of MT_LEVELS)if(charge>=l[0])retur
 // surf: {air, offroad, slope (Steigung in Fahrtrichtung), speedMul}
 export function driveKart(k,dt,input,surf={}){
  dt=clamp(dt,0,.05);const P=PHYS;
- k.boost=Math.max(0,k.boost-dt);k.shield=Math.max(0,k.shield-dt);k.stun=Math.max(0,k.stun-dt);k.cooldown=Math.max(0,k.cooldown-dt);k.hop=Math.max(0,(k.hop||0)-dt);
+ k.boost=Math.max(0,k.boost-dt);k.shield=Math.max(0,k.shield-dt);k.stun=Math.max(0,k.stun-dt);k.cooldown=Math.max(0,k.cooldown-dt);k.hop=Math.max(0,(k.hop||0)-dt);k.shrink=Math.max(0,(k.shrink||0)-dt);k.flatCd=Math.max(0,(k.flatCd||0)-dt);
  const fx=Math.sin(k.h),fz=Math.cos(k.h),lx=fz,lz=-fx,air=!!surf.air,off=!air&&!!surf.offroad,boosting=k.boost>0,stunned=k.stun>0;
  let vf=k.vx*fx+k.vz*fz,vl=k.vx*lx+k.vz*lz;
  let top=(boosting?P.boostTop:P.top+(k.spores||0)*SPORE_BONUS)*(surf.speedMul||1)*(k.mTop||1);
  if(off&&!boosting)top=Math.min(top,P.offTop);
+ if(k.shrink>0)top*=SHRINK_TOP;
  if(stunned)top=Math.min(top,5);
  const steer=clamp(input.steer||0,-1,1);
  if(!air){
@@ -69,6 +73,7 @@ export function advanceProgress(k,lapD,length){const prev=((k.distance%length)+l
 export function hitKart(k,stun,keep){k.stun=Math.max(k.stun,stun);k.vx*=keep;k.vz*=keep;k.driftDir=0;k.drift=0;k.combo=0;}
 // Zwei Karts als Kreise: auseinanderschieben und Impuls entlang der Normalen tauschen (leicht elastisch).
 export function collideKarts(a,b,rad=1.2){const dx=b.x-a.x,dz=b.z-a.z,d=Math.hypot(dx,dz);if(d>=rad*2||d<1e-6)return false;const nx=dx/d,nz=dz/d,pen=rad*2-d;a.x-=nx*pen/2;a.z-=nz*pen/2;b.x+=nx*pen/2;b.z+=nz*pen/2;const rel=(b.vx-a.vx)*nx+(b.vz-a.vz)*nz;if(rel<0){const j=-rel*.65;a.vx-=nx*j;a.vz-=nz*j;b.vx+=nx*j;b.vz+=nz*j;}return true;}
+export function flattenSmall(a,b,rel){const sa=(a.shrink||0)>0,sb=(b.shrink||0)>0;if(sa===sb||rel<4)return null;const s=sa?a:b;if(s.shield>0||(s.flatCd||0)>0)return null;hitKart(s,1.2,.35);s.flatCd=1.5;return s;}
 export function lap(r,length){return clamp(Math.floor(Math.max(0,r.distance)/length)+1,1,LAPS);}
 export function finish(r,length,time){if(r.distance>=length*LAPS&&r.finishTime===null)r.finishTime=time;return r.finishTime!==null;}
 export function ranking(rs){return [...rs].sort((a,b)=>a.finishTime!==null&&b.finishTime!==null?a.finishTime-b.finishTime:a.finishTime!==null?-1:b.finishTime!==null?1:b.distance-a.distance);}
@@ -77,10 +82,12 @@ export function activate(r,all){const item=r.item;if(!item)return null;r.item=nu
  if(item==='boost')r.boost=Math.max(r.boost,1.8);
  if(item==='triple'){r.boost=Math.max(r.boost,1.25);r.charges=(r.charges||3)-1;if(r.charges>0)r.item='triple';}
  if(item==='shield'){r.shield=6;r.boost=Math.max(r.boost,.5);}
+ if(item==='storm'){const hit=[];for(const a of all){if(a.id===r.id||a.finishTime!==null||a.distance<=r.distance)continue;if(a.shield>0){hit.push({id:a.id,blocked:true});continue;}
+  a.shrink=Math.max(a.shrink||0,SHRINK_T);a.stun=Math.max(a.stun,.8);a.driftDir=0;a.drift=0;a.item=null;a.charges=0;hit.push({id:a.id,blocked:false});}return {type:item,hit};}
  if(item==='shell'){const ahead=all.filter(a=>a.id!==r.id&&a.distance>r.distance&&a.finishTime===null).sort((a,b)=>a.distance-b.distance)[0];if(ahead&&!ahead.shield)ahead.stun=Math.max(ahead.stun,1.6);return {type:item,target:ahead?.id};}
  return {type:item,charges:r.charges};}
 // Pilzbombe: vor allem fuers Mittelfeld (dort ist das Gedraenge am groessten)
-export function itemWeights(place,count){const t=count>1?(place-1)/(count-1):0;return {banana:40*(1-t)+8,shield:22*(1-t)+10,shell:18+10*t,boost:6+30*t,triple:t>.45?66*(t-.45):0,bomb:3+16*Math.max(0,1-Math.abs(t-.5)*2.2)};}
+export function itemWeights(place,count){const t=count>1?(place-1)/(count-1):0;return {banana:40*(1-t)+8,shield:22*(1-t)+10,shell:18+10*t,boost:6+30*t,triple:t>.45?66*(t-.45):0,bomb:3+16*Math.max(0,1-Math.abs(t-.5)*2.2),storm:t>.55?30*(t-.55):0};}
 // Explosion: Karts im Radius werden getroffen (Schild blockt). Rueckgabe: false | 'blocked' | true
 export function blastHit(k,dx,dz,radius=6.5){if(Math.hypot(dx,dz)>radius)return false;if(k.shield>0)return 'blocked';hitKart(k,1.3,.3);return true;}
 // Drift-Combo: Mini-Turbos in kurzer Folge ohne Fehler zaehlen hoch; Fehler (Treffer, Wand, Wiese) setzen auf 0

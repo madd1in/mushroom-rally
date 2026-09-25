@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {raceXP, levelOf, levelStart, recordRace, ACH, TRACKS} from './progress.mjs';
+import {raceXP, levelOf, levelStart, recordRace, ACH, TRACKS, RIVAL_XP, DAILY_XP, DAILY_GOALS, dailyChallenge, dailyDone, dayKey, pickRival, rivalBeaten} from './progress.mjs';
 
 test('race XP: placement base, bonuses and class multiplier', () => {
   const plain = raceXP({place: 1, cc: 50, stats: {hitsTaken: 1}});
@@ -36,4 +36,41 @@ test('achievement ids are unique and every entry has a name and a description', 
   const ids = new Set(ACH.map(a => a.id));
   assert.equal(ids.size, ACH.length);
   for (const a of ACH) assert.ok(a.n && a.d && typeof a.t === 'function');
+});
+
+test('daily challenge: same task all day, valid track and class, win only in 50/100cc', () => {
+  const a = dailyChallenge('2026-09-25'), b = dailyChallenge('2026-09-25');
+  assert.deepEqual(a, b);
+  const seen = new Set();
+  for (let d = 1; d <= 60; d++) {
+    const c = dailyChallenge(`2026-10-${String(d).padStart(2, '0')}`);
+    assert.ok(c.track >= 0 && c.track < TRACKS);assert.ok([50, 100, 150].includes(c.cc));
+    if (c.goal === 'win') assert.ok(c.cc !== 150);seen.add(c.goal);
+  }
+  assert.ok(seen.size >= 5, 'tasks vary from day to day');
+  assert.equal(dayKey(new Date(2026, 0, 5)), '2026-01-05');
+});
+
+test('daily challenge counts only on its track and class and when the goal is met', () => {
+  const ch = {day: 'x', track: 4, cc: 100, goal: 'mt8'};
+  const good = {track: 4, cc: 100, place: 5, finished: true, stats: {mt: {mini: 5, super: 2, ultra: 1}}};
+  assert.equal(dailyDone(ch, good), true);
+  assert.equal(dailyDone(ch, {...good, track: 3}), false);
+  assert.equal(dailyDone(ch, {...good, cc: 150}), false);
+  assert.equal(dailyDone(ch, {...good, stats: {mt: {mini: 2}}}), false);
+  assert.equal(dailyDone({...ch, goal: 'podium'}, {...good, place: 3}), true);
+  assert.ok(DAILY_GOALS.every(g => typeof g.ok === 'function' && g.t));
+});
+
+test('rival: picked from the front of the grid, beaten when you finish ahead; both bonuses add XP', () => {
+  let seq = 0;const rnd = () => [0, .5, .99][seq++ % 3];
+  assert.deepEqual([pickRival([1, 2, 3, 4], rnd), pickRival([1, 2, 3, 4], rnd), pickRival([1, 2, 3, 4], rnd)], [1, 2, 3]);
+  assert.equal(pickRival([], rnd), null);
+  assert.equal(rivalBeaten([3, 0, 2], 2), true);
+  assert.equal(rivalBeaten([2, 0], 2), false);
+  assert.equal(rivalBeaten([0, 2], null), false);
+  const base = raceXP({place: 4, cc: 50, stats: {hitsTaken: 1}}).total;
+  assert.equal(raceXP({place: 4, cc: 50, stats: {hitsTaken: 1, rivalBeaten: true, daily: true}}).total, base + RIVAL_XP + DAILY_XP);
+  const r = recordRace({}, {track: 2, cc: 100, place: 4, finished: true, stats: {hitsTaken: 1, rivalBeaten: true, daily: true, stormBest: 5}});
+  assert.ok(r.fresh.includes('rival') && r.fresh.includes('daily') && r.fresh.includes('storm'));
 });

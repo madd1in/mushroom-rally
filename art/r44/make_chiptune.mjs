@@ -122,4 +122,29 @@ report.push(wav('levelup', render(1.1, [{type: 'sq', duty: .25, steps: arp(['C5'
   {type: 'sq', duty: .5, steps: [[0, note('C4')], [.28, note('G4')], [.49, note('C5')]], vol: .12, hold: .7}, {type: 'tri', steps: [[0, note('C3')], [.49, note('C4')]], vol: .3, hold: .7}])));
 // Erfolg: heller Doppelklang
 report.push(wav('unlock', render(.6, [{type: 'sq', duty: .125, steps: [[0, note('E6')], [.1, note('B6')]], vol: .2, hold: .4, decay: 1.6}, {type: 'sq', duty: .25, steps: [[0, note('E5')], [.1, note('B5')]], vol: .08, hold: .4}])));
+// R45 Sternenschild: eigene Unbesiegbarkeits-Melodie als nahtlose Schleife (4 Takte, 200 bpm, 4,8 s).
+// Akkorde C - As - B - C (bVI-bVII-I, "heldenhaft"), Rechteck-Arpeggio mit NES-Echo eine Sechzehntel spaeter,
+// Gegenstimme in halben Takten, Dreieck-Bass im Oktavsprung, Rauschen als Hi-Hat und Snare. Jede Note endet
+// in ihrer Huellkurve bei null - die Schleife knackt nicht an der Nahtstelle.
+{
+  const E = 60 / 200 / 2, voices = [];
+  const seq = (list, mk) => { let t = 0; for (const [n, len] of list) { if (n) voices.push(mk(n, t, len * E)); t += len * E; } return t; };
+  const lead = [['E6', 1], ['G6', 1], ['C7', 1], ['G6', 1], ['E6', 1], ['G6', 1], ['C7', 2],
+    ['C7', 1], ['G#6', 1], ['D#6', 1], ['G#6', 1], ['C7', 1], ['D#7', 1], ['C7', 2],
+    ['D7', 1], ['A#6', 1], ['F6', 1], ['A#6', 1], ['D7', 1], ['F7', 1], ['D7', 1], ['C7', 1],
+    ['C7', 1], ['G6', 1], ['E6', 1], ['G6', 1], ['C7', 1], ['E7', 1], ['G7', 1], [null, 1]];
+  const loop = seq(lead, (n, at, len) => ({type: 'sq', duty: .25, f0: note(n), at, len, vol: .2, hold: .45, decay: 1.3}));
+  // Echo: gleiche Linie, 12,5 % Tastgrad, eine Sechzehntel spaeter und leiser (die letzte Note faellt weg)
+  seq(lead.slice(0, -2), (n, at, len) => ({type: 'sq', duty: .125, f0: note(n), at: at + E / 2, len, vol: .07, hold: .3, decay: 1.6}));
+  seq([['C6', 4], ['E6', 4], ['D#6', 4], ['C6', 4], ['F6', 4], ['D6', 4], ['E6', 4], ['G6', 4]],
+    (n, at, len) => ({type: 'sq', duty: .5, f0: note(n), at, len, vol: .075, attack: .01, hold: .75, decay: 1.2}));
+  const bass = []; for (const [lo, hi] of [['C3', 'C4'], ['G#2', 'G#3'], ['A#2', 'A#3'], ['C3', 'C4']]) for (let i = 0; i < 4; i++) bass.push([lo, 1], [hi, 1]);
+  bass.splice(-2, 2, ['G2', 1], ['G3', 1]);
+  seq(bass, (n, at, len) => ({type: 'tri', f0: note(n), at, len, vol: .34, hold: .6, decay: 1}));
+  for (let i = 0; i < 32; i++) {
+    voices.push({type: 'noise', f0: 11000, short: true, at: i * E, len: E * .45, vol: i % 2 ? .035 : .055, decay: 2.4});
+    if (i % 4 === 2) voices.push({type: 'noise', f0: 2600, at: i * E, len: E * .9, vol: .12, decay: 1.8});
+  }
+  report.push(wav('star', render(loop, voices)));
+}
 console.log(JSON.stringify(report));

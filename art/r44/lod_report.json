@@ -30,10 +30,10 @@
   "kb": 80.6
  },
  "driver": {
-  "before": 7050,
-  "after": 3030,
+  "before": 7818,
+  "after": 3798,
   "ratio": 0.25,
-  "kb": 141.9
+  "kb": 179.2
  },
  "driver_cat": {
   "before": 6220,
@@ -45,7 +45,7 @@
   "before": 3380,
   "after": 2004,
   "ratio": 0.25,
-  "kb": 125.5
+  "kb": 125.4
  },
  "driver_turtle": {
   "before": 6698,
@@ -108,10 +108,10 @@
   "kb": 49.6
  },
  "kartkit": {
-  "before": 5776,
-  "after": 2422,
-  "ratio": 0.42,
-  "kb": 67.0
+  "before": 8200,
+  "after": 3865,
+  "ratio": 0.25,
+  "kb": 169.3
  },
  "kartwheel": {
   "before": 852,

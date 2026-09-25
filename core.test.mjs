@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {HOP_T,racer,driveKart,finish,lap,ranking,activate,rollItem,itemWeights,loseSpores,addGpPoints,gpStandings,maxCornerSpeed,miniTurbo,advanceProgress,collideKarts,hitKart,raceStars,blastHit,comboStep,COMBO_WINDOW,PHYS,SPORE_BONUS} from './core.mjs';
+import {SHRINK_T,SHRINK_TOP,flattenSmall,HOP_T,racer,driveKart,finish,lap,ranking,activate,rollItem,itemWeights,loseSpores,addGpPoints,gpStandings,maxCornerSpeed,miniTurbo,advanceProgress,collideKarts,hitKart,raceStars,blastHit,comboStep,COMBO_WINDOW,PHYS,SPORE_BONUS} from './core.mjs';
 const run=(k,sec,input,surf)=>{for(let i=0;i<sec*60;i++)driveKart(k,1/60,input,surf);};
 test('three complete forward laps required; finish recorded once',()=>{const r=racer(0,'A',0);r.distance=1999;assert.equal(lap(r,1000),2);assert.equal(finish(r,1000,20),false);r.distance=3000;assert.equal(finish(r,1000,30),true);finish(r,1000,40);assert.equal(r.finishTime,30);});
 test('acceleration reaches top speed in a few seconds, not instantly',()=>{const k=racer(0,'A',0);run(k,1,{gas:true});assert.ok(k.speed>10&&k.speed<22,`1s: ${k.speed}`);run(k,4,{gas:true});assert.ok(Math.abs(k.speed-PHYS.top)<.5,`5s: ${k.speed}`);});
@@ -22,3 +22,23 @@ test('spores raise top speed, hits cost spores and stun',()=>{const a=racer(0,'A
 test('bomb: mid-pack item, blast radius, shield blocks',()=>{const mid=itemWeights(4,8).bomb,lead=itemWeights(1,8).bomb;assert.ok(mid>lead*3,`mid ${mid} lead ${lead}`);const a=racer(0,'A',0);a.item='bomb';assert.equal(activate(a,[a]).type,'bomb');assert.equal(a.item,null);const k=racer(1,'B',0);k.vz=20;assert.equal(blastHit(k,10,0),false);assert.equal(blastHit(k,3,2),true);assert.ok(k.stun>=1.3&&k.vz<7);const s=racer(2,'C',0);s.shield=2;assert.equal(blastHit(s,1,1),'blocked');assert.equal(s.stun,0);});
 test('drift combo counts quick mini turbos and resets on hits or gaps',()=>{const k=racer(0,'A',0);assert.equal(comboStep(k,1),1);assert.equal(comboStep(k,3),2);assert.equal(comboStep(k,3+COMBO_WINDOW-.1),3);assert.equal(comboStep(k,20),1);comboStep(k,21);hitKart(k,.5,.9);assert.equal(comboStep(k,22),1);});
 test('finish order wins over subsequent movement; grand prix points; stars',()=>{const a=racer(0,'A',0),b=racer(1,'B',1);a.finishTime=40;b.finishTime=45;b.distance=9000;assert.equal(ranking([b,a])[0].id,0);const rs=[0,1,2].map(i=>racer(i,'R'+i,0));const t={};addGpPoints(t,[rs[1],rs[0],rs[2]]);addGpPoints(t,[rs[0],rs[2],rs[1]]);assert.deepEqual(gpStandings(t,[0,1,2]),[0,1,2]);assert.deepEqual(raceStars(1,0),{stars:3,perfect:true});assert.equal(raceStars(4,2).stars,1);});
+
+test('storm cloud shrinks everyone ahead, spares those behind and shielded, and slows the small karts',()=>{
+ const a=racer(0,'A',0),ahead=racer(1,'B',1),shielded=racer(2,'C',2),behind=racer(3,'D',3),done=racer(4,'E',4);
+ a.distance=100;ahead.distance=150;ahead.item='shell';shielded.distance=180;shielded.shield=2;behind.distance=60;done.distance=300;done.finishTime=50;
+ a.item='storm';const res=activate(a,[a,ahead,shielded,behind,done]);
+ assert.equal(res.type,'storm');assert.equal(a.item,null);assert.equal(ahead.shrink,SHRINK_T);assert.equal(ahead.item,null);assert.ok(ahead.stun>0);
+ assert.equal(shielded.shrink||0,0);assert.equal(behind.shrink||0,0);assert.equal(done.shrink||0,0);
+ assert.deepEqual(res.hit.map(h=>[h.id,h.blocked]),[[1,false],[2,true]]);
+ // klein faehrt langsamer
+ const big=racer(5,'F',5),small=racer(6,'G',6);small.shrink=3;for(let i=0;i<140;i++){driveKart(big,.02,{gas:true});driveKart(small,.02,{gas:true});}
+ assert.ok(Math.abs(small.speed||Math.hypot(small.vx,small.vz))<Math.abs(big.speed||Math.hypot(big.vx,big.vz))*.8,'small kart is slower');
+ assert.ok(small.shrink<3,'shrink wears off');
+});
+
+test('storm cloud comes only to the back half; a big kart flattens a small one once',()=>{
+ assert.equal(itemWeights(1,8).storm,0);assert.equal(itemWeights(4,8).storm,0);assert.ok(itemWeights(8,8).storm>itemWeights(6,8).storm);
+ const big=racer(0,'A',0),small=racer(1,'B',1);small.shrink=2;assert.equal(flattenSmall(big,small,2),null,'slow touch is harmless');
+ assert.equal(flattenSmall(big,small,9),small);assert.ok(small.stun>1);assert.equal(flattenSmall(big,small,9),null,'cooldown');
+ const b2=racer(2,'C',2);b2.shrink=1;assert.equal(flattenSmall(small,b2,9),null,'two small karts only bump');
+});

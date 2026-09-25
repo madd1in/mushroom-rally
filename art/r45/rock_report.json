@@ -1,0 +1,30 @@
+[
+ {
+  "file": "assets/rock.glb",
+  "tris": 929,
+  "parts": {
+   "rock0": 246,
+   "rock0_moss": 62,
+   "rock1": 240,
+   "rock1_moss": 59,
+   "rock2": 242,
+   "pebble51": 20,
+   "pebble53": 20,
+   "pebble57": 20,
+   "pebble59": 20
+  }
+ },
+ {
+  "file": "assets/lo/rock.glb",
+  "tris": 332,
+  "parts": {
+   "rock0": 76,
+   "rock0_moss": 26,
+   "rock1": 78,
+   "rock1_moss": 34,
+   "rock2": 78,
+   "pebble51": 20,
+   "pebble53": 20
+  }
+ }
+]

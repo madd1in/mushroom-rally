@@ -1,0 +1,14 @@
+{
+ "kartkit.glb": {
+  "triangles": 8200,
+  "bytes": 250104
+ },
+ "driver.glb": {
+  "triangles": 7818,
+  "bytes": 295972
+ },
+ "driver_robot.glb": {
+  "triangles": 3380,
+  "bytes": 160668
+ }
+}
