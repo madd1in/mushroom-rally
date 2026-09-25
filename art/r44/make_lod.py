@@ -20,6 +20,8 @@ FLOOR = .25
 SKIP = {'kart_merged.glb', 'hazards.glb'}
 # Kleine Modelle, die hundertfach instanziert stehen: halbieren, auch wenn sie unter MIN_MODEL liegen
 MANY = {'coin', 'tree', 'mushroom', 'rock', 'fence', 'spectator', 'pumpkin', 'gravestone', 'crystal', 'balloon', 'kartwheel', 'grandstand', 'coastertruss', 'elements', 'itembox'}
+# Eigene Zielanteile: runde Kronen, Pilzhut und Wolken vertragen mehr Reduktion (weit weg, weich schattiert)
+OWN = {'tree': .36, 'mushroom': .36, 'clouds': .3}
 report = {}
 
 def tris_of(o):
@@ -42,6 +44,7 @@ for f in sorted(SRC.glob('*.glb')):
     small = total - big
     # Anteil fuer die grossen Teile, damit das Ganze auf TARGET kommt (Vielfach-Modelle: halbieren)
     tgt = .5 if many and total < MIN_MODEL else TARGET
+    tgt = OWN.get(f.stem, tgt)
     ratio = max(FLOOR, min(1.0, (tgt * total - small) / max(1, big)))
     for o in meshes:
         if before[o.name] < lim:

@@ -1,11 +1,11 @@
 {
-  "startedAt": "2026-09-25T01:54:46.396Z",
+  "startedAt": "2026-09-25T13:03:00.027Z",
   "cc": 100,
   "tracks": [
     {
       "track": 0,
       "outcome": "finished",
-      "finishTime": 111.83333333332827,
+      "finishTime": 116.86666666666132,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -13,25 +13,25 @@
       "minVis": 1,
       "maxFloat": 0,
       "launches": 0,
-      "name": "✿Pilz-PromenadeWurzeltor · Viadukt · Wan",
+      "name": "✿Pilz-PromenadeAlmwiese · Kühe · Märchen",
       "coaster": [],
       "state": "finished",
       "fallAt": [],
       "place": 2,
       "simulated": 120,
       "perf": {
-        "drawCalls": 208,
-        "triangles": 489504,
+        "drawCalls": 242,
+        "triangles": 669964,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 100.6
+      "wallSeconds": 35.8
     },
     {
       "track": 1,
       "outcome": "finished",
-      "finishTime": 120.1833333333278,
+      "finishTime": 118.24999999999457,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -39,65 +39,59 @@
       "minVis": 1,
       "maxFloat": 0,
       "launches": 0,
-      "name": "☀Sonnen-CanyonSchnell · Schluchtsprung ·",
+      "name": "☀Sonnen-CanyonWüstensturm · Dünen · Sand",
       "coaster": [],
       "state": "finished",
       "fallAt": [],
-      "place": 2,
+      "place": 3,
       "simulated": 130,
       "perf": {
-        "drawCalls": 155,
-        "triangles": 410950,
+        "drawCalls": 174,
+        "triangles": 446260,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 47.4
+      "wallSeconds": 29.9
     },
     {
       "track": 2,
       "outcome": "finished",
-      "finishTime": 108.79999999999511,
-      "falls": 1,
+      "finishTime": 103.04999999999544,
+      "falls": 0,
       "airtime": 0,
       "coasters": 0,
       "maxLaunch": 0,
       "minVis": 1,
       "maxFloat": 0,
       "launches": 0,
-      "name": "✦Neon-PilzwaldTechnisch · Korkenzieher i",
+      "name": "✦Neon-PilzwaldBeat · Taktschranken · Okt",
       "coaster": [],
       "state": "finished",
-      "fallAt": [
-        [
-          828,
-          -11.3,
-          773
-        ]
-      ],
-      "place": 2,
-      "simulated": 120,
+      "fallAt": [],
+      "place": 1,
+      "simulated": 110,
       "perf": {
-        "drawCalls": 179,
-        "triangles": 479096,
+        "drawCalls": 191,
+        "triangles": 523608,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 46.1
+      "wallSeconds": 33.9
     },
     {
       "track": 3,
       "outcome": "finished",
-      "finishTime": 94.54999999999592,
+      "finishTime": 100.71666666666223,
       "falls": 0,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 44.921870955043026,
-      "minVis": 0.8776480728073806,
+      "maxLaunch": 45.44737498873517,
+      "minVis": 0.8808429148171378,
       "maxFloat": 0.5,
       "launches": 0,
-      "name": "👻GeisterhausSpuk · Villa · Geisterbahn—",
+      "name": "👻GeisterhausSpuk · Gewitter · Geisterhä",
       "coaster": [
         {
           "s": 522,
@@ -136,21 +130,21 @@
       ],
       "state": "finished",
       "fallAt": [],
-      "place": 2,
-      "simulated": 100,
+      "place": 3,
+      "simulated": 110,
       "perf": {
-        "drawCalls": 171,
-        "triangles": 509098,
+        "drawCalls": 177,
+        "triangles": 528562,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 38.5
+      "wallSeconds": 30
     },
     {
       "track": 4,
       "outcome": "finished",
-      "finishTime": 118.78333333332787,
+      "finishTime": 122.29999999999434,
       "falls": 0,
       "airtime": 0,
       "coasters": 0,
@@ -162,29 +156,29 @@
       "coaster": [],
       "state": "finished",
       "fallAt": [],
-      "place": 2,
+      "place": 3,
       "simulated": 130,
       "perf": {
-        "drawCalls": 176,
-        "triangles": 413982,
+        "drawCalls": 181,
+        "triangles": 442628,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 45.1
+      "wallSeconds": 30.1
     },
     {
       "track": 5,
       "outcome": "finished",
-      "finishTime": 122.89999999999431,
+      "finishTime": 120.06666666666113,
       "falls": 0,
       "airtime": 6,
       "coasters": 3,
-      "maxLaunch": 45.46203477863226,
-      "minVis": 0.8138007568053568,
+      "maxLaunch": 45.03401107051364,
+      "minVis": 0.8126410828473062,
       "maxFloat": 0.5,
       "launches": 0,
-      "name": "✧RegenbogenpisteWeltall · Looping · Ster",
+      "name": "✧RegenbogenpisteSternenstrasse · Stampfe",
       "coaster": [
         {
           "s": 821,
@@ -223,26 +217,26 @@
       ],
       "state": "finished",
       "fallAt": [],
-      "place": 2,
+      "place": 1,
       "simulated": 130,
       "perf": {
-        "drawCalls": 133,
-        "triangles": 225684,
+        "drawCalls": 137,
+        "triangles": 229936,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 36
+      "wallSeconds": 27.5
     },
     {
       "track": 6,
       "outcome": "finished",
-      "finishTime": 139.18333333333624,
+      "finishTime": 139.7000000000033,
       "falls": 0,
-      "airtime": 12,
+      "airtime": 9,
       "coasters": 3,
-      "maxLaunch": 44.399663375394965,
-      "minVis": 0.6402455404863141,
+      "maxLaunch": 45.466392768083224,
+      "minVis": 0.6404567422560762,
       "maxFloat": 0.5,
       "launches": 0,
       "name": "❂Magnet-KirmesAchterbahn · Magnet-Katapu",
@@ -272,8 +266,8 @@
               "h": 8
             },
             {
-              "c": 259,
-              "w": 32,
+              "c": 262,
+              "w": 60,
               "h": 9
             }
           ],
@@ -297,17 +291,17 @@
       "place": 3,
       "simulated": 150,
       "perf": {
-        "drawCalls": 164,
-        "triangles": 473740,
+        "drawCalls": 171,
+        "triangles": 543770,
         "dpr": 0.7,
         "qualityLevel": 5
       },
       "errors": [],
-      "wallSeconds": 44.4
+      "wallSeconds": 40.8
     }
   ],
   "errors": [],
   "networkFailures": [],
   "passed": true,
-  "completedAt": "2026-09-25T02:00:53.101Z"
+  "completedAt": "2026-09-25T13:07:55.237Z"
 }

@@ -1,0 +1,14 @@
+{
+ "mushroom.glb": {
+  "triangles": 2626,
+  "bytes": 65456
+ },
+ "tree.glb": {
+  "triangles": 1940,
+  "bytes": 39744
+ },
+ "clouds.glb": {
+  "triangles": 7872,
+  "bytes": 145484
+ }
+}

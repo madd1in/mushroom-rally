@@ -183,6 +183,22 @@ und sogar im Hauptmenue sichtbar.
 **Verifikation:** 72/72 Unit-Tests (neue Hop-Tests), Rennregression aller Strecken normal und im
 Leicht-Modus ohne Fehler, Screenshot der Touch-Steuerung in Handy-Emulation.
 
+**Teil 11 - Pilze, Baeume und Wolken neu (art/r44/create_nature.py, Vorschau art/r44/render_nature.py):**
+- Pilz: gewoelbter Hut mit eingerolltem Rand, helle Unterseite mit 20 Lamellen, halb eingelassene Tupfen in
+  verschiedenen Groessen, die der Woelbung folgen, leicht geschwungener Stiel mit Knolle und Manschette.
+- Baum: Stamm mit Wurzelansatz, vier Wurzeln und Seitenast, Krone aus sechs knubbeligen Bueschen statt zwei
+  gestapelter Scheiben (ohne die alten Tupfen).
+- Wolken: drei Comic-Wolkenformen aus Blender (assets/clouds.glb) mit flachem Boden und runden Hauben statt
+  Kugel-Klumpen, instanziert; die farbigen Wetterwolken (Canyon, Lava) nutzen dieselben Formen flacher.
+- Weiche Hoehenschattierung beim Laden als Vertexfarbe (Krone und Hut unten dunkler, Wolken unten kuehl-blau):
+  gibt Tiefe, bleibt je Instanz einfaerbbar und wirkt auch im Leicht-Modus. Materialnamen und Groessen wie
+  bisher, alte Modelle als art/r44/*_r43_backup.glb gesichert, Low-Poly-Fassungen neu (Pilz 0,9k, Baum 0,7k,
+  Wolke 0,8k Dreiecke; eigene Zielanteile in art/r44/make_lod.py).
+- Die Hut-Unterseite zeigt nach unten und bekam fast nur das gruene Bodenlicht (wirkte dunkelgruen): beim Laden
+  werden ihre Normalen schraeg nach aussen/oben gebogen, Lamellen und Hutrand wirken hell wie im Seitenlicht.
+- Werkzeug: `fix_normals` in art/lib/blib.py berechnet die Flaechennormalen jetzt vor der Pruefung (bmesh setzt sie
+  bei neuen Flaechen nicht) - vorher konnten Teile innen-aussen verkehrt exportiert werden.
+
 ## Runde 43 (24.09.2026): Karts und Fahrer neu in Blender - jede Figur mit eigenem Bausatz
 
 **Neue Karosserie (Blender, art/r43/create_karts.py):** Statt flacher Wanne mit dickem

@@ -197,11 +197,24 @@ function mergeByMaterial(root){root.updateMatrixWorld(true);const groups=new Map
   const key=KEEP_MATS.has(m.name)?'n:'+m.name:m.uuid,e=groups.get(key)||{m,g:[]};e.g.push(g);groups.set(key,e);});
  if(baked.length)groups.set('baked',{m:stdMat({name:'Baked',vertexColors:true,roughness:rough/cnt,metalness:Math.min(.35,metal/cnt)}),g:baked});
  const out=new T.Group();for(const e of groups.values()){const mixed=new Set(e.g.map(g=>!!g.index)).size>1;const gs=e.g.map(g=>{g=mixed&&g.index?g.toNonIndexed():g;if(!g.attributes.normal)g.computeVertexNormals();for(const k of Object.keys(g.attributes))if(k!=='position'&&k!=='normal'&&!(k==='uv'&&e.m.map)&&!(k==='color'&&e.m.vertexColors))g.deleteAttribute(k);return g;});const geo=mergeGeometries(gs,false);if(geo)out.add(new T.Mesh(geo,e.m));else for(const g of gs)out.add(new T.Mesh(g,e.m));}return out;}
-let loaded=0;const PROTO_FILES=['kart','mushroom','gate','tree','rock','balloon','itembox','banana','shell','ramp','grandstand','spectator','bouncepad','podium','trophy','ghost','gravestone','pumpkin','kartwheel','driver','driver_turtle','driver_robot','driver_cat','glider','crystal','windring','kartkit','coin'];
+let loaded=0;const PROTO_FILES=['kart','mushroom','gate','tree','rock','balloon','itembox','banana','shell','ramp','grandstand','spectator','bouncepad','podium','trophy','ghost','gravestone','pumpkin','kartwheel','driver','driver_turtle','driver_robot','driver_cat','glider','crystal','windring','kartkit','coin','clouds'];
 // Villa und Burg sind gross und stehen nur auf je einer Strecke: erst nach dem Start nachladen
 const LATE_FILES=['mansion','castle','roottree','neongate','magnetarch','coastertruss','ferriswheel','dragon','transform','elements','ow','hazards','landmarks','critters','tower'];
 // Ohne Materialverschmelzung laden: der Drache braucht seine Teile (Glied, Kopf, Kiefer, Schwanz) einzeln
-const NO_MERGE=new Set(['dragon','transform','elements','ow','kartkit','hazards','landmarks','critters','tower']);
+const NO_MERGE=new Set(['dragon','transform','elements','ow','kartkit','hazards','landmarks','critters','tower','clouds']);
+// R44: weiche Hoehenschattierung als Vertexfarbe (unten dunkler und kuehler, oben hell) - wirkt auch im Leicht-Modus
+// und in den Low-Poly-Fassungen, die Lackfarbe je Instanz (Baumkrone, Pilzhut) bleibt erhalten
+function shadeGeo(g,lo,hi,nw=.25){const p=g.attributes.position,n=g.attributes.normal,old=g.attributes.color;g.computeBoundingBox();const b=g.boundingBox,h=Math.max(1e-3,b.max.y-b.min.y),c=new Float32Array(p.count*3);
+ for(let i=0;i<p.count;i++){let t=(p.getY(i)-b.min.y)/h*(1-nw)+(n?n.getY(i)*.5+.5:.5)*nw;t=Math.min(1,Math.max(0,t));t=t*t*(3-2*t);for(let k=0;k<3;k++)c[i*3+k]=(lo[k]+(hi[k]-lo[k])*t)*(old?old.getComponent(i,k):1);}
+ g.setAttribute('color',new T.BufferAttribute(c,3));}
+function shadeProto(root,name,lo,hi,nw){root.traverse(o=>{if(o.isMesh&&o.material&&o.material.name===name){shadeGeo(o.geometry,lo,hi,nw);o.material=o.material.clone();o.material.vertexColors=true;}});return root;}
+// Pilz-Unterseite: zeigt nach unten und bekaeme fast nur das gruene Bodenlicht - Normalen schraeg nach aussen/oben biegen,
+// damit Lamellen hell wie im Seitenlicht wirken (nur oberhalb von minY, der Stiel bleibt unberuehrt)
+function litUnderside(root,minY){const v=new T.Vector3();root.traverse(o=>{const mn=o.material?.name;if(!o.isMesh||(mn!=='Baked'&&mn!=='CapPaint'))return;const p=o.geometry.attributes.position,n=o.geometry.attributes.normal;if(!n)return;
+ for(let i=0;i<p.count;i++)if(n.getY(i)<-.4&&p.getY(i)>minY){const x=p.getX(i),z=p.getZ(i),l=Math.hypot(x,z)||1;v.set(x/l*.7,.45,z/l*.7).normalize();n.setXYZ(i,v.x,v.y,v.z);}n.needsUpdate=true;});return root;}
+// Wolken: jede der drei Formen einzeln verschmelzen (eine Geometrie je Form fuer die Instanzierung)
+function prepClouds(scene){const out=new T.Group();for(let v=0;v<3;v++){const o=scene.getObjectByName('CL_Cloud'+v);if(!o)continue;let mesh=null;mergeByMaterial(o).traverse(q=>{if(q.isMesh&&!mesh)mesh=q;});if(!mesh)continue;shadeGeo(mesh.geometry,[.74,.79,.9],[1.04,1.04,1.04],.35);mesh.name='CL_Cloud'+v;out.add(mesh);}return out;}
+const PREP={tree:r=>shadeProto(r,'CapPaint',[.55,.62,.55],[1.1,1.1,1.02]),mushroom:r=>litUnderside(shadeProto(r,'CapPaint',[.68,.64,.64],[1.06,1.06,1.06],.4),1.9),clouds:prepClouds};
 // Asset-Laden robust (R31): schlug eine GLB beim ersten Versuch fehl (Deploy-Propagation,
 // Mobile-Netz), blieben die Block-Fallbacks fuer den Rest der Sitzung - Fahrer und Tor
 // als Bloeke. Jetzt zwei Wiederholungen mit Abstand, und wenn ein Prototyp nachtraeglich
@@ -215,9 +228,9 @@ function createPrototypeRecovery(names,prototypes,onRecovered){
    handled=true;onRecovered();return true;}};
 }
 // Leicht-Modus: Low-Poly-Fassungen aus art/r44/make_lod.py (Blender Decimate, gleiche Objekt- und Materialnamen)
-const LO_FILES=new Set(['balloon', 'castle', 'coastertruss', 'coin', 'dragon', 'driver', 'driver_cat', 'driver_robot', 'driver_turtle', 'elements', 'ferriswheel', 'gate', 'ghost', 'glider', 'grandstand', 'gravestone', 'itembox', 'kart', 'kartkit', 'kartwheel', 'mansion', 'mushroom', 'pumpkin', 'roottree', 'spectator', 'tree']);
+const LO_FILES=new Set(['balloon', 'castle', 'coastertruss', 'coin', 'dragon', 'driver', 'driver_cat', 'driver_robot', 'driver_turtle', 'elements', 'ferriswheel', 'gate', 'ghost', 'glider', 'grandstand', 'gravestone', 'itembox', 'kart', 'kartkit', 'kartwheel', 'mansion', 'mushroom', 'pumpkin', 'roottree', 'spectator', 'tree', 'clouds']);
 function loadProto(name){return new Promise(resolve=>{
- const tryLoad=attempt=>{new GLTFLoader().load(`assets/${LITE&&LO_FILES.has(name)?'lo/':''}${name}.glb`,g=>{const merged=liteRoot(NO_MERGE.has(name)?g.scene:mergeByMaterial(g.scene));markShared(merged);P[name]=merged;progress();resolve();},undefined,
+ const tryLoad=attempt=>{new GLTFLoader().load(`assets/${LITE&&LO_FILES.has(name)?'lo/':''}${name}.glb`,g=>{let root=NO_MERGE.has(name)?g.scene:mergeByMaterial(g.scene);if(PREP[name])root=PREP[name](root);const merged=liteRoot(root);markShared(merged);P[name]=merged;progress();resolve();},undefined,
   ()=>{if(attempt<2){setTimeout(()=>tryLoad(attempt+1),1200);}else{P[name]=null;progress();resolve();}});};
  tryLoad(0);});}
 function progress(){loaded++;const el=$('loaderBar');if(el)el.style.width=Math.round(loaded/PROTO_FILES.length*100)+'%';}
@@ -1539,12 +1552,18 @@ function buildSceneryInner(random){const th=course.theme,glow=theme.glow;
   {const gs=[[],[],[]];for(let i=0;i<14;i++){const a=i/14*TAU+random()*.2,r=(240+random()*60)*WK,rad=18+random()*26,h=26+random()*40,x=Math.cos(a)*r,z=Math.sin(a)*r;gs[i%2].push(new T.CylinderGeometry(rad*.8,rad,h,7).translate(x,h/2-8,z));gs[2].push(new T.CylinderGeometry(rad*.82,rad*.8,3,7).translate(x,h-6.5,z));}
   [theme.hills[0],theme.hills[1],0xe9a060].forEach((c,i)=>world.add(new T.Mesh(mergeGeometries(gs[i]),mat(c,{flatShading:true,roughness:1}))));}}
  if(th!=='canyon'&&th!=='lava'&&th!=='rainbow'){const gs=[[],[]];for(let i=0;i<16;i++){const a=i/16*TAU,r=(228+random()*70)*WK;gs[i%2].push(new T.SphereGeometry(1,16,12).scale(25+random()*25,28+random()*34,24+random()*15).translate(Math.cos(a)*r,-4,Math.sin(a)*r));}gs.forEach((g,i)=>{const h=new T.Mesh(mergeGeometries(g),mat(theme.hills[i]));h.receiveShadow=true;world.add(h);});}
- if(theme.clouds){const gs=[];for(let i=0;i<Math.round(15*WK);i++){const cx=(random()-.5)*420*WK,cy=60+random()*40,cz=(random()-.5)*350*WK;for(let k=0;k<4;k++)gs.push(new T.SphereGeometry(1,12,8).scale(5,3.5,3).translate(cx+k*4-6,cy+Math.sin(k)*2,cz));}const cl=new T.Mesh(mergeGeometries(gs),white);world.add(cl);}
+ // R44: Comic-Wolken aus Blender (drei Formen mit flachem Boden, instanziert, Unterseite kuehl schattiert); Fallback Kugel-Haufen
+ const cgeo=P.clouds?[0,1,2].map(v=>P.clouds.getObjectByName('CL_Cloud'+v)?.geometry).filter(Boolean):[];
+ const cloudInst=(list,material)=>cgeo.forEach((g,v)=>{const l=list.filter(c=>c.v%cgeo.length===v);if(!l.length)return;const im=new T.InstancedMesh(g,material,l.length);
+  l.forEach((c,i)=>{_e.set(0,c.ry,0);_q.setFromEuler(_e);_m.compose(_v.set(c.x,c.y,c.z),_q,_s.set(c.s,c.s*c.sy,c.s*c.sz));im.setMatrixAt(i,_m);});world.add(im);});
+ if(theme.clouds){const list=[];for(let i=0;i<Math.round(15*WK);i++){const cx=(random()-.5)*420*WK,cy=60+random()*40,cz=(random()-.5)*350*WK;list.push({x:cx,y:cy,z:cz,s:1+((i*37)%10)/26,sy:1,sz:1,ry:(i*2.39)%TAU,v:i});}
+  if(cgeo.length)cloudInst(list,stdMat({color:0xffffff,roughness:1,vertexColors:true,emissive:0xe8f0ff,emissiveIntensity:.2}));
+  else{const gs=[];for(const c of list)for(let k=0;k<4;k++)gs.push(new T.SphereGeometry(1,12,8).scale(5,3.5,3).translate(c.x+k*4-6,c.y+Math.sin(k)*2,c.z));world.add(new T.Mesh(mergeGeometries(gs),white));}}
  // Wetter-Wolken: Canyon bekommt Abendrot, Lava-Feste Glutwolken - flache Haufen, ein Aufruf je Thema
- if(theme.cloudCols){const cm=stdMat({color:theme.cloudCols[0],roughness:1,emissive:theme.cloudCols[1],emissiveIntensity:.38}),gs=[];
-  for(let i=0;i<Math.round(14*WK);i++){const cx=(random()-.5)*460*WK,cy=78+random()*52,cz=(random()-.5)*380*WK,w=8+random()*8;
-   for(let k=0;k<4;k++)gs.push(new T.SphereGeometry(1,10,7).scale(w*(k===1||k===2?.72:1),2.3,w*.5).translate(cx+k*w*.62-w,cy+(k===1?1.4:0),cz+(k%2?1.3:-1.3)));}
-  world.add(new T.Mesh(mergeGeometries(gs),cm));}
+ if(theme.cloudCols){const cm=stdMat({color:theme.cloudCols[0],roughness:1,emissive:theme.cloudCols[1],emissiveIntensity:.38,vertexColors:cgeo.length>0}),gs=[],list=[];
+  for(let i=0;i<Math.round(14*WK);i++){const cx=(random()-.5)*460*WK,cy=78+random()*52,cz=(random()-.5)*380*WK,w=8+random()*8;list.push({x:cx,y:cy,z:cz,s:w/5,sy:.32,sz:.9,ry:(i*1.77)%TAU,v:i});
+   if(!cgeo.length)for(let k=0;k<4;k++)gs.push(new T.SphereGeometry(1,10,7).scale(w*(k===1||k===2?.72:1),2.3,w*.5).translate(cx+k*w*.62-w,cy+(k===1?1.4:0),cz+(k%2?1.3:-1.3)));}
+  if(cgeo.length)cloudInst(list,cm);else world.add(new T.Mesh(mergeGeometries(gs),cm));}
  if(P.balloon)for(let i=0;i<theme.balloons;i++){const a=i/Math.max(1,theme.balloons)*TAU+random(),r=90+random()*60,g=cloneProto(P.balloon);applyTint(g,'CapPaint',[0xed6350,0xffd45c,0x55bdb2,0xa688dc][i]);g.position.set(Math.cos(a)*r,30+random()*20,Math.sin(a)*r);world.add(g);balloons.push({g,base:g.position.y,ph:random()*TAU});}
  if(th==='night'||th==='haunted'||th==='fair'){
   // Laternen entlang der Strecke + Gluehwuermchen (Shader-Partikel)

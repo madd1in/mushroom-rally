@@ -126,10 +126,10 @@
   "kb": 369.4
  },
  "mushroom": {
-  "before": 1744,
-  "after": 870,
-  "ratio": 0.487,
-  "kb": 75.1
+  "before": 2626,
+  "after": 944,
+  "ratio": 0.36,
+  "kb": 33.2
  },
  "pumpkin": {
   "before": 2352,
@@ -150,9 +150,15 @@
   "kb": 12.7
  },
  "tree": {
-  "before": 828,
-  "after": 406,
-  "ratio": 0.482,
-  "kb": 43.2
+  "before": 1940,
+  "after": 698,
+  "ratio": 0.36,
+  "kb": 17.0
+ },
+ "clouds": {
+  "before": 7872,
+  "after": 2358,
+  "ratio": 0.3,
+  "kb": 45.1
  }
 }

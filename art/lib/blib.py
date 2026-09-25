@@ -85,6 +85,7 @@ def xf(bm, verts, M4):
 def fix_normals(bm, faces, center):
     """Normalen nach aussen (vom Mittelpunkt weg) - recalc_face_normals scheitert an offenen Streifen."""
     for f in faces:
+        f.normal_update()
         if (f.calc_center_median() - center).dot(f.normal) < 0:
             f.normal_flip()
 
