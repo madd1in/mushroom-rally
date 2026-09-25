@@ -147,4 +147,22 @@ report.push(wav('unlock', render(.6, [{type: 'sq', duty: .125, steps: [[0, note(
   }
   report.push(wav('star', render(loop, voices)));
 }
+// R45 Riesenpilz: wachsen - wippendes Aufwaerts-Arpeggio (Grundton/Quinte im Wechsel), Dreieck-Bass eine Oktave tiefer
+const growN = ['C4', 'G3', 'D4', 'A3', 'E4', 'B3', 'F#4', 'C#4', 'G#4', 'D#4', 'A#4', 'F4', 'C5', 'G5', 'C6'];
+report.push(wav('mega', render(1.15, [{type: 'sq', duty: .5, steps: arp(growN, .07), vol: .22, hold: .85, decay: 1.2},
+  {type: 'tri', steps: arp(growN.map(n => n.replace(/\d/, d => String(+d - 1))), .07), vol: .3, hold: .85},
+  {type: 'noise', f0: 8000, short: true, at: .98, len: .17, vol: .06, decay: 2}])));
+// R45 Riesenpilz vorbei: schrumpfen - dasselbe abwaerts, kuerzer
+report.push(wav('shrink', render(.62, [{type: 'sq', duty: .5, steps: arp(['C5', 'G4', 'A#4', 'F4', 'G#4', 'D#4', 'F#4', 'C#4', 'E4'], .06), vol: .2, hold: .7, decay: 1.4},
+  {type: 'tri', steps: arp(['C4', 'G3', 'A#3', 'F3', 'G#3', 'D#3', 'F#3', 'C#3', 'E3'], .06), vol: .26, hold: .7}])));
+// R45 Plattgemacht (vom Riesenpilz): komischer Plopp mit Quietschen
+report.push(wav('squash', render(.34, [{type: 'sq', duty: .25, f0: 320, f1: 1100, slide: .06, vol: .2, decay: 1.6}, {type: 'sq', duty: .125, f0: 1100, f1: 240, at: .07, len: .25, vol: .14, decay: 1.4},
+  {type: 'noise', f0: 1400, vol: .12, decay: 2.2}])));
+// R45 Tintenpilz: satter Klatscher (tiefes Rauschen), Blubbern nach unten, nasses Nachtropfen
+report.push(wav('ink', render(.62, [{type: 'noise', f0: 700, vol: .3, decay: 1.8}, {type: 'tri', f0: 260, f1: 70, slide: .3, vib: [18, .08], vol: .4, decay: 1.2},
+  {type: 'sq', duty: .125, steps: [[0, note('E5')], [.09, note('C5')], [.18, note('A4')]], at: .22, len: .36, vol: .07, decay: 1.6}])));
+// R45 Tagesaufgabe geschafft: Fanfare mit Schlussakkord und Glitzer
+report.push(wav('daily', render(1.3, [{type: 'sq', duty: .25, steps: [[0, note('G5')], [.1, note('C6')], [.2, note('E6')], [.3, note('G6')], [.5, note('E6')], [.6, note('G6')], [.7, note('C7')]], vol: .22, hold: .75, decay: 1.2},
+  {type: 'sq', duty: .5, steps: [[0, note('E5')], [.3, note('G5')], [.7, note('E6')]], vol: .1, hold: .75}, {type: 'tri', steps: [[0, note('C3')], [.3, note('G3')], [.7, note('C4')]], vol: .32, hold: .75},
+  {type: 'noise', f0: 9000, short: true, at: .7, len: .5, vol: .05, decay: 2}])));
 console.log(JSON.stringify(report));

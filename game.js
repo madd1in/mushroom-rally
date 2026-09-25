@@ -9,7 +9,7 @@ import {ACH,achById,recordRace,levelOf,pickRival,rivalBeaten,dailyChallenge,dail
 import {STAMP,stamperState,stamperCrushes,stamperBlocks,fireballAt,CANNON,cannonLane,missileAt} from './hazards.mjs';
 import {OW,pswitchMission,pswitchPress,pswitchCollect,pswitchTick,timeLeft,slalomMission,slalomPass,ringsMission,ringsHit,ringsLand,progressAdd} from './ow.mjs';
 import {LOOP,loopSpec,loopFrame as loopFrameAt,agravSegments,agravRoll,agravRings} from './loop.mjs';
-import {HOP_T,miniTurbo,flattenSmall,blastHit,comboStep,racer,driveKart,turnCurve,advanceProgress,hitKart,collideKarts,maxCornerSpeed,angleDiff,lap,finish,ranking,activate,clamp,LAPS,rollItem,loseSpores,addGpPoints,gpStandings,raceStars,GP_POINTS,MAX_SPORES,PHYS,CLASSES} from './core.mjs';
+import {MEGA_T,INK_T,HOP_T,miniTurbo,flattenSmall,blastHit,comboStep,racer,driveKart,turnCurve,advanceProgress,hitKart,collideKarts,maxCornerSpeed,angleDiff,lap,finish,ranking,activate,clamp,LAPS,rollItem,loseSpores,addGpPoints,gpStandings,raceStars,GP_POINTS,MAX_SPORES,PHYS,CLASSES} from './core.mjs';
 
 const $=id=>document.getElementById(id),TAU=Math.PI*2,TEST=new URLSearchParams(location.search).has('test');
 const store={get(k,d){try{const v=localStorage.getItem('mr-'+k);return v===null?d:JSON.parse(v);}catch{return d;}},set(k,v){if(TEST)return;try{localStorage.setItem('mr-'+k,JSON.stringify(v));}catch{}}};
@@ -47,23 +47,23 @@ const THEMES={
 const courses=[
  {name:'Pilz-Promenade',icon:'✿',kind:'Almwiese · Kühe · Märchenschloss',medals:[93,99,110],music:'race',theme:'forest',seed:7,
   points:[[-45,-45],[-8,-8],[30,30],[72,62],[112,42],[118,-12],[82,-52],[38,-38],[-35,35],[-72,68],[-112,40],[-118,-15],[-85,-58]],sharp:[[9,13]],
-  raise:[[6.55,8.45,8,44,1]],hills:[[10.6,4,.022]],elem:[[2.95,4.3,'bach']],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],agrav:[[4.5,6.4,'wallrun',90]],loopc:[[10.75,13,2,1]],builds:[[.9,'roottree']],
+  raise:[[6.55,8.45,8,44,1]],hills:[[10.6,4,.022]],elem:[[2.95,4.3,'bach']],tunnel:[[1.8,2.9,'wood']],gaps:[[11.6,12]],agrav:[[4.5,6.4,'wallrun',90]],loopc:[[10.75,13,2,1]],builds:[[.9,'roottree']],
   ramps:[[4.4,0,9],[9.7,0,8]],pads:[[3.1,-4],[10.0,4]],
   pipes:[[1.35,1,1],[1.6,-1,0],[8.7,1,1],[9.35,-1,1]],landmarks:{castle:1,maypoles:[[.35,1],[10.0,-1]]},pennants:[0x1a73e8,0xffffff],cows:[[9.45,10.4,3]],boost:[1.9,5.5,12.3],boxes:[1.6,4.9,9.3,12.0],stands:[[.2,18],[5.2,-19]]},
  {name:'Sonnen-Canyon',icon:'☀',kind:'Wüstensturm · Dünen · Sandhosen · Güterzug',medals:[125,131,142],music:'sunset',theme:'canyon',seed:23,
   points:[[0,78],[95,78],[125,45],[120,-20],[85,-45],[105,-88],[50,-102],[2,-50],[-60,-98],[-115,-72],[-122,0],[-105,55],[-55,80]],sharp:[[4,13]],
   loopc:[[9.12,13,1,-1]],dunes:[[.55,2.25,1.7,18]],twisters:[[5.95,6,.35,0],[12.1,6,.3,1.7],[12.7,6,.33,3.1]],sand:[[4,0,8.5]],hills:[[1.5,4,.03],[4.5,6,.04]],plateau:[9.45,11.7,7,34],gaps:[[10.5,14]],fork:[[6.25,8.75,.36]],
-  raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],
+  raise:[[2.3,3.3,7,30,1]],tunnel:[[4.6,5.85,'rock']],
   ramps:[[3.3,0,9],[6.5,3,7]],pads:[[2.4,-4],[8.4,4]],
-  train:[3.4,0],boost:[.5,5.2,12.2],boxes:[1.0,4.0,7.0,9.1,12.6],stands:[[.3,-18],[4.35,19]]},
+  train:[3.4,0],boost:[.5,5.2,12.2],boxes:[1.0,4.0,7.0,9.1,12.6],stands:[[.3,-18],[4.12,19]]},
  {name:'Neon-Pilzwald',icon:'✦',kind:'Beat · Taktschranken · Oktoberfest',medals:[115,121,132],music:'night',theme:'night',seed:41,
   points:[[0,70],[50,75],[80,50],[55,25],[85,0],[95,-45],[55,-60],[30,-35],[0,-60],[-30,-95],[-80,-80],[-70,-40],[-105,-10],[-95,40],[-60,35],[-40,65]],
-  hills:[[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[9.3,10.0,'neon']],gaps:[[12.55,12]],agrav:[[8.6,10.75,'roll',1]],elem:[[2.36,5.6,'see',{loop:[3,11,1]}]],
+  hills:[[10.5,5,.035]],raise:[[1.1,2.1,7,28,1]],tunnel:[[8.9,10.3,'neon']],gaps:[[12.55,12]],agrav:[[8.6,10.75,'roll',1]],elem:[[2.36,5.6,'see',{loop:[3,11,1]}]],
   ramps:[[10.6,0,8]],pads:[[4.4,3],[12.4,-3]],
-  builds:[[11.45,'neongate']],pipes:[[13.25,1,1],[13.5,-1,1]],landmarks:{tent:[12.0,-1],maypoles:[[.35,-1],[11.0,1]],hearts:[[.7,1],[11.2,-1],[13.9,-1],[14.6,1]],pretzels:[[.9,-1],[11.6,1],[14.3,-1]]},beatgates:[[11.05],[11.9],[14.1]],boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
+  builds:[[11.45,'neongate']],pipes:[[13.25,1,1],[13.5,-1,1]],landmarks:{tent:[12.0,-1],maypoles:[[.35,-1],[11.0,1]],hearts:[[.7,1],[11.2,-1],[13.9,-1],[14.6,1]],pretzels:[[.9,-1],[11.6,1],[14.3,-1]]},beatgates:[[11.05],[11.9],[14.1]],boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.85,-19]]},
  {name:'Geisterhaus',icon:'👻',kind:'Spuk · Gewitter · Geisterhände',medals:[101,108,120],music:'night',bgmRate:.9,theme:'haunted',seed:66,
   points:[[0,70],[55,78],[95,55],[105,10],[70,-16],[100,-60],[70,-95],[20,-90],[-30,-90],[-75,-95],[-112,-55],[-104,-18],[-93,12],[-104,40],[-80,70],[-40,76]],
-  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.4,13.4,'ceiling',1]],coaster:[[8.2,9.82,'hills']],loopc:[[4.1,14,2,-1]],elem:[[5.9,7.85,'see']],
+  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.2,3.6,'crypt']],agrav:[[11.4,13.4,'ceiling',1]],coaster:[[8.2,9.82,'hills']],loopc:[[4.1,14,2,-1]],elem:[[5.9,7.85,'see']],
   ramps:[[5.4,0,9],[13.5,0,8]],pads:[[4.6,3],[14.6,-3]],
   hands:[[.7,2.1,6]],boost:[.5,6,12.5],ghosts:[[1.6,5.5,.9,0],[5.3,5.5,1.1,2],[7.5,4.2,1,.5],[10.4,5.5,.8,4],[12.9,5.5,1.2,1]],boxes:[1.2,4.1,9.6,13.9],stands:[[.3,-19],[13.2,19]]},
  {name:'Lava-Feste',icon:'\u2668',kind:'Burg \u00b7 Magma \u00b7 Feuerb\u00e4lle',medals:[111,117,128],music:'sunset',bgmRate:1.06,theme:'lava',seed:88,
@@ -112,6 +112,9 @@ const KART_COLORS=[{c:0xff3b30,n:'Ruby / Rot'},{c:0xffc400,n:'Sunny / Gelb'},{c:
  // R44: Lackierungen, die mit der Fahrerstufe freigeschaltet werden
  {c:0x2f8cff,n:'Blitz / Blau',lvl:2},{c:0xff7a1a,n:'Lava / Orange',lvl:3},{c:0x22c55e,n:'Wald / Grün',lvl:5},{c:0xff5fc8,n:'Bonbon / Pink',lvl:7},{c:0xeef1f6,n:'Diamant / Weiß',lvl:10}];
 const progLevel=()=>levelOf(store.get('prog',{xp:0}).xp||0).level;
+// R47 Spiegel-Modus (ab Fahrerstufe 3): das Bild wird gespiegelt (auch Schilder, wie im grossen Vorbild), die Lenkung
+// entsprechend umgedreht - Strecken und Physik bleiben gleich. Nicht im Zeitfahren und nicht im Pilzland.
+const MIRROR_LVL=3;let mirrorOn=store.get('mirror',false),raceMirror=false;
 // Jede Figur faehrt ihr eigenes Kart: Beschleunigung, Hoechsttempo, Grip, Lenkung und Bauform
 const DRIVERS=[
  {k:'driver',n:'Pilzi',i:'🍄',kart:'Sporenflitzer',acc:1,top:1,grip:1,turn:1,sc:[1,1,1],tip:'ausgewogen'},
@@ -124,9 +127,9 @@ const TRACK_SCALE=1.35,ROAD_HALF=7.6,G=30,G_STICK=74,RAMP_LEN=6.2,RAMP_H=1.15,FA
 // Weltgroesse (R41): Rennstrecken liegen auf einer Insel mit 210 m Radius, die Open World ist groesser.
 // WK skaliert Insel, Meer, Streufelder und Kulisse; AK die Anzahl flaechig gestreuter Deko (hoechstens 4x).
 let WK=1,AK=1,hz=null;
-const ITEM_ICONS={boost:'⚡',triple:'⚡',shell:'◉',banana:'🍌',shield:'★',bomb:'💣'},ITEM_NAMES={boost:'TURBO',triple:'DREIFACH-TURBO',shell:'SUCH-PANZER',banana:'BANANE',shield:'STERNENSCHILD',bomb:'PILZBOMBE',storm:'GEWITTERWOLKE'};
-const ITEM_ART={storm:"<svg viewBox='0 0 48 48'><path d='M14 28a8 8 0 0 1 1-16 11 11 0 0 1 20 2 7 7 0 0 1-1 14z' fill='#5b4f86' stroke='#2b2346' stroke-width='3' stroke-linejoin='round'/><path d='M26 26l-7 10h6l-3 9 10-12h-6l3-7z' fill='#ffe27a' stroke='#b5760c' stroke-width='2' stroke-linejoin='round'/></svg>",empty:"<svg viewBox='0 0 48 48'><path d='M17 17a7 7 0 1 1 9.8 6.4c-1.9.9-2.8 2-2.8 4.1v2' fill='none' stroke='#d8e6dc' stroke-width='5' stroke-linecap='round'/><circle cx='24' cy='37' r='3.2' fill='#d8e6dc'/></svg>",boost:"<svg viewBox='0 0 48 48'><path d='M28 3 10 27h10l-3 18 21-26H27z' fill='#ffe27a' stroke='#b5760c' stroke-width='3' stroke-linejoin='round'/></svg>",triple:"<svg viewBox='0 0 48 48'><path d='M19 4 6 24h7l-2 14 14-18h-7z' fill='#ffe27a' stroke='#b5760c' stroke-width='2.6' stroke-linejoin='round'/><path d='M36 10 25 26h6l-2 12 12-16h-6z' fill='#fff0ad' stroke='#b5760c' stroke-width='2.6' stroke-linejoin='round'/></svg>",shell:"<svg viewBox='0 0 48 48'><path d='M5 34a19 16 0 0 1 38 0z' fill='#8fd8ff' stroke='#1d6c99' stroke-width='3' stroke-linejoin='round'/><path d='M24 18v16M13 23l-3 11M35 23l3 11' stroke='#1d6c99' stroke-width='2.6' fill='none' stroke-linecap='round'/><rect x='4' y='33' width='40' height='7' rx='3.5' fill='#fff4d9' stroke='#1d6c99' stroke-width='3'/></svg>",banana:"<svg viewBox='0 0 48 48'><path d='M10 9c1 15 8 25 27 28-3 4-9 5-14 4C11 39 5 28 6 13z' fill='#ffe45c' stroke='#9a7a12' stroke-width='3' stroke-linejoin='round'/><path d='M8 9c-2-2-4-2-5 0' stroke='#6c5a2a' stroke-width='3.4' fill='none' stroke-linecap='round'/></svg>",shield:"<svg viewBox='0 0 48 48'><path d='M24 3 30 18l16 1-12 10 4 16-14-9-14 9 4-16L2 19l16-1z' fill='#ffe9fb' stroke='#c95bb0' stroke-width='3' stroke-linejoin='round'/><circle cx='24' cy='24' r='4.5' fill='#ff9ee0'/></svg>",bomb:"<svg viewBox='0 0 48 48'><circle cx='21' cy='29' r='15' fill='#3b3546' stroke='#14101c' stroke-width='3'/><path d='M30 16c3-6 8-8 12-5' stroke='#a8764a' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M43 8l2-4 2 4-4 1z' fill='#ffb02e'/><circle cx='43.5' cy='10' r='3.6' fill='#ffd45c'/><ellipse cx='16' cy='24' rx='4' ry='2.6' fill='#6a6478' opacity='.8'/></svg>"};
-const ITEM_COL={storm:'#b7a4ff',boost:'#ffd45c',triple:'#ffd45c',shell:'#8fd8ff',banana:'#ffe45c',shield:'#ffb8ec',bomb:'#ff9a6a'};
+const ITEM_ICONS={boost:'⚡',triple:'⚡',shell:'◉',banana:'🍌',shield:'★',bomb:'💣',mega:'🍄',ink:'✒'},ITEM_NAMES={boost:'TURBO',triple:'DREIFACH-TURBO',shell:'SUCH-PANZER',banana:'BANANE',shield:'STERNENSCHILD',bomb:'PILZBOMBE',storm:'GEWITTERWOLKE',mega:'RIESENPILZ',ink:'TINTENPILZ'};
+const ITEM_ART={storm:"<svg viewBox='0 0 48 48'><path d='M14 28a8 8 0 0 1 1-16 11 11 0 0 1 20 2 7 7 0 0 1-1 14z' fill='#5b4f86' stroke='#2b2346' stroke-width='3' stroke-linejoin='round'/><path d='M26 26l-7 10h6l-3 9 10-12h-6l3-7z' fill='#ffe27a' stroke='#b5760c' stroke-width='2' stroke-linejoin='round'/></svg>",empty:"<svg viewBox='0 0 48 48'><path d='M17 17a7 7 0 1 1 9.8 6.4c-1.9.9-2.8 2-2.8 4.1v2' fill='none' stroke='#d8e6dc' stroke-width='5' stroke-linecap='round'/><circle cx='24' cy='37' r='3.2' fill='#d8e6dc'/></svg>",boost:"<svg viewBox='0 0 48 48'><path d='M28 3 10 27h10l-3 18 21-26H27z' fill='#ffe27a' stroke='#b5760c' stroke-width='3' stroke-linejoin='round'/></svg>",triple:"<svg viewBox='0 0 48 48'><path d='M19 4 6 24h7l-2 14 14-18h-7z' fill='#ffe27a' stroke='#b5760c' stroke-width='2.6' stroke-linejoin='round'/><path d='M36 10 25 26h6l-2 12 12-16h-6z' fill='#fff0ad' stroke='#b5760c' stroke-width='2.6' stroke-linejoin='round'/></svg>",shell:"<svg viewBox='0 0 48 48'><path d='M5 34a19 16 0 0 1 38 0z' fill='#8fd8ff' stroke='#1d6c99' stroke-width='3' stroke-linejoin='round'/><path d='M24 18v16M13 23l-3 11M35 23l3 11' stroke='#1d6c99' stroke-width='2.6' fill='none' stroke-linecap='round'/><rect x='4' y='33' width='40' height='7' rx='3.5' fill='#fff4d9' stroke='#1d6c99' stroke-width='3'/></svg>",banana:"<svg viewBox='0 0 48 48'><path d='M10 9c1 15 8 25 27 28-3 4-9 5-14 4C11 39 5 28 6 13z' fill='#ffe45c' stroke='#9a7a12' stroke-width='3' stroke-linejoin='round'/><path d='M8 9c-2-2-4-2-5 0' stroke='#6c5a2a' stroke-width='3.4' fill='none' stroke-linecap='round'/></svg>",shield:"<svg viewBox='0 0 48 48'><path d='M24 3 30 18l16 1-12 10 4 16-14-9-14 9 4-16L2 19l16-1z' fill='#ffe9fb' stroke='#c95bb0' stroke-width='3' stroke-linejoin='round'/><circle cx='24' cy='24' r='4.5' fill='#ff9ee0'/></svg>",bomb:"<svg viewBox='0 0 48 48'><circle cx='21' cy='29' r='15' fill='#3b3546' stroke='#14101c' stroke-width='3'/><path d='M30 16c3-6 8-8 12-5' stroke='#a8764a' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M43 8l2-4 2 4-4 1z' fill='#ffb02e'/><circle cx='43.5' cy='10' r='3.6' fill='#ffd45c'/><ellipse cx='16' cy='24' rx='4' ry='2.6' fill='#6a6478' opacity='.8'/></svg>",mega:"<svg viewBox='0 0 48 48'><path d='M5 27C5 14 13 6 24 6s19 8 19 21z' fill='#ff4a3d' stroke='#9b1b17' stroke-width='3' stroke-linejoin='round'/><circle cx='15' cy='16' r='4.2' fill='#fff'/><circle cx='30' cy='13' r='3.4' fill='#fff'/><circle cx='36' cy='22' r='2.6' fill='#fff'/><circle cx='23' cy='22' r='3' fill='#fff'/><path d='M15 27h18v9a7 7 0 0 1-7 7h-4a7 7 0 0 1-7-7z' fill='#fff1d6' stroke='#9b6b3a' stroke-width='3' stroke-linejoin='round'/><circle cx='21' cy='33' r='1.6' fill='#3a2a1c'/><circle cx='27' cy='33' r='1.6' fill='#3a2a1c'/><path d='M40 3l5 6h-3v6h-4V9h-3z' fill='#ffd45c' stroke='#b5760c' stroke-width='1.6' stroke-linejoin='round'/></svg>",ink:"<svg viewBox='0 0 48 48'><path d='M24 3c9 0 14 9 14 21v4H10v-4C10 12 15 3 24 3z' fill='#f4f1ea' stroke='#3a3440' stroke-width='3' stroke-linejoin='round'/><path d='M10 24h28v5c0 3-2 7-3.5 4S33 36 31 33s-2 4-3.5 1-2 4-3.5 1-2 4-3.5 0-2 3-3.5 0-2 2-3 0z' fill='#15121c'/><rect x='20.5' y='31' width='7' height='14' rx='3.5' fill='#f4f1ea' stroke='#3a3440' stroke-width='2.5'/><circle cx='18.5' cy='16' r='3.6' fill='#fff' stroke='#15121c' stroke-width='1.6'/><circle cx='29.5' cy='16' r='3.6' fill='#fff' stroke='#15121c' stroke-width='1.6'/><circle cx='19' cy='16.8' r='1.7' fill='#15121c'/><circle cx='30' cy='16.8' r='1.7' fill='#15121c'/><path d='M13 36c0 4-4 4-4 0l2-5zM39 38c0 4-4 4-4 0l2-5z' fill='#15121c'/></svg>"};
+const ITEM_COL={storm:'#b7a4ff',boost:'#ffd45c',triple:'#ffd45c',shell:'#8fd8ff',banana:'#ffe45c',shield:'#ffb8ec',bomb:'#ff9a6a',mega:'#ff6b5a',ink:'#c9c2dc'};
 const MT_COLORS={mini:0x3aa8ff,super:0xff3b2f,ultra:0xd36bff},MT_LABEL={mini:'MINI-TURBO',super:'SUPER-TURBO',ultra:'ULTRA-TURBO'};
 
 let selected=0,colorIndex=0,driverIndex=Math.max(0,Math.min(3,store.get('driver',0)|0)),mode='single',cc=store.get('class',100),state='menu',elapsed=0,countdown=3,last=0,curve,length=1,course,theme,ctx,frame=0,noticeTimer=0,toastTimer=0;
@@ -184,7 +187,12 @@ const flameMat=new T.MeshBasicMaterial({color:0xffa531,transparent:true,opacity:
 const brakeMat=new T.MeshBasicMaterial({color:0xff2a18,transparent:true,opacity:.92,blending:T.AdditiveBlending,depthWrite:false});
 const brakeGeo=new T.BoxGeometry(.34,.16,.1);
 const shieldGeo=new T.SphereGeometry(1.75,24,16),flameGeo=new T.ConeGeometry(.28,1.3,8);flameGeo.rotateX(-Math.PI/2);flameGeo.translate(0,0,-.65);
-const persistentMats=new Set([cream,dark,white,gold,shieldMat,flameMat]);
+// R45: Schild der Rivalen - nur ein duenner Randschimmer statt gefuellter Blase, und je naeher an der Kamera, desto
+// durchsichtiger (vorher verdeckte eine Blase direkt vor dem Spieler die halbe Fahrbahn)
+const shieldRivalMat=new T.ShaderMaterial({uniforms:{uTime:shaderTime},transparent:true,depthWrite:false,blending:T.AdditiveBlending,
+ vertexShader:'varying vec3 vN;varying vec3 vV;varying float vD;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);vD=-mv.z;gl_Position=projectionMatrix*mv;}',
+ fragmentShader:'uniform float uTime;varying vec3 vN;varying vec3 vV;varying float vD;void main(){float f=pow(1.-abs(dot(vN,vV)),3.2);float near=smoothstep(5.,16.,vD);vec3 c=mix(vec3(1.,.82,.25),vec3(.5,.95,1.),f);gl_FragColor=vec4(c*f*(.75+.15*sin(uTime*9.))*near,1.);}'});
+const persistentMats=new Set([cream,dark,white,gold,shieldMat,shieldRivalMat,flameMat]);
 
 // ---------------------------------------------------------------- GLB-Prototypen (Blender-MCP)
 const sharedGeo=new Set([flameGeo,shieldGeo]),sharedMat=new Set(),P={};
@@ -197,11 +205,11 @@ function mergeByMaterial(root){root.updateMatrixWorld(true);const groups=new Map
   const key=KEEP_MATS.has(m.name)?'n:'+m.name:m.uuid,e=groups.get(key)||{m,g:[]};e.g.push(g);groups.set(key,e);});
  if(baked.length)groups.set('baked',{m:stdMat({name:'Baked',vertexColors:true,roughness:rough/cnt,metalness:Math.min(.35,metal/cnt)}),g:baked});
  const out=new T.Group();for(const e of groups.values()){const mixed=new Set(e.g.map(g=>!!g.index)).size>1;const gs=e.g.map(g=>{g=mixed&&g.index?g.toNonIndexed():g;if(!g.attributes.normal)g.computeVertexNormals();for(const k of Object.keys(g.attributes))if(k!=='position'&&k!=='normal'&&!(k==='uv'&&e.m.map)&&!(k==='color'&&e.m.vertexColors))g.deleteAttribute(k);return g;});const geo=mergeGeometries(gs,false);if(geo)out.add(new T.Mesh(geo,e.m));else for(const g of gs)out.add(new T.Mesh(g,e.m));}return out;}
-let loaded=0;const PROTO_FILES=['kart','mushroom','gate','tree','rock','balloon','itembox','banana','shell','ramp','grandstand','spectator','bouncepad','podium','trophy','ghost','gravestone','pumpkin','kartwheel','driver','driver_turtle','driver_robot','driver_cat','glider','crystal','windring','kartkit','coin','clouds'];
+let loaded=0;const PROTO_FILES=['kart','mushroom','gate','tree','rock','balloon','itembox','banana','shell','ramp','grandstand','spectator','bouncepad','podium','trophy','ghost','gravestone','pumpkin','kartwheel','driver','driver_turtle','driver_robot','driver_cat','glider','crystal','windring','kartkit','coin','clouds','inkcap','tunnelkit'];
 // Villa und Burg sind gross und stehen nur auf je einer Strecke: erst nach dem Start nachladen
 const LATE_FILES=['mansion','castle','roottree','neongate','magnetarch','coastertruss','ferriswheel','dragon','transform','elements','ow','hazards','landmarks','critters','tower'];
 // Ohne Materialverschmelzung laden: der Drache braucht seine Teile (Glied, Kopf, Kiefer, Schwanz) einzeln
-const NO_MERGE=new Set(['dragon','transform','elements','ow','kartkit','hazards','landmarks','critters','tower','clouds']);
+const NO_MERGE=new Set(['dragon','transform','elements','ow','kartkit','hazards','landmarks','critters','tower','clouds','tunnelkit']);
 // R44: weiche Hoehenschattierung als Vertexfarbe (unten dunkler und kuehler, oben hell) - wirkt auch im Leicht-Modus
 // und in den Low-Poly-Fassungen, die Lackfarbe je Instanz (Baumkrone, Pilzhut) bleibt erhalten
 function shadeGeo(g,lo,hi,nw=.25){const p=g.attributes.position,n=g.attributes.normal,old=g.attributes.color;g.computeBoundingBox();const b=g.boundingBox,h=Math.max(1e-3,b.max.y-b.min.y),c=new Float32Array(p.count*3);
@@ -887,6 +895,7 @@ function placeRacers(){const cls=CLASSES[cc];racers=[];
   r.skill=clamp(cls.skill+(7-id)*.012+(id%3-1)*.02,.3,.98);r.laneBias=((id*37)%11-5)*.3;r.driftCd=0;r.aiDrift=0;
   if(reuse){r.mesh=kartPool.meshes[s];const u=r.mesh.userData;if(u.shield)u.shield.visible=false;if(u.glider)u.glider.visible=false;resetTransform(u);if(u.flames)for(const f of u.flames)f.visible=false;r.mesh.visible=true;r.mesh.scale.setScalar(1);}
   else{r.mesh=id===0||!kartInst?kart(r.color,id===0&&KART_COLORS[colorIndex].gold,id===0?driverIndex:AI_DRIVERS[id]):kartVirtual(r.color,ai.indexOf(id));kartsG.add(r.mesh);}
+  {const u=r.mesh.userData;if(u.shield)u.shield.material=id===0?shieldMat:shieldRivalMat;}
   racers[id]=r;}
  if(!reuse){kartPool={sig,meshes:order.map(id=>racers[id].mesh)};warmKarts();}
  // Rivale (R46): einer aus den ersten drei Startplaetzen, faehrt etwas besser als sein Klassenwert
@@ -1003,13 +1012,13 @@ function forkIslandDecor(){for(const f of forks)for(let rel=10;rel<f.span-10;rel
 // ---------- Tunnel: Gewoelbe ueber der Strecke, Portale, Lichter. Innen wird es dunkel.
 const TUNNEL_R=13.4,TUNNEL_TH=.8;
 const TUNNEL_STYLE={
- wood:{wall:0x6b4426,spot:0x4a2c17,rim:0x7d5a32,lamp:0xffcf7a,glow:.9,rings:0,label:'PILZSTAMM'},
- rock:{wall:0xb06a3c,spot:0x8a4f2a,rim:0x9c5c32,lamp:0xffd08a,glow:.8,rings:0,label:'FELSTUNNEL'},
- neon:{wall:0x171540,spot:0x241f5c,rim:0x2de2e6,lamp:0xff3cac,glow:2.0,rings:1,label:'NEONROEHRE'},
- crypt:{wall:0x2b2440,spot:0x1b1630,rim:0x6f5cc0,lamp:0x8affc8,glow:1.4,rings:1,label:'GRUFT'},
- lava:{wall:0x2a1a18,spot:0x3f2420,rim:0xff5a1f,lamp:0xffb347,glow:1.8,rings:1,label:'MAGMASCHACHT'},
+ wood:{wall:0x6b4426,spot:0x4a2c17,rim:0x7d5a32,lamp:0xffcf7a,glow:.9,rings:0,label:'PILZSTAMM',shaft:0xfff0c2},
+ rock:{wall:0xb06a3c,spot:0x8a4f2a,rim:0x9c5c32,lamp:0xffd08a,glow:.8,rings:0,label:'FELSTUNNEL',shaft:0xffe2a6},
+ neon:{wall:0x171540,spot:0x241f5c,rim:0x2de2e6,lamp:0xff3cac,glow:2.0,rings:1,label:'NEONROEHRE',shaft:0x8ff4ff},
+ crypt:{wall:0x2b2440,spot:0x1b1630,rim:0x6f5cc0,lamp:0x8affc8,glow:1.4,rings:1,label:'GRUFT',shaft:0xbfe6ff},
+ lava:{wall:0x2a1a18,spot:0x3f2420,rim:0xff5a1f,lamp:0xffb347,glow:1.8,rings:1,label:'MAGMASCHACHT',shaft:0xffa24a},
  // R44: befahrbare Roehre (gruen, goldene Baender)
- pipe:{wall:0x1b7a36,spot:0x22903f,rim:0x33c95a,lamp:0xffd84a,glow:1.1,rings:1,label:'ROEHRE'},
+ pipe:{wall:0x1b7a36,spot:0x22903f,rim:0x33c95a,lamp:0xffd84a,glow:1.1,rings:1,label:'ROEHRE',shaft:0xfff4c8},
  // R44: Mauerdurchbruch in den Burgturm (Basalt, Fackelschein)
  breach:{wall:0x2c2022,spot:0x3e2c2c,rim:0x5a403c,lamp:0xff7a1a,glow:1.3,rings:0,label:'TURM'}};
 function inTunnel(d){const dl=lapDist(d);return tunnels.some(t=>lapDist(dl-t.s)<=lapDist(t.e-t.s));}
@@ -1020,38 +1029,99 @@ function archRing(d,r0,r1,lift0=0,lift1=0,seg=14){const v=new Float32Array((seg+
   uv.set([k/seg*2,0,k/seg*2,1],k*4);
   if(k<seg){const b=k*2;idx.push(b,b+2,b+1,b+1,b+2,b+3);}}
  const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(v,3));g.setAttribute('uv',new T.BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g;}
+// R45: Tunnel-Ueberarbeitung. Wandmuster je Stil (Maserung, Mauerwerk, Neonraster, Nieten), ein Erdhuegel ueber dem
+// Gewoelbe statt Felsbrocken, die innen durch die Wand stachen, Portale aus Blender (assets/tunnelkit.glb), Rippen
+// und leuchtende Laternen innen. In laengeren Tunneln Licht-Durchbrueche in der Decke: Lichtkegel mit Staub und ein
+// Lichtfleck auf der Fahrbahn. Der Huegel wirft Schatten, drinnen ist es also wirklich dunkel und durch die Oeffnungen
+// faellt Sonne; im Leicht-Modus (ohne Schatten) dunkelt ein Streifen die Fahrbahn ab.
+const TUNNEL_TEX=new Map();
+function tunnelTex(style,st){let t=TUNNEL_TEX.get(style);if(t)return t;const S=256,w=new T.Color(st.wall),sp=hex(st.spot),rim=hex(st.rim),lamp=hex(st.lamp),rnd=rng(style.length*97+13);
+ const shade=(c,k)=>hex(new T.Color(c).multiplyScalar(k));
+ t=canvasTex(S,S,(q)=>{q.fillStyle=hex(w);q.fillRect(0,0,S,S);
+  if(style==='wood'){for(let x=0;x<S;x+=5){q.globalAlpha=.2+rnd()*.35;q.strokeStyle=rnd()<.5?sp:shade(st.wall,.55);q.lineWidth=1+rnd()*2.4;q.beginPath();let xx=x;q.moveTo(xx,0);for(let y=16;y<=S;y+=16){xx+=(rnd()-.5)*3;q.lineTo(xx,y);}q.stroke();}
+   for(let k=0;k<5;k++){const x=rnd()*S,y=rnd()*S;q.globalAlpha=.55;q.fillStyle=shade(st.wall,.45);q.beginPath();q.ellipse(x,y,4+rnd()*5,9+rnd()*8,0,0,TAU);q.fill();q.globalAlpha=.35;q.strokeStyle=sp;q.lineWidth=2;q.beginPath();q.ellipse(x,y,10,17,0,0,TAU);q.stroke();}}
+  else if(style==='neon'){q.globalAlpha=1;q.fillStyle=shade(st.wall,.8);q.fillRect(0,0,S,S);for(let k=0;k<=S;k+=32){q.shadowColor=rim;q.shadowBlur=8;q.globalAlpha=.55;q.strokeStyle=k%64?rim:lamp;q.lineWidth=2;q.beginPath();q.moveTo(k,0);q.lineTo(k,S);q.moveTo(0,k);q.lineTo(S,k);q.stroke();}q.shadowBlur=0;}
+  else if(style==='pipe'){const g=q.createLinearGradient(0,0,S,0);g.addColorStop(0,shade(st.wall,.7));g.addColorStop(.5,shade(st.wall,1.25));g.addColorStop(1,shade(st.wall,.7));q.fillStyle=g;q.fillRect(0,0,S,S);
+   q.globalAlpha=.6;q.fillStyle=shade(st.wall,.5);q.fillRect(0,S/2-5,S,10);q.globalAlpha=.9;q.fillStyle='#ffd84a';for(let x=8;x<S;x+=21){q.beginPath();q.arc(x,S/2,3.2,0,TAU);q.fill();}}
+  else{ // Mauerwerk: versetzte Steine mit dunklen Fugen (Fels, Gruft, Lava, Mauerdurchbruch)
+   q.fillStyle=shade(st.wall,.42);q.fillRect(0,0,S,S);const rows=8,h=S/rows;
+   for(let r=0;r<rows;r++){let x=-(r%2)*h*.9;while(x<S){const wd=h*(1.1+rnd()*1.4);q.globalAlpha=1;q.fillStyle=rnd()<.45?sp:shade(st.wall,.85+rnd()*.3);q.fillRect(x+2,r*h+2,wd-4,h-4);
+     q.globalAlpha=.16;q.fillStyle='#fff';q.fillRect(x+3,r*h+3,wd-6,3);q.globalAlpha=.2;q.fillStyle='#000';q.fillRect(x+3,r*h+h-6,wd-6,3);x+=wd;}}
+   if(style==='lava'||style==='breach'){q.globalAlpha=.85;q.strokeStyle=lamp;q.shadowColor=lamp;q.shadowBlur=6;q.lineWidth=2;for(let k=0;k<6;k++){let x=rnd()*S,y=rnd()*S;q.beginPath();q.moveTo(x,y);for(let m=0;m<6;m++){x+=(rnd()-.5)*30;y+=rnd()*22;q.lineTo(x,y);}q.stroke();}q.shadowBlur=0;}
+   if(style==='crypt'){q.globalAlpha=.35;q.fillStyle='#3f6a44';for(let k=0;k<40;k++)q.fillRect(rnd()*S,rnd()*S*.3,3+rnd()*6,2+rnd()*4);}}
+  q.globalAlpha=1;for(let k=0;k<900;k++){q.globalAlpha=.06+rnd()*.12;q.fillStyle=rnd()<.5?'#000':'#fff';q.fillRect(rnd()*S,rnd()*S,2,2);}q.globalAlpha=1;},true);
+ TUNNEL_TEX.set(style,t);return t;}
+let _glowTex=null;
+const glowTex=()=>_glowTex||(_glowTex=canvasTex(64,64,(q,w,h)=>{const g=q.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'#fff');g.addColorStop(.25,'#ffffffb0');g.addColorStop(1,'#fff0');q.fillStyle=g;q.fillRect(0,0,w,h);}));
+// Lichtkegel: nach unten ausblendend, zu den Raendern weich, nah an der Kamera durchsichtig (kein Blenden beim Durchfahren)
+function shaftMat(col){return new T.ShaderMaterial({uniforms:{uTime:shaderTime,uCol:{value:new T.Color(col)},uI:{value:LITE?.42:.55}},transparent:true,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide,
+ vertexShader:'attribute float aH;varying float vH;varying vec3 vN;varying vec3 vV;varying float vD;void main(){vH=aH;vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);vD=-mv.z;gl_Position=projectionMatrix*mv;}',
+ fragmentShader:'uniform float uTime;uniform vec3 uCol;uniform float uI;varying float vH;varying vec3 vN;varying vec3 vV;varying float vD;void main(){float e=pow(abs(dot(vN,vV)),1.7);float g=mix(.18,1.,vH*vH);float f=.86+.14*sin(uTime*1.3+vH*5.);gl_FragColor=vec4(uCol*e*g*f*uI*smoothstep(1.5,9.,vD),1.);}'});}
+function dustMat(col){return new T.ShaderMaterial({uniforms:{uTime:shaderTime,uCol:{value:new T.Color(col)}},transparent:true,depthWrite:false,blending:T.AdditiveBlending,
+ vertexShader:'attribute float aSeed;uniform float uTime;varying float vA;void main(){vec3 p=position;float t=uTime*.18+aSeed;p.y+=sin(t*2.1)*1.3;p.x+=sin(t*1.3+aSeed*4.)*.6;p.z+=cos(t*1.7+aSeed*2.)*.6;vec4 mv=modelViewMatrix*vec4(p,1.);vA=.55+.45*sin(uTime*2.+aSeed*9.);gl_PointSize=clamp(90./-mv.z,1.,9.);gl_Position=projectionMatrix*mv;}',
+ fragmentShader:'uniform vec3 uCol;varying float vA;void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;gl_FragColor=vec4(uCol*(1.-d*2.)*vA*.9,1.);}'});}
 function buildTunnels(){if(!tunnels.length)return;
- for(const t of tunnels){const st=TUNNEL_STYLE[t.style]||TUNNEL_STYLE.rock,span=lapDist(t.e-t.s),steps=Math.max(8,Math.ceil(span/2.6)),SEG=14,R=TUNNEL_R;
-  // Gewoelbe
-  const n=(steps+1)*(SEG+1),v=new Float32Array(n*3),uv=new Float32Array(n*2),idx=[];
-  for(let i=0;i<=steps;i++){const d=t.s+span*i/steps;
-   // Hoehe entlang der Fahrbahnnormalen statt senkrecht: dadurch dreht sich das Gewoelbe in
-   // Anti-Grav-Zonen mit, und Tunnel und Korkenzieher lassen sich kombinieren.
-   for(let k=0;k<=SEG;k++){const a=Math.PI*k/SEG,p=posAt(d,-Math.cos(a)*R,Math.sin(a)*R*TUNNEL_TH,_sp),o=i*(SEG+1)+k;
-    v[o*3]=p.x;v[o*3+1]=p.y;v[o*3+2]=p.z;uv[o*2]=k/SEG*2.5;uv[o*2+1]=span*i/steps/11;
-    if(i<steps&&k<SEG){idx.push(o,o+1,o+SEG+1,o+1,o+SEG+2,o+SEG+1);}}}
-  const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(v,3));g.setAttribute('uv',new T.BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();
-  const wallMat=stdMat({map:speckleTexture(hex(st.wall),hex(st.spot),1500),roughness:.95,side:T.DoubleSide,emissive:st.wall,emissiveIntensity:.45});
-  const shell=new T.Mesh(g,wallMat);shell.receiveShadow=true;world.add(shell);
-  // Portale an beiden Enden
-  const portalMat=mat(st.rim,{roughness:.85,...(theme.glow?{emissive:st.rim,emissiveIntensity:.5}:{})});
-  for(const [d,dir] of [[t.s,-1],[t.e,1]]){
-   const pm=new T.Mesh(archRing(d+dir*.6,R,R+3.0),portalMat);pm.castShadow=true;pm.material.side=T.DoubleSide;world.add(pm);
-   if(st.rings){const s=sample(d,0),sign=mesh(new T.PlaneGeometry(9,1.5),label(st.label,hex(st.lamp),'#14101c',512,96),world,s.p.x,s.p.y+R*TUNNEL_TH+1.9,s.p.z);
-    sign.rotation.y=s.angle+(dir<0?Math.PI:0);sign.material.side=T.DoubleSide;sign.castShadow=false;}}
-  // Lampen und Leuchtbaender
+ const sunV=new T.Vector3(...(theme.sunPos||[60,90,40])).normalize(),_a=new T.Vector3(),_b=new T.Vector3();
+ for(const t of tunnels){const st=TUNNEL_STYLE[t.style]||TUNNEL_STYLE.rock,span=lapDist(t.e-t.s),steps=Math.max(8,Math.ceil(span/2.6)),SEG=14,R=TUNNEL_R,RO=R+2.8,stepL=span/steps;
+  // Licht-Durchbrueche: je ~22 m eine Oeffnung (2 Schritte lang, die obersten 2 Segmente breit), nicht an den Enden
+  // in Roll- und Wandzonen dreht sich die Roehre mit - dort gibt es kein Oben, also keine Oeffnungen
+  let rolled=false;if(agrav.length)for(let d=t.s;d<=t.s+span;d+=6)if(Math.abs(rollAt(d))>.05){rolled=true;break;}
+  const holes=[];if(st.shaft&&span>34&&!rolled)for(let dd=11;dd<span-11;dd+=22){const i0=Math.round(dd/stepL);if(i0>1&&i0+2<steps-1)holes.push(i0);}
+  const inHole=(i,k)=>(k===SEG/2-1||k===SEG/2)&&holes.some(h=>i>=h&&i<h+2);
+  // Gewoelbe innen und Erdhuegel aussen (gleiches Raster, damit die Oeffnungen fluchten)
+  const shellGeo=(rad,jit)=>{const n=(steps+1)*(SEG+1),v=new Float32Array(n*3),uv=new Float32Array(n*2),idx=[];
+   for(let i=0;i<=steps;i++){const d=t.s+stepL*i;for(let k=0;k<=SEG;k++){const a=Math.PI*k/SEG,bump=jit?Math.sin(i*1.7+k*2.3)*.55+Math.sin(i*.61-k*1.1)*.45:0,rr=rad+bump*(k>0&&k<SEG?1:0),
+     p=posAt(d,-Math.cos(a)*rr,Math.sin(a)*rr*TUNNEL_TH,_sp),o=i*(SEG+1)+k;v[o*3]=p.x;v[o*3+1]=p.y;v[o*3+2]=p.z;uv[o*2]=k/SEG*(jit?4:2.5);uv[o*2+1]=stepL*i/(jit?6:11);
+     if(i<steps&&k<SEG&&!inHole(i,k))idx.push(o,o+1,o+SEG+1,o+1,o+SEG+2,o+SEG+1);}}
+   const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(v,3));g.setAttribute('uv',new T.BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g;};
+  const wallTex=tunnelTex(t.style,st).clone();wallTex.needsUpdate=true;wallTex.repeat.set(1,1);
+  const wallMat=stdMat({map:wallTex,roughness:.92,side:T.DoubleSide,emissive:st.wall,emissiveIntensity:LITE?.4:.14});
+  const shell=new T.Mesh(shellGeo(R,false),wallMat);shell.receiveShadow=true;world.add(shell);
+  const groundCol=t.style==='pipe'?st.wall:t.style==='breach'?st.wall:(theme.grass??0x3fae3a),moundMat=stdMat({map:speckleTexture(hex(groundCol),hex(new T.Color(groundCol).multiplyScalar(.72)),1800),roughness:1,side:T.DoubleSide});
+  const mound=new T.Mesh(shellGeo(RO,t.style!=='pipe'),moundMat);mound.castShadow=!LITE;mound.receiveShadow=true;world.add(mound);
+  // Schachtwaende zwischen innen und aussen, Lichtkegel, Staub und Lichtfleck je Oeffnung
+  if(holes.length){const walls=[],cones=[],pools=[],dust=[],seeds=[];
+   const P3=(i,k,rad)=>posAt(t.s+stepL*i,-Math.cos(Math.PI*k/SEG)*rad,Math.sin(Math.PI*k/SEG)*rad*TUNNEL_TH,new T.Vector3());
+   for(const h of holes){const k0=SEG/2-1,loop=[[h,k0],[h+1,k0],[h+2,k0],[h+2,k0+1],[h+2,k0+2],[h+1,k0+2],[h,k0+2],[h,k0+1]],wv=[];
+    for(let m=0;m<loop.length;m++){const [i1,k1]=loop[m],[i2,k2]=loop[(m+1)%loop.length],a=P3(i1,k1,R),b=P3(i2,k2,R),c=P3(i2,k2,RO),e=P3(i1,k1,RO);wv.push(a.x,a.y,a.z,b.x,b.y,b.z,c.x,c.y,c.z,a.x,a.y,a.z,c.x,c.y,c.z,e.x,e.y,e.z);}
+    const wg=new T.BufferGeometry();wg.setAttribute('position',new T.Float32BufferAttribute(wv,3));wg.computeVertexNormals();walls.push(wg);
+    // Kegel: oben die Oeffnung, unten zur Sonne hin versetzt auf der Fahrbahn
+    const dm=t.s+stepL*(h+1),sm=sample(dm),top=posAt(dm,0,R*TUNNEL_TH-.4,new T.Vector3()),road=samplePos(dm,0,new T.Vector3());
+    const hgt=top.y-road.y,sh=Math.min(5,hgt*Math.hypot(sunV.x,sunV.z)/Math.max(.35,sunV.y)),sl=Math.hypot(sunV.x,sunV.z)||1,bot=new T.Vector3(road.x-sunV.x/sl*sh,road.y+.05,road.z-sunV.z/sl*sh);
+    const tx=Math.sin(sm.angle),tz=Math.cos(sm.angle),lx=Math.cos(sm.angle),lz=-Math.sin(sm.angle),N=14,cv=[],ch=[],ci=[];
+    for(let r=0;r<2;r++){const c=r?top:bot,rl=r?2.55:3.4,rt=r?2.35:3.0;for(let m=0;m<=N;m++){const th=m/N*TAU;cv.push(c.x+lx*Math.cos(th)*rl+tx*Math.sin(th)*rt,c.y,c.z+lz*Math.cos(th)*rl+tz*Math.sin(th)*rt);ch.push(r);}}
+    for(let m=0;m<N;m++)ci.push(m,m+1,m+N+1,m+1,m+N+2,m+N+1);
+    const cg=new T.BufferGeometry();cg.setAttribute('position',new T.Float32BufferAttribute(cv,3));cg.setAttribute('aH',new T.Float32BufferAttribute(ch,1));cg.setIndex(ci);cg.computeVertexNormals();cones.push(cg);
+    const pg=new T.PlaneGeometry(7.4,6.4).rotateX(-Math.PI/2).rotateY(sm.angle).translate(bot.x,bot.y+.02,bot.z);pools.push(pg);
+    for(let m=0;m<12;m++){const f=Math.random();dust.push(bot.x+(top.x-bot.x)*f+(Math.random()-.5)*3,bot.y+(top.y-bot.y)*f,bot.z+(top.z-bot.z)*f+(Math.random()-.5)*3);seeds.push(Math.random()*20);}}
+   const wm=new T.Mesh(mergeGeometries(walls),wallMat);wm.castShadow=!LITE;world.add(wm);
+   const cm=new T.Mesh(mergeGeometries(cones),shaftMat(st.shaft));cm.frustumCulled=false;cm.renderOrder=3;world.add(cm);
+   const pm=new T.Mesh(mergeGeometries(pools),new T.MeshBasicMaterial({map:glowTex(),color:st.shaft,transparent:true,opacity:LITE?.6:.45,depthWrite:false,blending:T.AdditiveBlending,polygonOffset:true,polygonOffsetFactor:-2}));pm.renderOrder=2;world.add(pm);
+   const dg=new T.BufferGeometry();dg.setAttribute('position',new T.Float32BufferAttribute(dust,3));dg.setAttribute('aSeed',new T.Float32BufferAttribute(seeds,1));const dp=new T.Points(dg,dustMat(st.shaft));dp.frustumCulled=false;world.add(dp);}
+  // Leicht-Modus: Fahrbahn im Tunnel abdunkeln (dort gibt es keine Schatten)
+  if(LITE){const sv=[],si=[],n=steps;for(let i=0;i<=n;i++){const d=t.s+stepL*i;for(const off of [-R+.6,R-.6]){const q=samplePos(d,off,_sp);sv.push(q.x,q.y+.04,q.z);}if(i<n){const b=i*2;si.push(b,b+2,b+1,b+1,b+2,b+3);}}
+   const sg=new T.BufferGeometry();sg.setAttribute('position',new T.Float32BufferAttribute(sv,3));sg.setIndex(si);const sm2=new T.Mesh(sg,new T.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.42,depthWrite:false,side:T.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1}));sm2.renderOrder=1;world.add(sm2);}
+  // Portale: Blender-Modell je Stil (sonst der alte flache Bogen)
+  const kit=P.tunnelkit?.getObjectByName('TK_'+t.style);
+  for(const [d,dir] of [[t.s,-1],[t.e,1]]){const s0=sample(d,0);
+   if(kit){const g=liteRoot(mergeByMaterial(kit.clone(true)));g.traverse(o=>{if(o.isMesh){o.castShadow=!LITE;o.receiveShadow=true;}});const q=samplePos(d+dir*.4,0,_a);g.position.copy(q);g.rotation.y=s0.angle+(dir<0?Math.PI:0);world.add(g);}
+   else{const portalMat=mat(st.rim,{roughness:.85,...(theme.glow?{emissive:st.rim,emissiveIntensity:.5}:{})});const pm=new T.Mesh(archRing(d+dir*.6,R,RO+.4),portalMat);pm.castShadow=true;pm.material.side=T.DoubleSide;world.add(pm);}
+   if(st.rings){const sign=mesh(new T.PlaneGeometry(9,1.5),label(st.label,hex(st.lamp),'#14101c',512,96),world,s0.p.x,s0.p.y+(kit?(R+3.4)*TUNNEL_TH+1.3:R*TUNNEL_TH+1.9),s0.p.z);
+    sign.rotation.y=s0.angle+(dir<0?Math.PI:0);sign.material.side=T.DoubleSide;sign.castShadow=false;}}
+  // Laternen mit Lichthof und Rippen
   const lampMat=new T.MeshBasicMaterial({color:st.lamp});
   const lamps=[];for(let d=t.s+5;d<t.s+span-2;d+=9)for(const side of [-1,1]){const p=samplePos(d,side*11.6,new T.Vector3());lamps.push([p.x,p.y+5.4,p.z]);}
-  if(lamps.length){const li=new T.InstancedMesh(new T.SphereGeometry(.42,8,6),lampMat,lamps.length);lamps.forEach(([x,y,z],i)=>{_m.makeTranslation(x,y,z);li.setMatrixAt(i,_m);});li.frustumCulled=false;world.add(li);}
-  if(st.rings){const bandMat=new T.MeshBasicMaterial({color:st.rim,side:T.DoubleSide}),bands=[];
-   for(let d=t.s+4;d<t.s+span-2;d+=7)bands.push(archRing(d,R-.6,R-.15));
-   if(bands.length){const bm=new T.Mesh(mergeGeometries(bands),bandMat);bm.frustumCulled=false;world.add(bm);}}
-  else{const stripMat=new T.MeshBasicMaterial({color:st.lamp,side:T.DoubleSide});
+  if(lamps.length){const li=new T.InstancedMesh(new T.SphereGeometry(.42,8,6),lampMat,lamps.length);lamps.forEach(([x,y,z],i)=>{_m.makeTranslation(x,y,z);li.setMatrixAt(i,_m);});li.frustumCulled=false;world.add(li);
+   const gg=new T.BufferGeometry();gg.setAttribute('position',new T.Float32BufferAttribute(lamps.flat(),3));const gp=new T.Points(gg,new T.PointsMaterial({map:glowTex(),color:st.lamp,size:6,sizeAttenuation:true,transparent:true,depthWrite:false,blending:T.AdditiveBlending}));gp.frustumCulled=false;world.add(gp);}
+  const glowRib=st.rings,ribMat=glowRib?new T.MeshBasicMaterial({color:st.rim,side:T.DoubleSide}):stdMat({color:new T.Color(st.rim).multiplyScalar(.8),roughness:.9,side:T.DoubleSide}),bands=[];
+  for(let d=t.s+4;d<t.s+span-2;d+=8){if(holes.some(h=>{const hc=t.s+stepL*(h+1);return Math.abs(hc-d)<4;}))continue;bands.push(archRing(d,R-.6,R-.1));bands.push(archRing(d+.9,R-.6,R-.1));}
+  if(bands.length){const bm=new T.Mesh(mergeGeometries(bands),ribMat);bm.frustumCulled=false;world.add(bm);}
+  if(!st.rings){const stripMat=new T.MeshBasicMaterial({color:st.lamp,side:T.DoubleSide});
    for(const side of [-1,1])world.add(new T.Mesh(wallStrip(t.s+1.5,t.e-1.5,side*12.9,5.0,5.45,Math.ceil(span/3)),stripMat));}
-  // Fels ueber dem Tunnel, damit er nicht in der Luft steht
-  if(P.rock){const rl=[];for(let d=t.s-4;d<t.s+span+4;d+=6)for(const side of [-1,1]){const p=samplePos(d,side*(R+2.4),new T.Vector3());
-    rl.push({x:p.x,y:Math.max(0,p.y)-1.2,z:p.z,s:3.4,sy:(2.4+((d*7)%10)/4)/3.4,ry:d});}
-   scatterInstanced(P.rock,rl,{StonePaint:st.wall},0);}
+  // ein paar Felsen oben auf dem Huegel (nicht mehr in der Tunnelwand)
+  if(P.rock&&t.style!=='pipe'){const rl=[];let sd=1;for(let d=t.s+6;d<t.s+span-6;d+=12,sd=-sd){const a=.42+((d*13)%10)/40,pp=posAt(d,sd*Math.cos(a)*(RO+.2),Math.sin(a)*(RO+.2)*TUNNEL_TH,new T.Vector3());
+    rl.push({x:pp.x,y:pp.y-.6,z:pp.z,s:1.5+((d*7)%10)/12,ry:d});}
+   if(rl.length)scatterInstanced(P.rock,rl,{StonePaint:new T.Color(groundCol).multiplyScalar(.8).getHex()},0);}
   zones.push({d:lapDist(t.s+span/2),half:span/2+4,x:0,z:0,r:0});}}
 // ---------- Magnet-Achterbahn (R38): Kastentraeger unter der Bahn, zwei leuchtende Magnetschienen,
 // Fachwerkstuetzen (Blender-Segment, gestapelt statt gestreckt) unter den Huegeln und
@@ -1935,8 +2005,10 @@ function syncKart(r,dt){const s=tanAt(r.distance),e=r.mesh.rotation,dot=Math.sin
   _kZ.set(tx*st.tf+tz*st.tl,st.tu,tz*st.tf-tx*st.tl);_kY.set(tx*st.nf,st.nu,tz*st.nf);
   _kX.crossVectors(_kY,_kZ).normalize();_kY.crossVectors(_kZ,_kX);
   r.mesh.quaternion.setFromRotationMatrix(_kM.makeBasis(_kX,_kY,_kZ)).multiply(_kQ.setFromEuler(_kE.set(0,yaw,roll,'YXZ')));}
+ // R45 Riesenpilz: waechst weich auf 1,75-fach, blinkt in der letzten Sekunde zwischen gross und klein
+ {const tgt=r.mega>0?(r.mega<1.1&&Math.sin(elapsed*26)>0?1.25:1.75):1;r.megaS=(r.megaS||1)+(tgt-(r.megaS||1))*Math.min(1,dt*(r.mega>0&&r.mega<1.1?30:5));}
  let sv=(r.shrinkVis??1)+(((r.shrink||0)>0?.58:1)-(r.shrinkVis??1))*Math.min(1,dt*7);if(Math.abs(sv-1)<.002)sv=1;r.shrinkVis=sv;
- const ks0=r.kartScale||[1,1,1],ks=sv===1?ks0:[ks0[0]*sv,ks0[1]*sv,ks0[2]*sv];
+ const ks0=r.kartScale||[1,1,1],sm=sv*(r.megaS||1),ks=sm===1?ks0:[ks0[0]*sm,ks0[1]*sm,ks0[2]*sm];
  if(r.squash>0){r.squash=Math.max(0,r.squash-dt*1.4);const q=Math.sin(r.squash/.3*Math.PI)*r.squash*.55;r.mesh.scale.set(ks[0]*(1+q*.6),ks[1]*(1-q),ks[2]*(1+q*.6));}
  else if(r.mesh.scale.y!==ks[1])r.mesh.scale.set(ks[0],ks[1],ks[2]);
  // Federung: Laengsbeschleunigung geglaettet, daraus Nicken und gegenlaeufiges Einfedern.
@@ -1952,7 +2024,7 @@ function syncKart(r,dt){const s=tanAt(r.distance),e=r.mesh.rotation,dot=Math.sin
    w.piv.position.y=w.y0+c;}
   const d=parts.driver;if(d){const lean=-st*.2-(r.driftVis||0)*.3,done=r.finishTime!==null;d.rotation.z+=(lean-d.rotation.z)*Math.min(1,dt*8);d.rotation.x+=((r.air?-.2:r.czFloatS>.05?-.3:r.boost>0?.12:0)-d.rotation.x)*Math.min(1,dt*6);
    d.position.y=.95+(r.air?.14:0)+Math.min(.2,(r.czFloatS||0)*.6)+(done?Math.abs(Math.sin(elapsed*8+r.id))*.3:0)+Math.sin(elapsed*17+r.id)*.015*Math.min(1,Math.abs(r.speed)/20);d.rotation.y=r.stun>0?Math.sin(elapsed*28)*.35:done?Math.sin(elapsed*5+r.id)*.4:0;}}
- syncGlider(r,dt,spin);r.mesh.userData.shield.visible=r.shield>0;const fl=r.boost>0;for(const f of r.mesh.userData.flames){f.visible=fl;if(fl)f.scale.set(1,1,.7+Math.random()*.7);}
+ syncGlider(r,dt,spin);r.mesh.userData.shield.visible=r.shield>0&&!(r.mega>0);const fl=r.boost>0;for(const f of r.mesh.userData.flames){f.visible=fl;if(fl)f.scale.set(1,1,.7+Math.random()*.7);}
  const ug=r.mesh.userData.underglow;if(ug)ug.visible=!r.air&&magOn()&&hasMag(r.distance)&&Math.abs(r.speed)>5;
  for(const b of r.mesh.userData.brakes||[])b.visible=!!r.braking;
  syncTransform(r,dt);}
@@ -2024,9 +2096,12 @@ function aiInput(r,dt){const sk=r.skill,sp=Math.max(0,r.speed),look=5+sp*.38;
  // Bunny-Hop (R44): Taste ueber den Hopser halten und in die Kurve lenken, dann beginnt der Drift bei der Landung
  else if((r.hopT>0||r.hopGrace>0)&&r.aiHopDir){drift=true;steer=r.aiHopDir*.55;}
  else if(Math.abs(turnAhead)>.75&&sp>17&&r.driftCd<=0&&!r.air&&!gapAhead&&!agNear&&Math.abs(r.offset)<5){r.driftCd=1.5;r.aiHopDir=0;if(Math.random()<sk*.95){drift=true;steer=Math.sign(turnAhead);r.aiHopDir=steer;}}
+ // R45: mit Tinte flattert die Linie, zwischendurch geht die KI vom Gas
+ // (nicht vor Luecken, nicht in der Luft, nicht am Rand und nicht in Rollzonen - dort waere ein Sturz die Folge)
+ if(r.ink>0&&!gapAhead&&!agNear&&!r.air&&Math.abs(r.offset)<5.5){steer+=Math.sin(elapsed*4.2+r.id*1.7)*.24;return {gas:gas&&(sp<14||Math.sin(elapsed*2.3+r.id)<=.55),brake,steer:clamp(steer,-1,1),drift};}
  return {gas,brake,steer:clamp(steer,-1,1),drift};}
 function aiItems(r,order){if(r.cooldown>0||!r.item||r.itemPending)return;const pl=order.indexOf(r),ahead=order[pl-1],behind=order[pl+1],kap=Math.abs(trackAt(r.distance+20).kap);
- const use=r.item==='bomb'?ahead&&ahead.distance-r.distance>12&&ahead.distance-r.distance<45:r.item==='shell'?ahead&&ahead.distance-r.distance<70:r.item==='banana'?behind&&r.distance-behind.distance<35:r.item==='boost'||r.item==='triple'?kap<1/80&&!agrav.some(q=>{const a=wrapDiff(q.s,r.distance);return a>4&&a<55;}):true;
+ const use=r.item==='bomb'?ahead&&ahead.distance-r.distance>12&&ahead.distance-r.distance<45:r.item==='shell'?ahead&&ahead.distance-r.distance<70:r.item==='banana'?behind&&r.distance-behind.distance<35:r.item==='mega'?(ahead&&ahead.distance-r.distance<30)||kap<1/120:r.item==='ink'?!!ahead:r.item==='boost'||r.item==='triple'?kap<1/80&&!agrav.some(q=>{const a=wrapDiff(q.s,r.distance);return a>4&&a<55;}):true;
  if(use){useItem(r);r.cooldown=r.item==='triple'?1.2:2.5;}}
 
 // ---------------------------------------------------------------- Audio: Sprecher, SFX (ElevenLabs), Musik
@@ -2041,7 +2116,7 @@ const AUDIO_MIX={effects:.78,voice:.95,music:.49,world:.82};
 const SFX_RMS={c_star:.085,hit:.095,bump:.075,drift:.075,cheer:.075,boost:.105,rocket:.105,ramp:.095,spore:.09,jingle:.14,goodtry:.12,finallap:.115,launch:.11};
 const CLIPS={};for(const k of Object.keys(VOICE))CLIPS['v_'+k]='assets/audio/voice/'+k+'.mp3';for(const k of Object.keys(SFX_MAX))CLIPS['s_'+k]='assets/audio/sfx/'+k+'.mp3';
 // R44: selbst synthetisierte Chiptune-Effekte (art/r44/make_chiptune.mjs) haben Vorrang vor den Samples
-const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder','levelup','unlock','star'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
+const CHIP=['coin','item','lap','mt1','mt2','mt3','boost','hit','bump','slip','trick','ring','rocket','beep','go','cheer','whirl','sand','whistle','bell','moo','grab','meteor','boom','thunder','levelup','unlock','star','mega','shrink','squash','ink'];for(const k of CHIP)CLIPS['s_c_'+k]='assets/audio/sfx/chip/'+k+'.wav';
 const clipData={},clipBuf={},clipFail={},clipNorm={},clipPlayed={},effectSources=new Set();let echoSend=null,ambSrc=null,ambGain=null,ambLfo=null,voiceGain=null,sfxGain=null,effectsOut=null,voiceSrc=null,voiceKey=null,voiceQueue=null,pendingVoice=null,duckUntil=0,ducked=false,engine=null,raceFilter=null,masterGain=null,worldGain=null,mixMuted=false,duckLevel=1,duckTick=0;
 for(const [k,url] of Object.entries(CLIPS))clipData[k]=fetch(url).then(r=>{if(!r.ok)throw new Error(url);return r.arrayBuffer();}).catch(()=>{clipFail[k]=true;return null;});
 const LOOP_CLIPS=new Set(['s_c_star']);
@@ -2132,6 +2207,8 @@ const SFX={
  // Hopser: kurzer Chiptune-Sprung (Rechteck, aufwaerts)
  moo(){playClip('s_c_moo',sfxGain,.6);},
  grab(){playClip('s_c_grab',sfxGain,.8);},
+// R45: Riesenpilz, Tintenpilz, Tagesaufgabe (Chiptune)
+mega(){playClip('s_c_mega',sfxGain,.85);},shrink(){playClip('s_c_shrink',sfxGain,.75);},squash(){playClip('s_c_squash',sfxGain,.8);},ink(){playClip('s_c_ink',sfxGain,.85);},
  meteor(){playClip('s_c_meteor',sfxGain,.55);},
  boom(v=1){playClip('s_c_boom',sfxGain,.8*v);},
  thunder(){playClip('s_c_thunder',sfxGain,.8);},
@@ -2206,19 +2283,22 @@ function bgmTick(now){const tr=bgm.tracks[bgm.current];if(!tr)return;const a=tr.
 function setSound(){soundOn=!soundOn;if(soundOn)audioInit();if(engine)engine.g.gain.value=0;if(!soundOn){stopBgm();stopVoice();}else playBgm(state==='menu'||state==='finished'||state==='ceremony'?'menu':raceTrack());syncAudioMix();$('sound').textContent=soundOn?'♪ AN':'♪ AUS';$('sound').setAttribute('aria-label',soundOn?'Ton ausschalten':'Ton einschalten');}
 
 // ---------------------------------------------------------------- Spielablauf
-function newStats(){return {cowHits:0,twisterHits:0,trainHits:0,grabs:0,squashed:0,meteorHits:0,beatBoosts:0,rocket:0,mt:{mini:0,super:0,ultra:0},maxCombo:0,drafts:0,tricks:0,rings:0,precisionRings:0,airtime:0,coasters:0,hitsDealt:0,hitsTaken:0,overtakes:0,bestLap:Infinity,lapStart:0,falls:0,bumps:0,maxSpores:0};}
+function newStats(){return {megaSquash:0,inkBest:0,cowHits:0,twisterHits:0,trainHits:0,grabs:0,squashed:0,meteorHits:0,beatBoosts:0,rocket:0,mt:{mini:0,super:0,ultra:0},maxCombo:0,drafts:0,tricks:0,rings:0,precisionRings:0,airtime:0,coasters:0,hitsDealt:0,hitsTaken:0,overtakes:0,bestLap:Infinity,lapStart:0,falls:0,bumps:0,maxSpores:0};}
 function start(){if(gp.active)selected=gp.race;worldMode=mode==='world'&&!gp.active;if(worldMode){if(selected!==WORLD_IDX)lastRaceSel=selected;selected=WORLD_IDX;}else if(selected===WORLD_IDX)selected=lastRaceSel;document.body.classList.toggle('ow',worldMode);if(!worldMode)owPortalHide();syncTrackButtons();keys.clear();buildCourse();if(worldMode)owReset();setAmbience(!!theme.ember);state='countdown';elapsed=0;countdown=3;startPress=-1;noticeTimer=0;stats=newStats();
  for(const id of ['menu','result','ceremony','pausePanel'])$(id).hidden=true;$('hud').hidden=false;$('pause').hidden=false;$('touch').hidden=false;$('gpBadge').hidden=!gp.active;$('hud').classList.toggle('tt',isTT());$('ttGhost').hidden=$('ttMedal').hidden=!isTT();if(isTT())for(const b of boxes)b.cooldown=1e9;
+ raceMirror=mirrorOn&&!worldMode&&!isTT()&&progLevel()>=MIRROR_LVL;document.body.classList.toggle('mirror',raceMirror);
  document.body.classList.add('racing');document.body.classList.remove('cer');if(soundOn)audioInit();finishMusicAt=0;playBgm(raceTrack());setBgmRate(course.bgmRate||1);stopVoice();say('start');updateCamera(1,true);
- toast(`${course.name} · ${isTT()?'Zeitfahren':cc+'cc'}`,2.2);if(isTT()&&ghost)setTimeout(()=>toast('👻 Dein Geist fährt mit – schlag ihn!',2),2300);if(rivalId!==null){const rn=racers[rivalId].name;setTimeout(()=>{if(state==='countdown'||state==='race')toast(`⚔ RIVALE: ${rn.toUpperCase()}`,1.8);},2400);}if(coarseInput){wantFs=true;enterFs();}}
-function home(){owPortalHide();setAmbience(false);gp.active=false;state='menu';keys.clear();buildCourse();for(const id of ['hud','touch','pause','pausePanel','result','ceremony'])$(id).hidden=true;$('menu').hidden=false;setText('message','');document.body.classList.remove('racing','cer');if(engine)engine.g.gain.value=0;SFX.hum(false);stopVoice();finishMusicAt=0;playBgm('menu');refreshMenu();}
+ toast(`${course.name} · ${isTT()?'Zeitfahren':cc+'cc'}${raceMirror?' · 🪞 Spiegel':''}`,2.2);if(isTT()&&ghost)setTimeout(()=>toast('👻 Dein Geist fährt mit – schlag ihn!',2),2300);if(rivalId!==null){const rn=racers[rivalId].name;setTimeout(()=>{if(state==='countdown'||state==='race')toast(`⚔ RIVALE: ${rn.toUpperCase()}`,1.8);},2400);}if(coarseInput){wantFs=true;enterFs();}}
+function home(){document.body.classList.remove('mirror');raceMirror=false;owPortalHide();setAmbience(false);gp.active=false;state='menu';keys.clear();buildCourse();for(const id of ['hud','touch','pause','pausePanel','result','ceremony'])$(id).hidden=true;$('menu').hidden=false;setText('message','');document.body.classList.remove('racing','cer');if(engine)engine.g.gain.value=0;SFX.hum(false);stopVoice();finishMusicAt=0;playBgm('menu');refreshMenu();}
 let beforePause='race';function pause(){if(state==='paused'){state=beforePause;$('pausePanel').hidden=true;}else if(state==='race'||state==='countdown'){beforePause=state;state='paused';keys.clear();$('pausePanel').hidden=false;stopVoice();}if(engine)engine.g.gain.value=soundOn&&state==='race'?.011:0;}
 function use(){if(state!=='race')return;useItem(racers[0]);}
 function useItem(r){if(r.itemPending)return null;const prevStun=racers.map(x=>x.stun),res=activate(r,racers);if(!res)return null;const me=r.id===0;
  if(res.type==='shell'&&res.target!==undefined)racers[res.target].stun=prevStun[res.target];
  if(me&&(res.type==='boost'||res.type==='triple'))SFX.boost();else if(me&&SFX[res.type])SFX[res.type]();
  if(res.type==='banana')dropBanana(r);if(res.type==='shell')fireShell(r,res.target);if(res.type==='bomb')throwBomb(r);if(res.type==='storm')stormStrike(r,res.hit);
- if(me){if(res.type==='boost'||res.type==='triple')say('turbo');if(res.type==='shield')say('shield');if(res.type==='banana')say('banana');notice({boost:'TURBO!',triple:'TURBO ×'+(res.charges||0),shield:'STERNENSCHILD',banana:'BANANE!',shell:'SUCH-PANZER!',bomb:'PILZBOMBE!',storm:'GEWITTERWOLKE!'}[res.type],.8);}
+ if(res.type==='mega'){burst(r,0xff4a3d,16);if(!me&&Math.hypot(r.x-racers[0].x,r.z-racers[0].z)<60)SFX.mega();}
+ if(res.type==='ink'){for(const id of res.targets)spawnInkcap(racers[id]);if(me)stats.inkBest=Math.max(stats.inkBest||0,res.targets.length);if(res.targets.includes(0)){inkSplash();SFX.ink();toast('TINTE! 🖋',1.1,'bad');}}
+ if(me){if(res.type==='boost'||res.type==='triple')say('turbo');if(res.type==='shield')say('shield');if(res.type==='banana')say('banana');notice({boost:'TURBO!',triple:'TURBO ×'+(res.charges||0),shield:'STERNENSCHILD',banana:'BANANE!',shell:'SUCH-PANZER!',bomb:'PILZBOMBE!',storm:'GEWITTERWOLKE!',mega:'RIESENPILZ!',ink:res.targets&&res.targets.length?'TINTE FÜR '+res.targets.length+'!':'TINTENPILZ!'}[res.type],.8);}
  return res;}
 const MAX_HAZARDS=14;
 // Gewitterwolke (R46): ueber jedem getroffenen Kart eine dunkle Wolke, ein Zickzack-Blitz faehrt herab (geteilte
@@ -2239,6 +2319,19 @@ function stormStrike(u,hit){const me=u.id===0;let meHit=false,dealt=0,near=me;
  if(me){stats.hitsDealt+=dealt;stats.stormBest=Math.max(stats.stormBest||0,dealt);toast(dealt?`⚡ ${dealt} GETROFFEN!`:'⚡ NIEMAND VOR DIR',1.1,dealt?'good':'');}
  if(meHit){toast('⚡ GEWITTER! DU BIST KLEIN',1.4,'bad');shake=.5;say('ouch');}
  if(near||meHit){SFX.thunder();flashScreen(me||meHit?.7:.3);}}
+// R47 Tintenpilz. Spieler: Tintenkleckse auf dem Bild, die langsam abrutschen; mit Turbo schneller weg.
+// Getroffene Karts: ein Tintling (Blender-Modell) ploppt ueber ihnen auf, wackelt und zerlaeuft zu Tinte.
+const inkEl=document.createElement('div');inkEl.id='inkFx';inkEl.setAttribute('aria-hidden','true');document.body.appendChild(inkEl);
+const INK_BLOB="<svg viewBox='0 0 100 100'><path fill='#0d0b14' d='M50 8c9 0 12 10 20 9s15 6 13 15-3 11 4 17-1 17-9 18-9 9-8 17-6 9-11 3-7-6-14-4-15-1-14-10 4-9-3-14-9-14 0-19 11-4 11-13 11-19 21-20z'/><ellipse cx='36' cy='34' rx='9' ry='5' fill='#fff' opacity='.12' transform='rotate(-30 36 34)'/></svg>";
+function inkSplash(){let h='';for(let i=0;i<6;i++){const sz=18+Math.random()*22,x=8+Math.random()*(84-sz),y=10+Math.random()*(70-sz*.6);h+=`<i style="left:${x}vw;top:${y}vh;width:${sz}vmin;height:${sz}vmin;animation-delay:${(i*.06).toFixed(2)}s,${(.6+Math.random()*.8).toFixed(2)}s;transform:rotate(${Math.round(Math.random()*360)}deg)">${INK_BLOB}</i>`;}inkEl.innerHTML=h;inkEl.classList.remove('on');void inkEl.offsetWidth;inkEl.classList.add('on');}
+const inkcaps=[];
+function spawnInkcap(r){if(!P.inkcap||!r)return;let e=inkcaps.find(q=>!q.g.visible);if(!e){const g=cloneProto(P.inkcap);g.traverse(o=>{if(o.isMesh)o.castShadow=false;});actors.add(g);e={g};inkcaps.push(e);}
+ e.r=r;e.t=0;e.g.visible=true;e.g.scale.setScalar(.01);burst(r,0x15121c,10);}
+function updateInk(dt){const pl=racers[0];if(pl){if(pl.ink>0&&pl.boost>0)pl.ink=Math.max(0,pl.ink-dt*1.4);const o=pl.ink>0?Math.min(1,pl.ink/1.1):0;if(inkEl._o!==o){inkEl.style.opacity=o.toFixed(2);inkEl._o=o;}if(!(pl.ink>0)&&inkEl.innerHTML&&o===0)inkEl.innerHTML='';}
+ for(const e of inkcaps){if(!e.g.visible)continue;e.t+=dt;const t=e.t,r=e.r,p=r.mesh.position,life=1.5;if(t>life||!r.mesh.visible){e.g.visible=false;continue;}
+  const pop=Math.min(1,t/.18),melt=Math.max(0,(t-.9)/(life-.9)),s=(t<.18?pop*1.15:1+Math.sin(t*22)*.06*(1-melt))*1.1;
+  e.g.scale.set(s*(1+melt*.6),s*(1-melt*.85),s*(1+melt*.6));e.g.position.set(p.x,p.y+2.2+(1-pop)*.6-melt*1.6,p.z);e.g.rotation.set(0,camH+Math.PI,Math.sin(t*14)*.18*(1-melt));
+  if(melt>0&&Math.random()<dt*25)emit(p.x+(Math.random()-.5)*1.6,p.y+1.2,p.z+(Math.random()-.5)*1.6,0x15121c,0,-3,0,.5);}}
 function dropBanana(r){if(hazards.length>=MAX_HAZARDS){const old=hazards.shift();actors.remove(old.mesh);}const x=r.x-Math.sin(r.h)*3.2,z=r.z-Math.cos(r.h)*3.2,g=new T.Group();actors.add(g);g.position.set(x,r.y,z);
  // In Achterbahn und Rollzone liegt die Bahn im Bild hoeher als in der Physik - sonst laege die
  // Banane unsichtbar unter der schwebenden Fahrbahn. Getroffen wird weiter flach (x/z, r.y).
@@ -2290,12 +2383,13 @@ function update(dt){
  if(oh.on)ohTick(dt,player);const ohHop=oh.hop>0;oh.hop=0;if(ohHintOn&&(elapsed>4||!oh.on))ohHint(false);
  const order=ranking(racers),placeOf=r=>order.indexOf(r)+1,driftKey=held('ShiftLeft')||held('ShiftRight')||(oh.on&&(oh.drift||ohHop));
  if(!autopilot&&driftKey&&!prevDrift&&player.air&&player.airT>.06&&!player.trick)startTrick(player);prevDrift=driftKey;
+ if((player.megaWas||0)>0&&!(player.mega>0))SFX.shrink();player.megaWas=player.mega||0;
  if(roulette){roulette.t-=dt;roulette.tick-=dt;if(roulette.tick<=0){roulette.tick=.075;SFX.tick();}if(roulette.t<=0){player.item=roulette.final;player.charges=player.item==='triple'?3:0;player.itemPending=false;SFX.pickup();toast(ITEM_NAMES[player.item]+'!',.9);roulette=null;}}
  const cls=CLASSES[cc];
  for(const r of racers){if(r.finishTime!==null){r.vx*=.98;r.vz*=.98;r.x+=r.vx*dt;r.z+=r.vz*dt;syncKart(r,dt);continue;}const me=r.id===0;
   r.stall=Math.max(0,(r.stall||0)-dt);r.padCd=Math.max(0,(r.padCd||0)-dt);r.ringCd=Math.max(0,(r.ringCd||0)-dt);
   let input;
-  if(me&&!autopilot){const target=steering(),rate=(Math.sign(target)!==Math.sign(r.steerS||0)&&target!==0)?11:7;r.steerS=(r.steerS||0)+clamp(target-(r.steerS||0),-dt*rate,dt*rate);
+  if(me&&!autopilot){const target=(raceMirror?-1:1)*steering(),rate=(Math.sign(target)!==Math.sign(r.steerS||0)&&target!==0)?11:7;r.steerS=(r.steerS||0)+clamp(target-(r.steerS||0),-dt*rate,dt*rate);
    let st=r.steerS,gas=(autoGas||gasHeld||oh.on)&&r.stall<=0;
    let brk=held('ArrowDown')||held('KeyS');
    if(assistOn&&!r.driftDir&&r.stun<=0){st=clamp(st+steerAssist(r)*(1-.55*Math.abs(st)),-1,1);const top=assistTop(r);if(r.boost<=0&&r.speed>top+1.5)gas=false;if(r.speed>top+5)brk=true;}
@@ -2338,7 +2432,7 @@ function update(dt){
   const lp=loops.length?loopAt(r.distance):null,tfF=elems.length?r.mesh.userData.tf?.cur:null;
   // In Rollzonen uebernimmt die Magnetbahn den Hoehenweg: Hang-Widerstand faellt weg, sonst
   // fehlt genau dort der Schwung, wo die Strecke zusaetzlich noch kippt.
-  driveKart(r,dt,input,{air:r.air,offroad,meadow,slope:inRoll?0:slopeAt(r.distance)*dot,speedMul:(meadow?.95:1)*speedMul*(czn&&r.czRun?.launched?COASTER.launchTop/PHYS.boostTop:1)*(tfF==='dive'?.95:tfF==='plane'?1.04:1),gripMul:(lp?1.5:inRoll?2.3:1)*(tfF==='boat'?.85:1),moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):czMove});
+  driveKart(r,dt,input,{air:r.air,offroad,meadow,slope:inRoll?0:slopeAt(r.distance)*dot,speedMul:(meadow?.95:1)*(r.mega>0?1.1:1)*speedMul*(czn&&r.czRun?.launched?COASTER.launchTop/PHYS.boostTop:1)*(tfF==='dive'?.95:tfF==='plane'?1.04:1),gripMul:(lp?1.5:inRoll?2.3:1)*(tfF==='boat'?.85:1),moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):czMove});
   if(me&&r.hopT>0&&!r.hopWas)SFX.hop();r.hopWas=r.hopT>0;desertHits(r,me,dt);
   // Luftfuehrung (R44): nach Schanzen und Luecken folgt das Kart in der Luft sanft dem Streckenverlauf und wird
   // Richtung Mitte gezogen - eine Kurve direkt hinter dem Sprung (12 Stellen im Audit) fuehrt nicht mehr zum Absturz
@@ -2471,11 +2565,14 @@ function update(dt){
   // auseinander sind, liegen auf der Fahrbahn dicht beieinander und duerfen sich nicht rempeln.
   const lq2=loops.length&&(loopAt(a.distance)||loopAt(b.distance));
   if(Math.abs(wrapDiff(lapDist(a.distance),lapDist(b.distance)))>(lq2?14/(lq2.sig+1):14))continue;
+  // R45: Riesenpilz walzt kleine Karts platt (einmal je Sekunde und Opfer), statt abzuprallen
+  if((a.mega>0)!==(b.mega>0)){const big=a.mega>0?a:b,sm=big===a?b:a;if(Math.hypot(a.x-b.x,a.z-b.z)<3.3){if(!(sm.shield>0)&&!(sm.squashCd>elapsed)){sm.squashCd=elapsed+1;hitKart(sm,1.1,.3);sm.squash=.6;burst(sm,0xff4a3d,12);
+    if(big.id===0){stats.megaSquash=(stats.megaSquash||0)+1;stats.hitsDealt++;SFX.squash();toast('PLATT GEMACHT!',.9,'good');}else if(sm.id===0){stats.hitsTaken++;SFX.squash();toast('PLATT! 🍄',1,'bad');shake=.4;}}continue;}}
   const rel=Math.hypot(a.vx-b.vx,a.vz-b.vz);if(collideKarts(a,b)){
    // Gewitterwolke: ein kleines Kart wird vom grossen plattgefahren
    const fl=flattenSmall(a,b,rel);if(fl){fl.squash=.6;burst(fl,0xfff27a,10);if(fl.id===0){stats.hitsTaken++;toast('ÜBERROLLT!',1,'bad');SFX.hit();shake=.4;}else if(a.id===0||b.id===0){stats.hitsDealt++;toast('PLATT GEFAHREN!',.9,'good');SFX.hit(.7);}}
    else if((a.id===0||b.id===0)&&rel>6){SFX.bump(clamp(rel/25,.2,.8));shake=Math.max(shake,.15);}}}
- updateShots(dt);updateBombs(dt);
+ updateShots(dt);updateBombs(dt);updateInk(dt);
  const newOrder=ranking(racers),place=newOrder.indexOf(player)+1;
  if(place<lastPlace&&elapsed>2){stats.overtakes+=lastPlace-place;SFX.overtake();toast(`▲ PLATZ ${place}`,.9,'good');}
  if(place===1&&lastPlace>1&&elapsed>8&&elapsed-leadAt>15){leadAt=elapsed;say('lead');}lastPlace=place;
@@ -2519,7 +2616,7 @@ function showProgress(res){store.set('prog',res.prog);const el=$('resultProg');i
   (res.fresh.length?`<div class="ach-new">${res.fresh.map(id=>{const a=achById(id);return `<div class="ach"><i>🏅</i><b>${a.n}</b><small>${a.d}</small></div>`;}).join('')}</div>`:'');
  const fill=$('xpFill');setTimeout(()=>{if(res.levelUp){fill.style.width='100%';setTimeout(()=>{setText('xpLvl',String(lv1.level));fill.style.transition='none';fill.style.width='0%';void fill.offsetWidth;fill.style.transition='';fill.style.width=Math.round(lv1.into/lv1.need*100)+'%';playClip('s_c_levelup',sfxGain,.9);},700);}else fill.style.width=Math.round(lv1.into/lv1.need*100)+'%';},450);
  if(res.fresh.length)setTimeout(()=>playClip('s_c_unlock',sfxGain,.8),res.levelUp?1600:900);}
-function end(){elapsed=racers[0].finishTime??elapsed;qualityRaceEnd();if(isTT())return endTT();state='finished';keys.clear();roulette=null;SFX.hum(false);burst(racers[0],0xffd452,26);burst(racers[0],0xed6350,16);burst(racers[0],0x55bdb2,16);
+function end(){document.body.classList.remove('mirror');elapsed=racers[0].finishTime??elapsed;qualityRaceEnd();if(isTT())return endTT();state='finished';keys.clear();roulette=null;SFX.hum(false);burst(racers[0],0xffd452,26);burst(racers[0],0xed6350,16);burst(racers[0],0x55bdb2,16);
  $('result').hidden=false;$('touch').hidden=true;showRidePhoto();const order=ranking(racers),place=order.indexOf(racers[0])+1,board=$('leaderboard'),rs=raceStars(place,stats.hitsTaken);
  $('resultTitle').textContent=place===1?(rs.perfect?'Perfektes Rennen!':'Der Pokal gehört dir!'):place<=3?`Platz ${place} – aufs Treppchen!`:`Platz ${place}. Da geht noch was!`;
  $('resultTime').textContent=`${course.name} · ${cc}cc · ${format(elapsed)}`;
@@ -2532,7 +2629,7 @@ function end(){elapsed=racers[0].finishTime??elapsed;qualityRaceEnd();if(isTT())
  // Rivale und Tages-Herausforderung (R46) vor dem Verbuchen, damit XP und Erfolge sie sehen
  if(rivalId!==null){stats.rivalBeaten=rivalBeaten(order.map(r=>r.id),rivalId);$('resultStats').insertAdjacentHTML('beforeend',`<div class="rival ${stats.rivalBeaten?'won':'lost'}"><span>⚔ Rivale ${racers[rivalId].name}</span><b>${stats.rivalBeaten?'GESCHLAGEN ✓':'vor dir'}</b></div>`);}
  {const ch=dailyChallenge(dayKey());if(!worldMode&&store.get('dailyDone','')!==ch.day&&dailyDone(ch,{track:selected,cc,place,finished:true,stats})){stats.daily=true;store.set('dailyDone',ch.day);dailyShown=null;setTimeout(()=>toast(`📅 TAGESAUFGABE GESCHAFFT! +${DAILY_XP} XP`,2,'good'),600);}}
- showProgress(recordRace(store.get('prog',{xp:0,ach:[],done:[],won:[]}),{track:selected,cc,place,finished:true,stats:{...stats}}));
+ showProgress(recordRace(store.get('prog',{xp:0,ach:[],done:[],won:[]}),{track:selected,cc,place,finished:true,stats:{...stats},mirror:raceMirror}));
  if(gp.active){const gained={};order.forEach((r,i)=>gained[r.id]=GP_POINTS[i]);addGpPoints(gp.points,order);$('resultEyebrow').textContent=`GRAND PRIX ${cc}cc · RENNEN ${gp.race+1} / ${courses.length}`;
   gpStandings(gp.points,racers.map(r=>r.id)).forEach((id,i)=>{const li=document.createElement('li');if(id===0)li.className='me';li.innerHTML=`<span>${i+1}.</span><span>${racers[id].name}</span><span class="gain">+${gained[id]}</span><span>${gp.points[id]} P</span>`;board.append(li);});
   $('again').textContent=gp.race<courses.length-1?'Nächstes Rennen →':'Zur Siegerehrung 🏆';if(gp.race<courses.length-1)say('gpnext');}
@@ -2587,7 +2684,7 @@ function hud(){if(state==='menu'||state==='ceremony'||!racers.length)return;cons
  {const on=rivalId!==null&&!!racers[rivalId];const tag=$('rivalTag');if(tag.hidden===on)tag.hidden=!on;
   if(on){const rv=racers[rivalId],ahead=rv.finishTime!==null&&p.finishTime===null||(rv.finishTime===null&&p.finishTime===null&&rv.distance>p.distance),t=(ahead?'▲ ':'▼ ')+rv.name.toUpperCase();if(HC.rv!==t){HC.rv=t;$('rivalName').textContent=t;tag.classList.toggle('ahead',ahead);}}}
  let key='empty',name='ITEM SAMMELN';
- if(roulette){const ks=['boost','shell','banana','shield','bomb','storm'];key=ks[Math.floor(performance.now()/75)%ks.length];name='…';}
+ if(roulette){const ks=['boost','shell','banana','shield','bomb','storm','mega','ink'];key=ks[Math.floor(performance.now()/75)%ks.length];name='…';}
  else if(p.item){key=p.item;name=ITEM_NAMES[p.item];}
  const tag=key+(key==='triple'?p.charges:'');
  if(HC.art!==tag){HC.art=tag;const pic=itemThumbs[key];
@@ -2634,7 +2731,7 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  if(!racers.length)return;const p=racers[0];
  // Verfolgerkamera haengt am Kart (nicht an der Strecke): man sieht, wohin man wirklich faehrt
  const targetH=p.h+(p.driftDir?-p.driftDir*.12:0);camH=snap?targetH:camH+angleDiff(targetH,camH)*Math.min(1,dt*(p.driftDir?3.2:5));
- const back0=dbg.camBack??(portrait?10.5:8.4),up0=dbg.camUp??(portrait?4.8:3.7),sx=Math.sin(camH),cz=Math.cos(camH),py=p.y??0;
+ const mgC=(p.megaS||1)-1,back0=(dbg.camBack??(portrait?10.5:8.4))*(1+mgC*.4),up0=(dbg.camUp??(portrait?4.8:3.7))*(1+mgC*.35),sx=Math.sin(camH),cz=Math.cos(camH),py=p.y??0;
 
  // Anti-Grav: Kamera folgt der gedrehten Fahrbahn (Versatz und Hochachse um die Fahrtrichtung gedreht)
  // Feed-Forward: das analytische Roll-Delta wird direkt uebernommen, nur der Restfehler wird geglaettet.
@@ -2803,6 +2900,9 @@ function itemModel(key){const ex={depth:.32,bevelEnabled:true,bevelSize:.06,beve
  if(key==='empty')return P.itembox?cloneProto(P.itembox):null;
  if(key==='bomb')return bombMesh();
  if(key==='storm')return stormCloud(true);
+ // R45: Riesenpilz = roter Streckenpilz, Tintenpilz = Tintling aus Blender
+ if(key==='mega'){if(!P.mushroom)return null;const g=cloneProto(P.mushroom);applyTint(g,'CapPaint',0xe8352e);return g;}
+ if(key==='ink')return P.inkcap?cloneProto(P.inkcap):null;
  if(key==='shield'){const g=new T.Group();g.add(new T.Mesh(new T.ExtrudeGeometry(starShape(),ex),stdMat({color:0xffe9fb,emissive:0xff9ee0,emissiveIntensity:.55,roughness:.35,metalness:.2})));return g;}
  if(key==='triple'){const g=new T.Group();[-0.62,0,0.62].forEach((x,i)=>{const m=new T.Mesh(new T.ExtrudeGeometry(boltShape(),ex),stdMat({color:i===1?0xfff0ad:0xffd45c,emissive:0xffa51f,emissiveIntensity:.7,roughness:.3,metalness:.25}));m.position.set(x,0,i===1?.15:0);m.scale.setScalar(i===1?.85:.62);g.add(m);});return g;}
  const g=new T.Group();g.add(new T.Mesh(new T.ExtrudeGeometry(boltShape(),ex),stdMat({color:0xffe27a,emissive:0xffa51f,emissiveIntensity:.8,roughness:.3,metalness:.25})));return g;}
@@ -2814,29 +2914,30 @@ function buildItemThumbs(){if(!renderer||itemThumbs.done)return;
  const dl2=new T.DirectionalLight(0x9fc7ff,1.1);dl2.position.set(-3,1.5,-2);sc.add(dl2);
  const buf=new Uint8Array(S*S*4),oldC=new T.Color();renderer.getClearColor(oldC);const oldA=renderer.getClearAlpha();renderer.setClearColor(0x000000,0);
  const box=new T.Box3(),size=new T.Vector3(),mid=new T.Vector3();
- for(const key of ['empty','boost','triple','shell','banana','shield','bomb','storm']){
+ for(const key of ['empty','boost','triple','shell','banana','shield','bomb','storm','mega','ink']){
   if(itemThumbs[key])continue;
   let g;try{g=itemModel(key);}catch(e){continue;}
   if(!g)continue;
   g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;}});
   box.setFromObject(g);box.getSize(size);box.getCenter(mid);
-  const k=2.0/Math.max(size.x,size.y,size.z,.001);
+  const k=(key==='ink'?2.45:2.0)/Math.max(size.x,size.y,size.z,.001);
   g.scale.setScalar(k);g.position.set(-mid.x*k,-mid.y*k,-mid.z*k);
-  g.rotation.y=key==='banana'?-.9:key==='shell'?.4:.35;g.rotation.x=key==='shell'||key==='banana'?.25:.12;
+  g.rotation.y=key==='banana'?-.9:key==='shell'?.4:key==='ink'?-.35:.35;g.rotation.x=key==='shell'||key==='banana'?.25:.12;
   sc.add(g);renderer.setRenderTarget(rt);renderer.clear();renderer.render(sc,cam);renderer.setRenderTarget(null);
   renderer.readRenderTargetPixels(rt,0,0,S,S,buf);sc.remove(g);
   const cv=document.createElement('canvas');cv.width=cv.height=S;const q=cv.getContext('2d'),img=q.createImageData(S,S);
   for(let y=0;y<S;y++)img.data.set(buf.subarray((S-1-y)*S*4,(S-y)*S*4),y*S*4);
   q.putImageData(img,0,0);itemThumbs[key]=cv.toDataURL('image/png');}
  renderer.setClearColor(oldC,oldA);rt.dispose();
- itemThumbs.done=['empty','boost','triple','shell','banana','shield','bomb','storm'].every(k=>itemThumbs[k]);}
+ itemThumbs.done=['empty','boost','triple','shell','banana','shield','bomb','storm','mega','ink'].every(k=>itemThumbs[k]);}
 function openAchievements(){const pr=store.get('prog',{xp:0,ach:[]}),lv=levelOf(pr.xp||0),got=new Set(pr.ach||[]);
  setText('achLevel',`Fahrerstufe ${lv.level}`);$('achBar').innerHTML=`<i style="width:${Math.round(lv.into/lv.need*100)}%"></i><span>${lv.into} / ${lv.need} XP</span>`;
  $('achCount').textContent=`${got.size} / ${ACH.length} Erfolge`;
  $('achList').innerHTML=ACH.map(a=>`<div class="ach ${got.has(a.id)?'on':''}"><i>${got.has(a.id)?'🏅':'🔒'}</i><b>${a.n}</b><small>${a.d}</small></div>`).join('')+
   `<div class="ach-colors">${KART_COLORS.filter(k=>k.lvl).map(k=>`<span class="${lv.level>=k.lvl?'on':''}" style="--c:#${k.c.toString(16).padStart(6,'0')}">${lv.level>=k.lvl?'':'🔒 '}${k.n.split(' /')[0]} · Stufe ${k.lvl}</span>`).join('')}</div>`;
  $('achPanel').hidden=false;}
-function refreshMenu(){const goldOk=store.get('gold',false),lv=progLevel();$('colors').querySelectorAll('button').forEach((b,i)=>{const k=KART_COLORS[i],locked=!!(k.gold&&!goldOk)||!!(k.lvl&&lv<k.lvl);b.classList.toggle('locked',locked);b.title=locked?(k.lvl?`Ab Fahrerstufe ${k.lvl}`:'Gewinne einen Grand Prix ab 100cc'):k.n;});setText('achBtnLvl','Stufe '+lv);
+function refreshMirror(){const b=$('mirrorBtn');if(!b)return;const lock=progLevel()<MIRROR_LVL;b.classList.toggle('locked',lock);b.classList.toggle('selected',mirrorOn&&!lock);b.setAttribute('aria-pressed',String(mirrorOn&&!lock));b.title=lock?`Spiegel-Modus ab Fahrerstufe ${MIRROR_LVL}`:'Spiegel-Modus: Strecken seitenverkehrt';}
+function refreshMenu(){refreshMirror();const goldOk=store.get('gold',false),lv=progLevel();$('colors').querySelectorAll('button').forEach((b,i)=>{const k=KART_COLORS[i],locked=!!(k.gold&&!goldOk)||!!(k.lvl&&lv<k.lvl);b.classList.toggle('locked',locked);b.title=locked?(k.lvl?`Ab Fahrerstufe ${k.lvl}`:'Gewinne einen Grand Prix ab 100cc'):k.n;});setText('achBtnLvl','Stufe '+lv);
  const tro=[50,100,150].map(c=>{const t=store.get(`trophy-${c}`,9);return t<=3?`${['🏆','🥈','🥉'][t-1]} ${c}cc`:'';}).filter(Boolean).join('  ');const medals=courses.map((_,i)=>store.get(`medal-${i}`,3)),mc=[0,1,2].map(k=>medals.filter(x=>x===k).length);setText('trophies',[tro,mc.some(Boolean)?`🥇${mc[0]} 🥈${mc[1]} 🥉${mc[2]}`:''].filter(Boolean).join('   '));$('classes').classList.toggle('locked',mode==='tt');
  document.querySelectorAll('#classes .cls').forEach(b=>{const on=Number(b.dataset.cc)===cc;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});$('tracks').classList.toggle('locked',mode==='gp');
  // Medaille je Strecke auf die Karte
@@ -2883,6 +2984,7 @@ document.querySelectorAll('#modes .mode').forEach(b=>b.onclick=()=>{mode=b.datas
  if(mode==='world'){if(selected!==WORLD_IDX){lastRaceSel=selected;selected=WORLD_IDX;buildCourse();}}else if(selected===WORLD_IDX){selected=lastRaceSel;syncTrackButtons();buildCourse();}
  if(mode==='gp'&&selected!==0){selected=0;syncTrackButtons();buildCourse();}refreshMenu();});
 document.querySelectorAll('#classes .cls').forEach(b=>b.onclick=()=>{cc=Number(b.dataset.cc);store.set('class',cc);refreshMenu();});
+$('mirrorBtn').onclick=()=>{if(progLevel()<MIRROR_LVL){toast(`🔒 Spiegel-Modus ab Fahrerstufe ${MIRROR_LVL}`,2,'bad');return;}mirrorOn=!mirrorOn;store.set('mirror',mirrorOn);refreshMirror();if(mirrorOn)toast('🪞 Spiegel-Modus an',1.4);};
 $('start').onclick=()=>{gp=mode==='gp'?{active:true,race:0,points:{}}:{active:false,race:0,points:{}};start();};
 $('again').onclick=nextAfterResult;$('home').onclick=home;$('quit').onclick=home;$('pause').onclick=pause;$('resume').onclick=pause;$('sound').onclick=setSound;
 $('cerAgain').onclick=()=>{gp={active:true,race:0,points:{}};start();};$('cerHome').onclick=home;
@@ -2965,7 +3067,7 @@ if(TEST){window.rallyTest={start,home,use,pause,say,ceremony,hud,oh:()=>({...oh,
   let m=1e9;for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){if(Math.abs(pts[i][1]-pts[j][1])<far)continue;const dd=pts[i][0].distanceTo(pts[j][0]);if(dd<m)m=dd;}
   return {s:Math.round(q.s),span:Math.round(q.span),n:q.n,R:+q.R.toFixed(1),style:q.style,len:Math.round(sl),min:+m.toFixed(2)};}),
  autopilot:v=>{autopilot=v;},finishNow:()=>{racers[0].distance=length*LAPS+1;finish(racers[0],length,elapsed);end();},
- state:()=>({state,length,mode,cc,gp,stats,racers:racers.map(({mesh,...r})=>r)}),setItem:item=>{racers[0].item=item;racers[0].charges=item==='triple'?3:0;},
+ state:()=>({state,length,mode,cc,gp,stats,racers:racers.map(({mesh,...r})=>r)}),setItem:item=>{racers[0].item=item;racers[0].charges=item==='triple'?3:0;},inkMe:()=>{racers[0].ink=INK_T;inkSplash();},
  perf:()=>({drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,dpr:renderer.getPixelRatio(),qualityLevel:quality.level}),
  bgm:()=>({ready:bgm.ready,failed:bgm.failed,playing:bgm.current,rate:bgm.rate}),
  chr:()=>chr&&{cows:chr.cows.map(c=>[Math.round(c.x),Math.round(c.z),Math.round(c.d)]),gates:chr.gates.map(g=>Math.round(g.d)),hands:chr.hands.map(h=>[Math.round(h.x),Math.round(h.z),+h.up.toFixed(2),Math.round(h.d)]),mets:chr.mets.map(m=>[Math.round(m.x),Math.round(m.z),Math.round(m.d)])},desert:()=>desert&&{tw:desert.twisters.map(q=>[Math.round(q.x),Math.round(q.z),Math.round(q.dd||q.d)]),pits:desert.pits.map(q=>[Math.round(q.x),Math.round(q.z),q.r,Math.round(q.d)])},train:()=>trainFx&&{len:Math.round(trainFx.len),cross:trainFx.crossings.map(c=>Math.round(c.d)),loco:[+trainFx.cars[0].x.toFixed(1),+trainFx.cars[0].z.toFixed(1)]},lm:()=>!!P.landmarks,hz:()=>hz&&{stampers:hz.stampers.map(q=>[Math.round(q.d),q.off,q.g.position.toArray().map(v=>+v.toFixed(1))]),plants:hz.plants.map(q=>[Math.round(q.d),q.side,+q.x.toFixed(1),+q.y.toFixed(1),+q.z.toFixed(1)]),cannons:hz.cannons.map(q=>[Math.round(q.d),q.g.position.toArray().map(v=>+v.toFixed(1))]),missiles:hz.missiles.length,statues:swingers.filter(q=>q.statue).map(q=>q.statue.position.toArray().map(v=>+v.toFixed(1))),loaded:!!P.hazards},jumps:()=>({ramps:ramps.map(r=>[+r.start.toFixed(1),+r.end.toFixed(1),r.gap?1:0,+r.off.toFixed(1)]),gaps:gaps.map(g=>[+g.start.toFixed(1),+g.end.toFixed(1)]),length}),items:()=>({hazards:hazards.length,shots:shots.length,ramps:ramps.length,pads:pads.length,rings:rings.length,spores:spores.length,swingers:swingers.length,gaps:gaps.length,obstacles:[...obsGrid.values()].reduce((a,c)=>a+c.length,0),crowd:crowd?crowd.fans.length:0,protos:Object.fromEntries(PROTO_FILES.map(n=>[n,!!P[n]]))}),

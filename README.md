@@ -4,6 +4,45 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 47 (25.09.2026): Riesenpilz und Tintenpilz, laengere Tunnel mit Licht-Durchbruechen, Spiegel-Modus
+
+**Zwei neue Items (core.mjs, eigene Entwuerfe):**
+- **Riesenpilz:** 7 s lang waechst das Kart auf 1,75-fache Groesse und ist unverwundbar (ohne Schildblase),
+  etwas schneller; wer gerammt wird, wird plattgedrueckt und weggeschoben. In der letzten Sekunde blinkt es
+  zwischen gross und klein, die Kamera geht mit nach hinten. Fuer die hintere Haelfte des Feldes.
+- **Tintenpilz:** alle, die vorne liegen, bekommen Tinte. Ueber ihnen ploppt ein Tintling auf (Schopftintling mit
+  Comic-Augen, Blender: art/r45/create_inkcap.py, assets/inkcap.glb), wackelt und zerlaeuft. Trifft es den
+  Spieler, kleben Tintenkleckse auf dem Bild und rutschen langsam ab (mit Turbo schneller weg); KI-Fahrer mit
+  Tinte fahren eine flatternde Linie und gehen zwischendurch vom Gas. Das Sternenschild haelt die Tinte ab.
+- Beide mit gerenderten 3D-Vorschaubildern, KI-Einsatz und neuen Chiptune-Effekten (wachsen, schrumpfen,
+  plattmachen, Tintenklatscher).
+
+**Item-Feld im Spiel ueberarbeitet:** weisser Aussenring und Ring in Item-Farbe, rotierender Strahlenkranz
+hinter dem Item, schwebendes Item, farbiges Namensschild, Roulette mit blinkendem Rahmen, Aufblitzen beim
+Einsammeln.
+
+**Schild der Rivalen verdeckt nicht mehr die Sicht:** nur noch ein duenner Randschimmer statt gefuellter Blase,
+und je naeher an der Kamera, desto durchsichtiger.
+
+**Tunnel neu (Blender: art/r45/create_tunnelkit.py, assets/tunnelkit.glb):**
+- Laenger: Pilz-Promenade 78 m (vorher 53), Sonnen-Canyon 81 m (48), Neon-Pilzwald 86 m (46), Geisterhaus 79 m
+  (43) - ohne Rampen, Loopings, Flug- oder Wasserzonen zu beruehren; zwei Tribuenen wurden dafuer verschoben.
+- **Licht-Durchbrueche:** alle ~22 m eine Oeffnung in der Decke mit Lichtkegel (weich, nah an der Kamera
+  durchsichtig), tanzendem Staub und Lichtfleck auf der Fahrbahn; Farbe je Stil (Sonne, Mondlicht in der Gruft).
+  Ein Erdhuegel ueber dem Gewoelbe wirft Schatten - drinnen ist es wirklich dunkel, durch die Oeffnungen faellt
+  Sonne. Im Leicht-Modus (ohne Schatten) dunkelt ein Streifen die Fahrbahn ab. In Rollzonen keine Oeffnungen.
+- Portale je Stil statt flacher Boegen: hohler Baumstamm mit Pilzen und Baumpilzen, Sandstein-Bogen mit
+  Schlussstein-Relief, Neon-Rahmen mit Leuchtroehren und Gluehbirnen, Gruftbogen mit leuchtendem Rundfenster,
+  Laternen und Efeu, Roehrenmuendung.
+- Wandmuster je Stil (Holzmaserung, Mauerwerk, Neonraster, Nieten, Lava-Risse), Rippen, Laternen mit Lichthof;
+  die Felsbrocken, die innen durch die Wand stachen, liegen jetzt oben auf dem Huegel.
+
+**Spiegel-Modus (ab Fahrerstufe 3):** Knopf neben den Klassen; das Bild ist seitenverkehrt (wie im grossen
+Vorbild auch die Schilder), die Lenkung umgedreht - nicht im Zeitfahren und nicht im Pilzland.
+
+**Neue Erfolge:** Spiegelmeister, Riesenschritt (3 Karts plattgemacht), Tintenfisch (4 Fahrer mit einer Tinte) -
+jetzt 29. Zusammengefuehrt mit Runde 45/46 einer parallelen Sitzung (Gewitterwolke, Rivale, Tagesaufgabe bleiben).
+
 ## Runde 46 (25.09.2026): Gewitterwolke, Rivale, Tagesaufgabe, Drift-Sound, Startnummern
 
 **Neues Item Gewitterwolke:** Blitze aus dunklen Wolken treffen alle Karts vor dem Nutzer - kurzer Dreher,

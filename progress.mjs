@@ -16,6 +16,7 @@ export function raceXP({place, cc, stats = {}}) {
   add('Windschatten', (stats.drafts || 0) * 6);
   add('Überholt', (stats.overtakes || 0) * 3);
   add('Ringe', (stats.rings || 0) * 2);
+  add('Plattgemacht', (stats.megaSquash || 0) * 5);
   if (!(stats.hitsTaken > 0)) add('Ohne Treffer', 30);
   if (stats.rivalBeaten) add('Rivale geschlagen', RIVAL_XP);
   if (stats.daily) add('Tagesaufgabe', DAILY_XP);
@@ -61,6 +62,10 @@ export const ACH = [
   {id: 'rival', n: 'Rivalen-Bezwinger', d: 'Lass deinen Rivalen hinter dir', t: r => !!r.stats.rivalBeaten},
   {id: 'storm', n: 'Wettermacher', d: 'Triff 4 Karts mit einer Gewitterwolke', t: r => cnt(r.stats, 'stormBest') >= 4},
   {id: 'daily', n: 'Tagesheld', d: 'Schaffe eine Tages-Herausforderung', t: r => !!r.stats.daily},
+  // R47
+  {id: 'mirror', n: 'Spiegelmeister', d: 'Gewinne ein Rennen im Spiegel-Modus', t: r => r.place === 1 && !!r.mirror},
+  {id: 'mega', n: 'Riesenschritt', d: 'Mache mit dem Riesenpilz 3 Karts platt', t: r => cnt(r.stats, 'megaSquash') >= 3},
+  {id: 'ink', n: 'Tintenfisch', d: 'Triff mit einem Tintenpilz 4 Fahrer', t: r => cnt(r.stats, 'inkBest') >= 4},
 ];
 export const achById = id => ACH.find(a => a.id === id);
 

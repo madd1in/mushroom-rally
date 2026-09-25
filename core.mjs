@@ -23,7 +23,7 @@ export function miniTurbo(charge){for(const l of MT_LEVELS)if(charge>=l[0])retur
 // surf: {air, offroad, slope (Steigung in Fahrtrichtung), speedMul}
 export function driveKart(k,dt,input,surf={}){
  dt=clamp(dt,0,.05);const P=PHYS;
- k.boost=Math.max(0,k.boost-dt);k.shield=Math.max(0,k.shield-dt);k.stun=Math.max(0,k.stun-dt);k.cooldown=Math.max(0,k.cooldown-dt);k.hop=Math.max(0,(k.hop||0)-dt);k.shrink=Math.max(0,(k.shrink||0)-dt);k.flatCd=Math.max(0,(k.flatCd||0)-dt);
+ k.boost=Math.max(0,k.boost-dt);k.shield=Math.max(0,k.shield-dt);k.stun=Math.max(0,k.stun-dt);k.cooldown=Math.max(0,k.cooldown-dt);k.hop=Math.max(0,(k.hop||0)-dt);k.shrink=Math.max(0,(k.shrink||0)-dt);k.mega=Math.max(0,(k.mega||0)-dt);k.ink=Math.max(0,(k.ink||0)-dt);k.flatCd=Math.max(0,(k.flatCd||0)-dt);
  const fx=Math.sin(k.h),fz=Math.cos(k.h),lx=fz,lz=-fx,air=!!surf.air,off=!air&&!!surf.offroad,boosting=k.boost>0,stunned=k.stun>0;
  let vf=k.vx*fx+k.vz*fz,vl=k.vx*lx+k.vz*lz;
  let top=(boosting?P.boostTop:P.top+(k.spores||0)*SPORE_BONUS)*(surf.speedMul||1)*(k.mTop||1);
@@ -84,10 +84,16 @@ export function activate(r,all){const item=r.item;if(!item)return null;r.item=nu
  if(item==='shield'){r.shield=6;r.boost=Math.max(r.boost,.5);}
  if(item==='storm'){const hit=[];for(const a of all){if(a.id===r.id||a.finishTime!==null||a.distance<=r.distance)continue;if(a.shield>0){hit.push({id:a.id,blocked:true});continue;}
   a.shrink=Math.max(a.shrink||0,SHRINK_T);a.stun=Math.max(a.stun,.8);a.driftDir=0;a.drift=0;a.item=null;a.charges=0;hit.push({id:a.id,blocked:false});}return {type:item,hit};}
+ // R47 Riesenpilz: 7 s gross, unverwundbar (Schild ohne Blase), leicht schneller; wer gerammt wird, wird plattgedrueckt
+ if(item==='mega'){r.mega=MEGA_T;r.shield=Math.max(r.shield,MEGA_T);r.boost=Math.max(r.boost,.8);}
+ // R47 Tintenpilz: alle, die vorne liegen, bekommen Tinte (Sicht bzw. Linie gestoert); das Schild haelt sie ab
+ if(item==='ink'){const hit=all.filter(a=>a.id!==r.id&&a.distance>r.distance&&a.finishTime===null&&!(a.shield>0));for(const a of hit)a.ink=INK_T;return {type:item,targets:hit.map(a=>a.id)};}
  if(item==='shell'){const ahead=all.filter(a=>a.id!==r.id&&a.distance>r.distance&&a.finishTime===null).sort((a,b)=>a.distance-b.distance)[0];if(ahead&&!ahead.shield)ahead.stun=Math.max(ahead.stun,1.6);return {type:item,target:ahead?.id};}
  return {type:item,charges:r.charges};}
 // Pilzbombe: vor allem fuers Mittelfeld (dort ist das Gedraenge am groessten)
-export function itemWeights(place,count){const t=count>1?(place-1)/(count-1):0;return {banana:40*(1-t)+8,shield:22*(1-t)+10,shell:18+10*t,boost:6+30*t,triple:t>.45?66*(t-.45):0,bomb:3+16*Math.max(0,1-Math.abs(t-.5)*2.2),storm:t>.55?30*(t-.55):0};}
+export function itemWeights(place,count){const t=count>1?(place-1)/(count-1):0;return {banana:40*(1-t)+8,shield:22*(1-t)+10,shell:18+10*t,boost:6+30*t,triple:t>.45?66*(t-.45):0,bomb:3+16*Math.max(0,1-Math.abs(t-.5)*2.2),storm:t>.55?30*(t-.55):0,mega:t>.3?22*(t-.3):0,ink:t>0?4+8*t:0};}
+// R47: Dauer von Riesenpilz und Tinte (Sekunden)
+export const MEGA_T=7,INK_T=4.5;
 // Explosion: Karts im Radius werden getroffen (Schild blockt). Rueckgabe: false | 'blocked' | true
 export function blastHit(k,dx,dz,radius=6.5){if(Math.hypot(dx,dz)>radius)return false;if(k.shield>0)return 'blocked';hitKart(k,1.3,.3);return true;}
 // Drift-Combo: Mini-Turbos in kurzer Folge ohne Fehler zaehlen hoch; Fehler (Treffer, Wand, Wiese) setzen auf 0
