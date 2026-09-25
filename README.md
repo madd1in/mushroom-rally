@@ -109,6 +109,13 @@ geht nicht mehr nur unter Wasser: je 20 % an die Bootsfahrt an der Oberflaeche d
 Hoernern und gluehenden Augen ueber beiden Toren, Fallgitter-Zaehne in der Durchfahrt, Fackeln an Toren und
 Fluegeln, gluehendes Lavaband am Fuss, Stachelkraenze und goldene Spitzen auf den Tuermen.
 
+**Pilzland wirklich frei befahrbar:** Abseits der Ringstrasse bremste das Gras auf 12,5 m/s, Querfeldein wurde
+als Abkuerzung zurueckgesetzt und die Hoehe neben der Strasse aus der Querneigung hochgerechnet (auf 200 m bis zu
+24 m daneben). Jetzt faehrt man ueber die ganze Insel mit 95 % Tempo, der Boden ist flach, nichts setzt zurueck.
+**Sandwege** fuehren von jedem Portal quer ueber die Wiese zum Pilzberg und verbinden alle Gebiete. Neue Mission
+**Muenzjagd**: 24 Muenzen sind ueber die ganze Insel verstreut (mindestens 25 m neben der Strasse), jede zaehlt
+einmal und bleibt gespeichert. Test: 116 m Wiese in 5,6 s mit 29 m/s Richtung Pilzberg, Hoehe 0, kein Zuruecksetzen.
+
 **Mehr Erfolgserlebnis - Fahrerstufen, Erfolge, Lackierungen (progress.mjs, 4 Unit-Tests):**
 - Jedes Rennen bringt **XP**: Platzierung (100 bis 28) plus Mini-Turbos (blau 4, rot 8, lila 15), Tricks, Windschatten,
   Ueberholen, Ringe, +30 ohne Treffer; mal 1 / 1,25 / 1,6 je Klasse. Der Ergebnisschirm zeigt die Aufschluesselung und

@@ -426,6 +426,7 @@ function groundAt(d,off){const tr=trackAt(d);let base=tr.h-off*tr.b;const edge=M
  if(magOn()&&hasMag(d))return {y:base,rh:rampAt(d,off)};
  if(theme.space&&edge>1.6){const rh0=rampAt(d,off);return {y:-30,rh:rh0};}   // neben der Bahn ist Leere
  if(edge>.6&&tr.h>2.2&&inBridge(d))base=0;else if(edge>0&&base>0)base=Math.max(0,base-edge/1.5);
+ if(worldMode&&edge>0&&base<0)base=0;
  if(Math.abs(off)<30&&inGap(d))base=-30;const rh=rampAt(d,off);return {y:base+(rh?rh.y:0),rh};}
 function rampAt(d,off){const dl=lapDist(d);for(const r of ramps){if(Math.abs(off-r.off)<r.w/2&&dl>=r.start&&dl<=r.end)return {y:RAMP_H*(dl-r.start)/RAMP_LEN,ramp:r};}return null;}
 function strip(d0,d1,offset,width,lift,uvLen,steps,uvMul=1){const n=steps+1,v=new Float32Array(n*6),uv=new Float32Array(n*4),idx=new Uint32Array(steps*6);for(let i=0;i<n;i++){const d=d0+(d1-d0)*i/steps;for(let s=0;s<2;s++){const p=samplePos(d,offset+(s?1:-1)*width/2,_sp,lift),o=i*2+s;v[o*3]=p.x;v[o*3+1]=p.y;v[o*3+2]=p.z;uv[o*2]=s;uv[o*2+1]=(d-d0)*uvMul/uvLen;}if(i<steps){const a=i*2,q=i*6;idx[q]=a;idx[q+1]=a+2;idx[q+2]=a+1;idx[q+3]=a+1;idx[q+4]=a+2;idx[q+5]=a+3;}}
@@ -1299,7 +1300,17 @@ function buildOW(){const fx={switches:[],portals:[],slaloms:[],ringMs:[],coins:n
  for(const pt of fx.portals){const [name,sc]=DISTRICT[pt.ti]||['mushroom',6],a=sample(pt.d,-56).p,b=sample(pt.d,56).p,q=Math.hypot(a.x,a.z)<Math.hypot(b.x,b.z)?a:b,ang=Math.atan2(-q.x,-q.z);
   const o=land(name,q.x,q.z,sc,ang,name==='crystal'?0xb09aff:null,name==='rock'||name==='crystal'?6:10);
   if(o&&name==='rock')for(let k=1;k<4;k++)land('rock',q.x+Math.cos(k*2.1)*14,q.z+Math.sin(k*2.1)*14,5+k*1.6,k,null,5);}
- owFx=fx;}
+ owPaths(fx);owHunt(fx);owFx=fx;}
+// R44: Sandwege von jedem Portal quer ueber die Wiese zum Pilzberg - verbinden alle Gebiete, frei befahrbar
+function owPaths(fx){const tex=canvasTex(64,64,(q,w,h)=>{q.fillStyle='#d9b77c';q.fillRect(0,0,w,h);for(let i=0;i<180;i++){q.fillStyle=`rgba(${150+Math.random()*60|0},${110+Math.random()*50|0},${70+Math.random()*30|0},.5)`;q.fillRect(Math.random()*w,Math.random()*h,2,2);}},true);tex.repeat.set(1,8);
+ const m=stdMat({map:tex,roughness:.95}),geos=[];for(const pt of fx.portals){const s0=sample(pt.d+18,0).p,a=sample(pt.d+18,-12).p,b=sample(pt.d+18,12).p,st=Math.hypot(a.x,a.z)<Math.hypot(b.x,b.z)?a:b,len0=Math.hypot(st.x,st.z),ux=-st.x/len0,uz=-st.z/len0,L=len0-66;
+  if(L<20)continue;const g=new T.PlaneGeometry(6,L,1,Math.ceil(L/6)).rotateX(-Math.PI/2);g.rotateY(Math.atan2(ux,uz));g.translate(st.x+ux*L/2,.04,st.z+uz*L/2);geos.push(g);}
+ if(geos.length){const mesh=new T.Mesh(mergeGeometries(geos),m);mesh.receiveShadow=true;world.add(mesh);}}
+// R44: Muenzjagd - 24 Muenzen quer ueber die Insel, jede einmal (bleibt gespeichert); alle = Mission erledigt
+function owHunt(fx){if(!P.coin)return;const got=new Set(store.get('owHunt',[])),rnd=rng(4242),list=[];let guard=0;
+ while(list.length<24&&guard++<4000){const a=rnd()*TAU,rr=90+rnd()*470,x=Math.cos(a)*rr,z=Math.sin(a)*rr,d=projectGlobal(x,z),q=sample(d).p;if(Math.hypot(q.x-x,q.z-z)<25)continue;if(list.some(c=>Math.hypot(c.x-x,c.z-z)<40))continue;list.push({x,z,i:list.length});}
+ let cg=null,cm=null;P.coin.traverse(o=>{if(o.isMesh&&!cg){cg=o.geometry;cm=o.material;}});const im=new T.InstancedMesh(cg,cm,list.length);im.instanceMatrix.setUsage(T.DynamicDrawUsage);im.frustumCulled=false;world.add(im);
+ fx.hunt={list,got,im};fx.total++;if(got.size>=list.length)fx.done=progressAdd(fx.done,'hunt');}
 // Zustand zuruecksetzen (neue Fahrt in der Welt): erledigte Missionen bleiben erledigt
 // Portal-Knopf wirklich ausblenden (vorher blieb er nach dem Tippen im Rennen und sogar im Hauptmenue stehen)
 function owPortalHide(){owPortalAt=null;owHudKey='';const pb=$('owPortal');if(pb)pb.hidden=true;}
@@ -1318,6 +1329,9 @@ function owRingHit(ring){const fx=owFx;if(!fx)return;const rm=fx.ringMs.find(x=>
  if(ringsHit(rm.m,ring.ri)){if(rm.m.state==='done')owComplete(rm.m.id,'RINGFLUG');else fx.msg=`Ringflug ${rm.m.got.size}/${rm.m.count}`;owHud();}}
 const _cm=new T.Matrix4(),_cq=new T.Quaternion(),_cv=new T.Vector3(),_cs=new T.Vector3(1,1,1);
 function updateOW(dt){const fx=owFx,p=racers[0];if(!fx||!p)return;const t=elapsed,d=lapDist(p.distance);
+ if(fx.hunt){const H=fx.hunt;H.list.forEach((c,i)=>{const on=!H.got.has(i);if(on&&Math.hypot(p.x-c.x,p.z-c.z)<2.8&&(p.y||0)<4){H.got.add(i);store.set('owHunt',[...H.got]);SFX.spore(H.got.size);burst(p,0xffd23f,10);
+   toast(`MÜNZJAGD ${H.got.size}/${H.list.length}`,1,'good');if(H.got.size>=H.list.length)owComplete('hunt','Münzjagd');}
+  _e.set(0,t*2.2+i,0);_q.setFromEuler(_e);_m.compose(_v.set(c.x,1.5+Math.sin(t*2.4+i)*.25,c.z),_q,_s.setScalar(on?1.7:0));H.im.setMatrixAt(i,_m);});H.im.instanceMatrix.needsUpdate=true;}
  // P-Schalter und Muenzen
  for(const sw of fx.switches){const m=sw.m;
   if(m.state==='ready'&&Math.abs(wrapDiff(d,sw.d))<2.4&&Math.abs(p.offset-sw.off)<2.8&&!p.air&&pswitchPress(m,t)){fx.active=sw;sw.cap.scale.y=.35;SFX.pickup();toast(`P-SCHALTER! ${OW.coins} Münzen in ${OW.coinTime} s`,1.6,'good');}
@@ -1345,8 +1359,9 @@ function updateOW(dt){const fx=owFx,p=racers[0];if(!fx||!p)return;const t=elapse
 // Anzeige oben links und Portal-Knopf
 let owHudKey='';
 function owHud(){const fx=owFx;if(!fx||!worldMode)return;const act=fx.switches.find(s=>s.m.state==='running');
- const line=act?`P-Schalter: ${act.m.got}/${OW.coins} · ${Math.ceil(timeLeft(act.m,elapsed))} s`:fx.msg||'Fahr durch Pilzland – Portale führen zu den Rennen';
- const k=`${fx.done.length}|${fx.total}|${line}|${owPortalAt?owPortalAt.ti:-1}`;if(k===owHudKey)return;owHudKey=k;
+ const line=act?`P-Schalter: ${act.m.got}/${OW.coins} · ${Math.ceil(timeLeft(act.m,elapsed))} s`:fx.msg||(fx.hunt&&fx.hunt.got.size<fx.hunt.list.length?`Münzjagd ${fx.hunt.got.size}/${fx.hunt.list.length} – fahr frei über die Insel`:'Fahr durch Pilzland – Portale führen zu den Rennen');
+ const hk=fx.hunt?fx.hunt.got.size:0;
+ const k=`${fx.done.length}|${fx.total}|${line}|${hk}|${owPortalAt?owPortalAt.ti:-1}`;if(k===owHudKey)return;owHudKey=k;
  $('owStars').textContent=`★ ${fx.done.length}/${fx.total}`;$('owMission').textContent=line;
  const pb=$('owPortal');pb.hidden=!owPortalAt;if(owPortalAt){const tc=courses[owPortalAt.ti];pb.innerHTML=`<b>▶ ${tc.icon} ${tc.name} fahren</b><span>Enter / tippen</span>`;}}
 function owEnterTrack(ti){owPortalAt=null;owPortalHide();mode='single';document.querySelectorAll('#modes .mode').forEach(x=>{const on=x.dataset.mode==='single';x.classList.toggle('selected',on);x.setAttribute('aria-pressed',String(on));});
@@ -2192,7 +2207,7 @@ function update(dt){
   else{input=aiInput(r,dt);r.steerS=(r.steerS||0)+(input.steer-(r.steerS||0))*Math.min(1,dt*8);}
   // Steckenbleib-Schutz: wer mit Gas laenger als 1,6 s fast steht, wird auf die Strecke gesetzt
   if(state==='race'&&r.stun<=0&&r.stall<=0&&input.gas&&Math.abs(r.speed)<2.5){r.slowT=(r.slowT||0)+dt;
-   if(r.slowT>1.6){r.slowT=0;respawn(r);if(me)toast('ZURÜCK AUF DIE STRECKE',1.2);}}
+   if(r.slowT>(worldMode?4:1.6)){r.slowT=0;respawn(r);if(me)toast('ZURÜCK AUF DIE STRECKE',1.2);}}
   else r.slowT=0;
   if(!me)aiItems(r,order);
   // In einer Rollzone schwebt die Bahn - daneben ist kein Gelaende, sondern nichts. Die
@@ -2216,7 +2231,8 @@ function update(dt){
   if(me)SFX.hum(inRoll);
   const czMove=czn?coasterRide(r,czn,me):1;
   if(!czn&&r.czRun)coasterExit(r,me);
-  const offroad=!r.air&&!onRoad(r.distance,r.offset)&&!inGap(r.distance)&&!inRoll&&!(elems.length&&elemAt(r.distance));if(TEST){r.tOff=(r.tOff||0)+(offroad?dt:0);r.tAll=(r.tAll||0)+dt;}
+  const offroad=!worldMode&&!r.air&&!onRoad(r.distance,r.offset)&&!inGap(r.distance)&&!inRoll&&!(elems.length&&elemAt(r.distance));
+  const meadow=worldMode&&!r.air&&!onRoad(r.distance,r.offset);if(TEST){r.tOff=(r.tOff||0)+(offroad?dt:0);r.tAll=(r.tAll||0)+dt;}
   const s=trackAt(r.distance),tan=tanAt(r.distance),dot=Math.sin(r.h)*tan.x+Math.cos(r.h)*tan.z;
   // Mildes Gummiband: Rivalen weit vorn werden minimal langsamer, weit hinten minimal schneller (Sieg bleibt verdient)
   const rubber=me?1:1+clamp((player.distance-r.distance)/400,-1,1)*cls.rubber,speedMul=me?1:cls.ai*(.96+.04*r.skill)*rubber;
@@ -2226,7 +2242,7 @@ function update(dt){
   const lp=loops.length?loopAt(r.distance):null,tfF=elems.length?r.mesh.userData.tf?.cur:null;
   // In Rollzonen uebernimmt die Magnetbahn den Hoehenweg: Hang-Widerstand faellt weg, sonst
   // fehlt genau dort der Schwung, wo die Strecke zusaetzlich noch kippt.
-  driveKart(r,dt,input,{air:r.air,offroad,slope:inRoll?0:slopeAt(r.distance)*dot,speedMul:speedMul*(czn&&r.czRun?.launched?COASTER.launchTop/PHYS.boostTop:1)*(tfF==='dive'?.95:tfF==='plane'?1.04:1),gripMul:(lp?1.5:inRoll?2.3:1)*(tfF==='boat'?.85:1),moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):czMove});
+  driveKart(r,dt,input,{air:r.air,offroad,meadow,slope:inRoll?0:slopeAt(r.distance)*dot,speedMul:(meadow?.95:1)*speedMul*(czn&&r.czRun?.launched?COASTER.launchTop/PHYS.boostTop:1)*(tfF==='dive'?.95:tfF==='plane'?1.04:1),gripMul:(lp?1.5:inRoll?2.3:1)*(tfF==='boat'?.85:1),moveMul:lp?1/loopStretch(lp,loopFrame(lp,r.distance)):czMove});
   if(me&&r.hopT>0&&!r.hopWas)SFX.hop();r.hopWas=r.hopT>0;desertHits(r,me,dt);
   // Luftfuehrung (R44): nach Schanzen und Luecken folgt das Kart in der Luft sanft dem Streckenverlauf und wird
   // Richtung Mitte gezogen - eine Kurve direkt hinter dem Sprung (12 Stellen im Audit) fuehrt nicht mehr zum Absturz
@@ -2245,7 +2261,7 @@ function update(dt){
   if(elapsed>4&&input.gas&&!r.air&&Math.abs(r.speed)<3&&r.stun<=0){r.stuckT=(r.stuckT||0)+dt;if(r.stuckT>stuckLimit){r.stuckT=0;respawn(r);}}else r.stuckT=0;
   let pr=project(r.x,r.z,r.distance),skipped=false;
   // Weit neben der lokalen Projektion (Kurve abgeschnitten): global neu zuordnen; grosse Abkuerzungen setzen zurueck.
-  if(Math.abs(pr.off)>14&&!forkBand(pr.d,pr.off,4)&&!nearLoop(r.distance)){const g2=project(r.x,r.z,projectGlobal(r.x,r.z,r.y||0));if(Math.abs(g2.off)<9){const jump=wrapDiff(g2.d,lapDist(r.distance));if(jump>60){respawn(r);if(me)toast('ABKÜRZUNG ZÄHLT NICHT!',1.6,'bad');skipped=true;}else{r.distance+=jump;pr=g2;}}}
+  if(Math.abs(pr.off)>14&&!forkBand(pr.d,pr.off,4)&&!nearLoop(r.distance)){const g2=project(r.x,r.z,projectGlobal(r.x,r.z,r.y||0));if(Math.abs(g2.off)<9){const jump=wrapDiff(g2.d,lapDist(r.distance));if(jump>60&&!worldMode){respawn(r);if(me)toast('ABKÜRZUNG ZÄHLT NICHT!',1.6,'bad');skipped=true;}else{r.distance+=jump;pr=g2;}}}
   if(!skipped){advanceProgress(r,pr.d,length);r.offset=pr.off;railCollide(r,me);
    // Anti-Grav-Seitenmagnet: in Rollzonen stehen keine Leitplanken – die Magnetbahn haelt das Kart
    // seitlich fest (wie vertikal). Weicher exponentieller Pull statt hartem Snap: kein Ruck im Bild,
