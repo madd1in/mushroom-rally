@@ -109,6 +109,14 @@ geht nicht mehr nur unter Wasser: je 20 % an die Bootsfahrt an der Oberflaeche d
 Hoernern und gluehenden Augen ueber beiden Toren, Fallgitter-Zaehne in der Durchfahrt, Fackeln an Toren und
 Fluegeln, gluehendes Lavaband am Fuss, Stachelkraenze und goldene Spitzen auf den Tuermen.
 
+**Lava-Feste: Burgturm mit Mauerdurchbruch und Kanonen-Portal (art/r44/create_tower.py):** Die Hochstrasse vor dem
+Ziel steigt jetzt auf 14 m (vorher 8) und windet sich in der Kurve an einem runden Basalt-Bergfried hinauf (30 m, gluehende
+Lava-Risse, Zinnenkranz, leuchtende Fenster, Flammenbanner, spitzes rotes Stachel-Dach). Oben geht es durch einen
+Mauerdurchbruch (kurzer Tunnel im Basalt-Stil) und dann frontal auf ein Steinportal zu, auf dem eine Roehrenkanone
+thront: ihre Kugelblitze stuerzen von oben herab und fliegen in versetzten Spuren die Rampe hinunter - ausweichen.
+Der Sprungpilz auf der Bruecke ist weg (haette von der Hochstrasse geschleudert). Ehrlich: die Kurve dort dreht nur
+etwa 60-70 Grad - eine Spirale ueber mehrere Umdrehungen braeuchte einen Umbau der ganzen Streckenfuehrung.
+
 **Pilzland wirklich frei befahrbar:** Abseits der Ringstrasse bremste das Gras auf 12,5 m/s, Querfeldein wurde
 als Abkuerzung zurueckgesetzt und die Hoehe neben der Strasse aus der Querneigung hochgerechnet (auf 200 m bis zu
 24 m daneben). Jetzt faehrt man ueber die ganze Insel mit 95 % Tempo, der Boden ist flach, nichts setzt zurueck.
