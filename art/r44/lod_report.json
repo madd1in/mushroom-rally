@@ -6,16 +6,22 @@
   "kb": 34.5
  },
  "castle": {
-  "before": 24220,
-  "after": 10169,
-  "ratio": 0.416,
-  "kb": 526.7
+  "before": 28692,
+  "after": 12046,
+  "ratio": 0.417,
+  "kb": 589.3
  },
  "coastertruss": {
   "before": 764,
   "after": 380,
   "ratio": 0.469,
   "kb": 12.6
+ },
+ "coin": {
+  "before": 692,
+  "after": 346,
+  "ratio": 0.5,
+  "kb": 17.5
  },
  "dragon": {
   "before": 4928,
@@ -59,6 +65,12 @@
   "ratio": 0.398,
   "kb": 85.2
  },
+ "gate": {
+  "before": 3748,
+  "after": 1574,
+  "ratio": 0.42,
+  "kb": 49.5
+ },
  "ghost": {
   "before": 4208,
   "after": 2391,
@@ -72,10 +84,10 @@
   "kb": 27.5
  },
  "grandstand": {
-  "before": 778,
-  "after": 387,
-  "ratio": 0.471,
-  "kb": 36.5
+  "before": 3772,
+  "after": 1584,
+  "ratio": 0.42,
+  "kb": 76.9
  },
  "gravestone": {
   "before": 532,

@@ -84,6 +84,31 @@ Schachbrettband, getupfte Huete mit Wimpeln, Bannerbalken mit Schachbrettleisten
 Schriftzug ist jetzt ganz lesbar (vorher verdeckten die Huete M und Y). **Jubel als Chiptune:** 8-Bit-Applaus
 (Rauschen in zufaelligen Stoessen), Pfiffe und Hurra-Arpeggio.
 
+**Mehr Platz zum Driften - Auslaufzonen:** Die Strassen waren zum Driften zu eng (Nutzer: "knalle immer gleich gegen
+die Bande"). Beidseitig liegt jetzt ein befestigter Randstreifen von 8,6 bis 11,2 m (heller Belag, weisse
+Randlinie), der als Fahrbahn zaehlt - nutzbare Breite 22 statt 17 m. Die Planken in Kurven stehen an seiner
+Aussenkante, und ein Anschlag nimmt nur noch die Bewegung nach aussen weg (vorher Rueckprall mit 25 % Ueberschuss
+und bis 16 % Tempoverlust, jetzt ohne Rueckprall, hoechstens 8 %) - man gleitet an der Bande entlang. Nicht auf
+Bruecken, an Luecken, in Loopings, Roll-, Wasser-, Flug- und Achterbahnzonen, nicht auf der Abzweigseite.
+Roehren, Kanone, Schilder und Grasbueschel sind entsprechend nach aussen gerueckt; das Untersteuern bei
+Hoechsttempo ist wieder etwas zurueckgenommen, die engen Ecken haben 13 statt 11 m Radius.
+
+**Gas- und Hops-Knopf getrennt, kein Auto-Gas:** war Auto-Gas auf einem Geraet einmal an, blieb die Einstellung
+gespeichert und der Gas-Knopf verschwand - einmalig fuer alle auf AUS zurueckgesetzt.
+
+**Achterbahnen ruhiger:** Die Twists drehten die Kamera mit bis zu 15 rad/s (eine Umdrehung auf 17-22 m). Der
+Drache hat jetzt einen Korkenzieher mit einer statt zwei Umdrehungen auf fast doppelter Laenge, die kurzen
+Achterbahnen (Geisterhaus, Regenbogen) keinen Twist mehr. Die Kamera dreht bei Achterbahn-Twists nur zu 40 % mit
+und hoechstens 3,2 rad/s schnell. Die Anti-Grav-Spirale der Magnet-Kirmes ist 70 % laenger.
+
+**Laengere Wasser- und Flugphasen:** Flug auf der Lava-Feste startet direkt nach der Schanze (+33 %), See im
+Geisterhaus +46 %, See der Magnet-Kirmes +40 %, dazu Bach und Regenbogen-Flug laenger. Die Ueberlaenge eines Sees
+geht nicht mehr nur unter Wasser: je 20 % an die Bootsfahrt an der Oberflaeche davor und danach (16-29 m statt 6 m).
+
+**Lava-Feste aufpoliert (art/r44/polish_castle.py, Anbauten auf das bestehende Modell):** Feuerkoenig-Relief mit
+Hoernern und gluehenden Augen ueber beiden Toren, Fallgitter-Zaehne in der Durchfahrt, Fackeln an Toren und
+Fluegeln, gluehendes Lavaband am Fuss, Stachelkraenze und goldene Spitzen auf den Tuermen.
+
 **Neon-Pilzwald:** die enge Ecke wieder entfernt - direkt dahinter liegt eine Schanze, das fuehrte zu Abstuerzen
 (Regression 3 -> 0).
 

@@ -93,13 +93,13 @@ test('rating rewards clean runs with airtime', () => {
 
 test('twists: full turns end at a multiple of 2*PI, axis only while turning', () => {
   const s = coasterSpec('dragon', 320);
-  assert.equal(s.rolls.length, 2);
+  assert.equal(s.rolls.length, 1, 'R44: one long corkscrew around the dragon');
   const before = twistAt(s, 1), after = twistAt(s, s.span - 1);
   assert.equal(before.ph, 0); assert.equal(before.axis, 0);
   const turns = s.rolls.reduce((a, r) => a + r.sgn * r.turns, 0);
   assert.ok(Math.abs(after.ph - turns * Math.PI * 2) < 1e-9);
   assert.equal(after.axis, 0);
-  const cork = s.rolls[1], mid = twistAt(s, cork.c);
+  const cork = s.rolls[0], mid = twistAt(s, cork.c);
   assert.equal(mid.axis, 7.5);
   // stetig: kein Winkelsprung zwischen benachbarten halben Metern
   let jump = 0, prev = twistAt(s, 0).ph;
@@ -117,9 +117,10 @@ test('road edges never dip into the ground during twists (all kinds, all spans)'
   }
 });
 
-test('short hill zones drop twists they cannot clear instead of clipping', () => {
-  assert.equal(coasterSpec('hills', 110).rolls.length, 0);
-  assert.equal(coasterSpec('hills', 161).rolls.length, 1);
+test('twists are long and calm: no short-coaster twist, dragon corkscrew turns slowly', () => {
+  for (const span of [110, 161, 300]) assert.equal(coasterSpec('hills', span).rolls.length, 0);
+  const r = coasterSpec('dragon', 290).rolls[0];
+  assert.ok(r.turns * 2 * Math.PI * 1.5 / (2 * r.w) < .15, 'peak twist rate below .15 rad per metre');
 });
 
 test('banking: leans into the curve, capped, pivots on the inner edge', () => {

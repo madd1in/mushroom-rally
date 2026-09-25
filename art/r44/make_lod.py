@@ -5,7 +5,9 @@ TARGET seiner Dreiecke kommt (je Objekt nie unter FLOOR), und schreibt assets/lo
 Objekt- und Materialnamen (Tint per Materialname, Drachen-/Transformteile per Objektname bleiben gueltig).
 Kleine Teile (Augen, Knoepfe, Glanzpunkte) bleiben unangetastet.
 """
-import bpy, pathlib, json
+import bpy, pathlib, json, sys
+# optional: nur bestimmte Modelle neu erzeugen (blender ... --python make_lod.py -- castle gate)
+ONLY = set(sys.argv[sys.argv.index('--') + 1:]) if '--' in sys.argv else None
 
 ROOT = pathlib.Path(r'C:/Users/User/Documents/Playground/mushroom-rally')
 SRC = ROOT / 'assets'
@@ -25,7 +27,7 @@ def tris_of(o):
     return len(o.data.loop_triangles)
 
 for f in sorted(SRC.glob('*.glb')):
-    if f.name in SKIP:
+    if f.name in SKIP or (ONLY and f.stem not in ONLY):
         continue
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(f))
@@ -63,5 +65,8 @@ for f in sorted(SRC.glob('*.glb')):
     report[f.stem] = {'before': total, 'after': after, 'ratio': round(ratio, 3), 'kb': round(target.stat().st_size / 1024, 1)}
     print('LOD', f.stem, total, '->', after)
 
-(ROOT / 'art' / 'r44' / 'lod_report.json').write_text(json.dumps(report, indent=1), encoding='utf-8')
+rp = ROOT / 'art' / 'r44' / 'lod_report.json'
+old = json.loads(rp.read_text(encoding='utf-8')) if (ONLY and rp.exists()) else {}
+old.update(report)
+rp.write_text(json.dumps(old, indent=1), encoding='utf-8')
 print('REPORT', json.dumps(report))

@@ -39,7 +39,8 @@ const PIECE = {
 // Plaene: welches Stueck den Rest der Zone aufnimmt (flex)
 export const PLANS = {
   bach: {pieces: ['shoreIn', 'boat', 'shoreOut'], flex: 'boat'},
-  see: {pieces: ['shoreIn', 'boat', 'dive', 'deep', 'rise', 'boat', 'shoreOut'], flex: 'deep'},
+  // R44: Ueberlaenge eines Sees geht nicht nur in die Tiefe - je 20 % an die Bootsfahrt an der Oberflaeche davor und danach
+  see: {pieces: ['shoreIn', 'boat', 'dive', 'deep', 'rise', 'boat', 'shoreOut'], flex: 'deep', share: {boat: .2}},
   flug: {pieces: ['takeoff', 'climb', 'cruise', 'descend', 'land'], flex: 'cruise'},
 };
 
@@ -54,7 +55,11 @@ export function elemPlan(kind, span, {loopSpan = 0, depth = ELEM.depth, fly = EL
   const rest = span - fixed;
   const ok = rest >= lens[fi] - 1e-9;
   // Passt es nicht, werden alle Stuecke gleichmaessig gestaucht (Warnung ueber ok)
-  if (ok) lens[fi] = rest;
+  if (ok) {
+    lens[fi] = rest;
+    const extra = Math.max(0, rest - (loopSpan > 0 && kind === 'see' ? loopSpan + 6 : PIECE[plan.flex].len));
+    for (const [p, f] of Object.entries(plan.share || {})) plan.pieces.forEach((q, i) => {if (q === p) {lens[i] += extra * f; lens[fi] -= extra * f;}});
+  }
   else {const k = span / (fixed + lens[fi]); for (let i = 0; i < lens.length; i++) lens[i] *= k;}
   let x = 0;
   const pieces = plan.pieces.map((p, i) => {const q = {type: p, x0: x, x1: x + lens[i], ...PIECE[p]}; x += lens[i]; return q;});

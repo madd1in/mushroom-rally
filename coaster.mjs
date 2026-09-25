@@ -25,11 +25,14 @@ export const COASTER = {
 export const COASTER_KINDS = {
   // Grosse Achterbahn: Top-Hat, Kamelruecken, Bunny-Hop
   super: {launch: [.015, .15], hills: [[.32, .15, 26], [.57, .095, 15], [.74, .07, 9]], rolls: [], bank: false, arches: true},
-  // Kurze Magnet-Wellen fuer Strecken mit wenig Platz, mit Zero-G-Roll auf dem ersten Huegel
-  hills: {launch: [.02, .22], hills: [[.45, .14, 14], [.73, .1, 8]], rolls: [[.45, .075, 1, 0, 0]], bank: true, arches: true},
+  // Kurze Magnet-Wellen fuer Strecken mit wenig Platz
+  // R44: ohne Twist - auf den kurzen Zonen passte nur eine Umdrehung auf 17-22 m (bis 15 rad/s Kameradrehung),
+  // eine lang gezogene Rolle bekommt auf dem niedrigen Huegel keine Bodenfreiheit
+  hills: {launch: [.02, .22], hills: [[.45, .14, 14], [.73, .1, 8]], rolls: [], bank: true, arches: true},
   // Drachen-Achterbahn (R39, Dragon-Driftway-Stil): Top-Hat, Kamelruecken mit Zero-G-Roll,
-  // Bunny-Hop, dann ein doppelter Korkenzieher um den Drachenkoerper (Achse 7,5 m ueber der Bahn)
-  dragon: {launch: [.015, .12], hills: [[.26, .12, 26], [.47, .085, 17], [.63, .05, 8]], rolls: [[.47, .06, 1, 0, 0], [.82, .07, 2, 7.5, 9]], bank: true, arches: true},
+  // Bunny-Hop, dann ein Korkenzieher um den Drachenkoerper (Achse 7,5 m ueber der Bahn). R44: eine statt zwei
+  // Umdrehungen auf fast doppelter Laenge; die Zero-G-Roll auf dem Kamelruecken faellt durch die Bodenfreiheit weg
+  dragon: {launch: [.015, .12], hills: [[.26, .12, 26], [.47, .085, 17], [.63, .05, 8]], rolls: [[.47, .15, 1, 0, 0], [.83, .13, 1, 7.5, 9]], bank: true, arches: true},
   // Magnet-Steilkurve: keine Huegel, nur Neigung aus der Kruemmung (um die Innenkante)
   bank: {launch: null, hills: [], rolls: [], bank: true, arches: false},
 };

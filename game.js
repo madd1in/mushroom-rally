@@ -45,12 +45,12 @@ const THEMES={
 // stands [cp, Querversatz], plateau [cpStart, cpEnde, Hoehe, Rampenlaenge m], gap [cp, Laenge m], swing [cp, Amplitude, Tempo, Phase].
 const courses=[
  {name:'Pilz-Promenade',icon:'✿',kind:'Wurzeltor · Viadukt · Wandfahrt',medals:[93,99,110],music:'race',theme:'forest',seed:7,
-  points:[[-45,-45],[-8,-8],[30,30],[72,62],[112,42],[118,-12],[82,-52],[38,-38],[-35,35],[-72,68],[-112,40],[-118,-15],[-85,-58]],sharp:[[9,11]],
-  raise:[[6.55,8.45,8,44,1]],hills:[[10.6,4,.022]],elem:[[2.98,4.18,'bach']],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],agrav:[[4.5,6.4,'wallrun',90]],loopc:[[10.75,13,2,1]],builds:[[.9,'roottree']],
+  points:[[-45,-45],[-8,-8],[30,30],[72,62],[112,42],[118,-12],[82,-52],[38,-38],[-35,35],[-72,68],[-112,40],[-118,-15],[-85,-58]],sharp:[[9,13]],
+  raise:[[6.55,8.45,8,44,1]],hills:[[10.6,4,.022]],elem:[[2.95,4.3,'bach']],tunnel:[[2.15,2.9,'wood']],gaps:[[11.6,12]],agrav:[[4.5,6.4,'wallrun',90]],loopc:[[10.75,13,2,1]],builds:[[.9,'roottree']],
   ramps:[[4.4,0,9],[9.7,0,8]],pads:[[3.1,-4],[10.0,4]],
   pipes:[[1.35,1,1],[1.6,-1,0],[8.7,1,1],[9.35,-1,1]],boost:[1.9,5.5,12.3],boxes:[1.6,4.9,9.3,12.0],stands:[[.2,18],[5.2,-19]]},
  {name:'Sonnen-Canyon',icon:'☀',kind:'Schnell · Schluchtsprung · Felstunnel',medals:[125,131,142],music:'sunset',theme:'canyon',seed:23,
-  points:[[0,78],[95,78],[125,45],[120,-20],[85,-45],[105,-88],[50,-102],[2,-50],[-60,-98],[-115,-72],[-122,0],[-105,55],[-55,80]],sharp:[[4,11]],
+  points:[[0,78],[95,78],[125,45],[120,-20],[85,-45],[105,-88],[50,-102],[2,-50],[-60,-98],[-115,-72],[-122,0],[-105,55],[-55,80]],sharp:[[4,13]],
   loopc:[[5.85,12.5,1,1],[9.12,13,1,-1],[12.55,13,1,1]],hills:[[1.5,4,.03],[4.5,6,.04]],plateau:[9.45,11.7,7,34],gaps:[[10.5,14]],fork:[[6.25,8.75,.36]],
   raise:[[2.3,3.3,7,30,1]],tunnel:[[4.7,5.45,'rock']],agrav:[[.7,2.2,'wallrun',-90]],
   ramps:[[3.3,0,9],[6.5,3,7]],pads:[[2.4,-4],[8.4,4]],
@@ -62,26 +62,26 @@ const courses=[
   builds:[[11.45,'neongate']],pipes:[[13.25,1,1],[13.5,-1,1]],boost:[.6,6.3,11.6],fork:[[5.75,8.75,.36]],boxes:[1.3,3.6,6.9,9.8,13.8],stands:[[.25,18],[10.1,-19]]},
  {name:'Geisterhaus',icon:'👻',kind:'Spuk · Villa · Geisterbahn',medals:[101,108,120],music:'night',bgmRate:.9,theme:'haunted',seed:66,
   points:[[0,70],[55,78],[95,55],[105,10],[70,-16],[100,-60],[70,-95],[20,-90],[-30,-90],[-75,-95],[-112,-55],[-104,-18],[-93,12],[-104,40],[-80,70],[-40,76]],
-  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.4,13.4,'ceiling',1]],coaster:[[8.2,9.82,'hills']],loopc:[[4.1,14,2,-1]],elem:[[5.9,7.27,'see']],
+  hills:[[3.5,4,.03],[13.6,5,.03]],mansion:7.8,raise:[[9.9,11.1,8,34,1]],tunnel:[[2.3,3.0,'crypt']],agrav:[[11.4,13.4,'ceiling',1]],coaster:[[8.2,9.82,'hills']],loopc:[[4.1,14,2,-1]],elem:[[5.9,7.85,'see']],
   ramps:[[5.4,0,9],[13.5,0,8]],pads:[[4.6,3],[14.6,-3]],
   boost:[.5,6,12.5],ghosts:[[1.6,5.5,.9,0],[5.3,5.5,1.1,2],[7.5,4.2,1,.5],[10.4,5.5,.8,4],[12.9,5.5,1.2,1]],boxes:[1.2,4.1,9.6,13.9],stands:[[.3,-19],[13.2,19]]},
  {name:'Lava-Feste',icon:'\u2668',kind:'Burg \u00b7 Magma \u00b7 Feuerb\u00e4lle',medals:[111,117,128],music:'sunset',bgmRate:1.06,theme:'lava',seed:88,
   points:[[-80,86],[0,90],[80,84],[118,56],[126,12],[112,-34],[92,-74],[44,-98],[-14,-94],[-62,-86],[-92,-56],[-72,-26],[-96,6],[-118,44],[-108,74]],
-  castle:1.05,hills:[[8.6,3,.028]],elem:[[3.08,4.52,'flug']],raise:[[12.4,13.4,8,32,1]],tunnel:[[4.6,5.25,'pipe']],gaps:[[8.15,14]],agrav:[[9.45,12.0,'tour',1]],loopc:[[6.4,14,2,1]],
+  castle:1.05,hills:[[8.6,3,.028]],elem:[[2.62,4.52,'flug']],raise:[[12.4,13.4,8,32,1]],tunnel:[[4.6,5.25,'pipe']],gaps:[[8.15,14]],agrav:[[9.45,12.0,'tour',1]],loopc:[[6.4,14,2,1]],
   swing:[[5.6,5,1,.9],[7.0,5,1.05,2],[12.2,5,1,.3]],cannons:[[2.2,1]],stampers:[[13.72,-3.6,0],[13.95,3.6,1.8]],
   ramps:[[2.4,0,9],[9.7,0,8]],pads:[[5.9,-4],[13.2,4]],
   boost:[.55,6.4,11.8],boxes:[1.6,4.4,8.0,9.9,13.6],stands:[[.4,18],[8.6,-19]]},
  {name:'Regenbogenpiste',icon:'\u2727',kind:'Weltall \u00b7 Looping \u00b7 Sternen-Achterbahn',medals:[127,133,144],music:'night',bgmRate:1.04,theme:'rainbow',seed:101,
   points:[[0,90],[70,88],[120,52],[108,-2],[128,-52],[96,-96],[36,-104],[-18,-78],[-8,-30],[-52,-8],[-104,-30],[-126,16],[-96,64],[-40,84]],
   loopc:[[6.2,21,2,-1,'curve']],agrav:[[2.05,4.05,'roll',1],[8.85,10.8,'ceiling',1]],coaster:[[10.9,12.95,'hills']],
-  hills:[[8.4,5,.03]],gaps:[[4.55,13]],elem:[[.4,1.64,'flug']],stampers:[[5.0,3.6,.9],[13.1,-3.6,0],[13.28,3.6,1.8]],
+  hills:[[8.4,5,.03]],gaps:[[4.55,13]],elem:[[.3,1.72,'flug']],stampers:[[5.0,3.6,.9],[13.1,-3.6,0],[13.28,3.6,1.8]],
   ramps:[[1.9,0,9],[8.15,0,8]],pads:[[3.9,-4]],
   boost:[.6,5.4,11.4],boxes:[1.4,4.0,7.9,10.7,.45]},
  // R38: Kirmes-Strecke rund um die Magnet-Achterbahn (Katapult, Top-Hat, Kamelruecken, Bunny-Hop),
  // dazu Looping auf der rechten Geraden und ein Korkenzieher links.
  {name:'Magnet-Kirmes',icon:'❂',kind:'Achterbahn · Magnet-Katapult · Airtime',medals:[119,125,136],music:'race',bgmRate:1.05,theme:'fair',seed:138,
   points:[[0,92],[70,94],[118,66],[132,10],[126,-48],[96,-92],[40,-110],[-30,-112],[-92,-100],[-126,-56],[-122,0],[-90,26],[-104,60],[-60,88]],
-  coaster:[[5.45,9.2,'dragon']],loopc:[[12.3,16,1,-1]],elem:[[1.82,3.9,'see',{loop:[2,15,1]}]],agrav:[[9.35,10.55,'roll',1]],
+  coaster:[[5.45,9.2,'dragon']],loopc:[[12.3,16,1,-1]],elem:[[1.82,4.75,'see',{loop:[2,15,1]}]],agrav:[[9.3,11.3,'roll',1]],
   hills:[[11.9,4,.03]],
   ramps:[[1.4,0,9]],pads:[[12.5,3]],
   boost:[.55,4.7,11.3],boxes:[.8,2.7,4.7,9.0,11.7,13.2],stands:[[.3,18],[4.4,-19]]}];
@@ -211,7 +211,7 @@ function createPrototypeRecovery(names,prototypes,onRecovered){
    handled=true;onRecovered();return true;}};
 }
 // Leicht-Modus: Low-Poly-Fassungen aus art/r44/make_lod.py (Blender Decimate, gleiche Objekt- und Materialnamen)
-const LO_FILES=new Set(['balloon', 'castle', 'coastertruss', 'dragon', 'driver', 'driver_cat', 'driver_robot', 'driver_turtle', 'elements', 'ferriswheel', 'ghost', 'glider', 'grandstand', 'gravestone', 'itembox', 'kart', 'kartkit', 'kartwheel', 'mansion', 'mushroom', 'pumpkin', 'roottree', 'spectator', 'tree']);
+const LO_FILES=new Set(['balloon', 'castle', 'coastertruss', 'coin', 'dragon', 'driver', 'driver_cat', 'driver_robot', 'driver_turtle', 'elements', 'ferriswheel', 'gate', 'ghost', 'glider', 'grandstand', 'gravestone', 'itembox', 'kart', 'kartkit', 'kartwheel', 'mansion', 'mushroom', 'pumpkin', 'roottree', 'spectator', 'tree']);
 function loadProto(name){return new Promise(resolve=>{
  const tryLoad=attempt=>{new GLTFLoader().load(`assets/${LITE&&LO_FILES.has(name)?'lo/':''}${name}.glb`,g=>{const merged=liteRoot(NO_MERGE.has(name)?g.scene:mergeByMaterial(g.scene));markShared(merged);P[name]=merged;progress();resolve();},undefined,
   ()=>{if(attempt<2){setTimeout(()=>tryLoad(attempt+1),1200);}else{P[name]=null;progress();resolve();}});};
@@ -415,7 +415,7 @@ function raiseH(d){let h=0;for(const q of raises){const span=lapDist(q.e-q.s),re
 // Bezugshoehe fuer posAt: die Fahrbahnebene selbst. groundAt taugt dafuer nicht, weil es
 // neben der Bahn die Boeschung mitrechnet - das Bild wuerde an der Zonengrenze springen.
 function roadRef(d,off){const [i,j,k]=tIdx(d);return TP.h[i]+(TP.h[j]-TP.h[i])*k-off*(TP.b[i]+(TP.b[j]-TP.b[i])*k);}
-function groundAt(d,off){const tr=trackAt(d);let base=tr.h-off*tr.b;const edge=Math.abs(off)-8.9;
+function groundAt(d,off){const tr=trackAt(d);let base=tr.h-off*tr.b;const edge=Math.abs(off)-(Math.abs(off)>8.6&&shoulderOk(d,off)?SHOULDER+.3:8.9);
  // Die Anti-Grav-Bahn schwebt: daneben gibt es keine Boeschung, die abfaellt. Rechnete man sie
  // mit, loeste sich der Haltemagnet sobald das Kart etwas weiter aussen fuhr - es fiel heraus
  // und wurde zurueckgesetzt. Seitlich haelt die Fuehrung, nicht das Gelaende.
@@ -450,7 +450,7 @@ function loopParts(a,b){if(!loops.length&&!coasters.length)return [[a,b,1]];cons
   out.push([cuts[i],cuts[i+1],q?q.sig*2.1+1:tw?3:1]);}
  return out;}
 function stripSegs(offset,width,lift,uvLen,material,shadow=true){for(const [a,b] of roadSegments())for(const [a2,b2,sc] of loopParts(a,b))addStrip(strip(a2,b2,offset,width,lift,uvLen,Math.max(2,Math.ceil((b2-a2)*sc/1.1)),sc),material,shadow);}
-function skirt(side,material){const steps=520,v=[],idx=[],hs=[];for(let i=0;i<=steps;i++){const d=length*i/steps,s=sample(d,side*8.9),h=(inGap(d)||hasMag(d)||(s.p.y>2.2&&inBridge(d)))?0:Math.max(0,s.p.y),b=sample(d,side*(8.9+h*1.5+1.2)).p;v.push(s.p.x,s.p.y+.02,s.p.z,b.x,-.5,b.z);hs.push(h);}for(let i=0;i<steps;i++){if(Math.max(hs[i],hs[i+1])<.35||hs[i]===0||hs[i+1]===0)continue;const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(v,3));g.setIndex(idx);g.computeVertexNormals();const m=new T.Mesh(g,material);m.receiveShadow=true;world.add(m);}
+function skirt(side,material){const steps=520,v=[],idx=[],hs=[];for(let i=0;i<=steps;i++){const d=length*i/steps,e0=shoulderOk(d,side)?SHOULDER+.3:8.9,s=sample(d,side*e0),h=(inGap(d)||hasMag(d)||(s.p.y>2.2&&inBridge(d)))?0:Math.max(0,s.p.y),b=sample(d,side*(e0+h*1.5+1.2)).p;v.push(s.p.x,s.p.y+.02,s.p.z,b.x,-.5,b.z);hs.push(h);}for(let i=0;i<steps;i++){if(Math.max(hs[i],hs[i+1])<.35||hs[i]===0||hs[i+1]===0)continue;const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(v,3));g.setIndex(idx);g.computeVertexNormals();const m=new T.Mesh(g,material);m.receiveShadow=true;world.add(m);}
 // Hindernisse fuer Kollisionen (Raster 16 m)
 function addObstacle(x,z,r,h=99){const key=(Math.floor(x/16)+500)*1000+(Math.floor(z/16)+500);let c=obsGrid.get(key);if(!c)obsGrid.set(key,c=[]);c.push({x,z,r,h});}
 function nearTrack(x,z,dist){const d=projectGlobal(x,z),p=sample(d).p;return Math.hypot(p.x-x,p.z-z)<dist;}
@@ -682,7 +682,9 @@ function buildWorld(){mapBase=null;bprof.length=0;bprofT=performance.now();world
   const rbMat=stdMat({map:rb,emissive:0xffffff,emissiveMap:rb,emissiveIntensity:.7,roughness:.5,metalness:.1,transparent:true,opacity:.6,depthWrite:false,side:T.DoubleSide});
   rainbowTex=rb;stripSegs(0,15.2,.065,6,rbMat);}
  else stripSegs(0,15.2,.065,6,stdMat({map:speckleTexture(hex(theme.road),hex(theme.roadSpot),900),roughness:.9}));
- const curbTex=canvasTex(8,64,(q)=>{q.fillStyle=theme.curbA;q.fillRect(0,0,8,32);q.fillStyle=theme.curbB;q.fillRect(0,32,8,32);},true);curbTex.magFilter=T.NearestFilter;
+ buildShoulder();if(!theme.space){const shM=stdMat({map:speckleTexture(hex(new T.Color(theme.road).lerp(new T.Color(0xffffff),.16).getHex()),hex(theme.roadSpot),900),roughness:.92}),edgeM=stdMat({color:theme.line?new T.Color(theme.line):0xffffff,roughness:.7,...(glow?{emissive:0xffffff,emissiveIntensity:.8}:{})});
+  for(const side of [-1,1]){const A=side<0?SHT.L:SHT.R;let a=-1;for(let i=0;i<=SHT.n;i++){const on=i<SHT.n&&A[i];if(on&&a<0)a=i;else if(!on&&a>=0){const d0=a*SHT.ds,d1=i*SHT.ds,st=Math.max(2,Math.ceil((d1-d0)/1.6));addStrip(strip(d0,d1,side*9.9,2.7,.058,6,st),shM);addStrip(strip(d0,d1,side*10.95,.2,.07,6,st),edgeM,false);a=-1;}}}}
+const curbTex=canvasTex(8,64,(q)=>{q.fillStyle=theme.curbA;q.fillRect(0,0,8,32);q.fillStyle=theme.curbB;q.fillRect(0,32,8,32);},true);curbTex.magFilter=T.NearestFilter;
  const curbMat=stdMat({map:curbTex,roughness:.7,...(glow?{emissive:0xffffff,emissiveMap:curbTex,emissiveIntensity:.9}:{})});for(const off of [-8.2,8.2])stripSegs(off,.8,.13,8,curbMat);
  const dashTex=canvasTex(8,32,(q)=>{q.fillStyle=theme.line;q.fillRect(0,0,8,16);},true);stripSegs(0,.22,.075,8,stdMat({map:dashTex,alphaTest:.5,roughness:.8,...(glow?{emissive:0xffffff,emissiveMap:dashTex,emissiveIntensity:1}:{})}),false);
  const skirtMat=stdMat({map:speckleTexture(hex(theme.skirt),hex(theme.grassSpot),1800),roughness:1,side:T.DoubleSide});
@@ -898,21 +900,23 @@ function buildRails(){const list=[],ds=2;
  scan(d=>hasMag(d)?1:0,'high',()=>[-1,1]);
  scan(d=>inZone(d,2)?1:0,'high',()=>[-1,1]);
  list.sort((a,b)=>a.side-b.side||a.d0-b.d0);for(const r of list){const last=rails[rails.length-1];if(last&&last.side===r.side&&r.d0<=last.d1+6){last.d1=Math.max(last.d1,r.d1);if(r.kind==='high')last.kind='high';}else rails.push({...r});}
+ // Planke an die Aussenkante der Auslaufzone, wenn diese dort ueberwiegend vorhanden ist
+ for(const r of rails){let on=0,all=0;for(let d=r.d0;d<=r.d1;d+=2){all++;if(shoulderOk(d,r.side))on++;}const wide=all&&on/all>.7;r.off=wide?SHOULDER+.6:RAIL_OFF;r.lim=wide?SHOULDER-.55:RAIL_LIMIT;}
  rails=rails.filter(r=>{for(let d=r.d0;d<=r.d1;d+=3)if(inGap(d))return false;return true;});
  if(!rails.length)return;const [ca,cb,postCol]=RAIL_COL[course.theme]||RAIL_COL.forest;
  const tex=canvasTex(64,16,(q,w,h)=>{q.fillStyle=ca;q.fillRect(0,0,w,h);q.fillStyle=cb;for(let x=-16;x<w;x+=32){q.beginPath();q.moveTo(x,h);q.lineTo(x+16,0);q.lineTo(x+32,0);q.lineTo(x+16,h);q.fill();}q.fillStyle='#0003';q.fillRect(0,h-3,w,3);},true);
  const band=stdMat({map:tex,roughness:.45,metalness:.25,side:T.DoubleSide,...(theme.glow?{emissive:0xffffff,emissiveMap:tex,emissiveIntensity:.55}:{})});
  const geos=[],posts=[];for(const r of rails){const steps=Math.max(2,Math.ceil((r.d1-r.d0)/1.6)),n=steps+1,v=new Float32Array(n*6),uv=new Float32Array(n*4),idx=[];
- for(let i=0;i<n;i++){const d=r.d0+(r.d1-r.d0)*i/steps,p=samplePos(d,r.side*RAIL_OFF,_sp);v.set([p.x,p.y+.3,p.z,p.x,p.y+.84,p.z],i*6);uv.set([(d-r.d0)/2.2,0,(d-r.d0)/2.2,1],i*4);if(i<steps){const a=i*2;idx.push(a,a+2,a+1,a+1,a+2,a+3);}if(i%2===0)posts.push([p.x,p.y,p.z,d]);}
+ for(let i=0;i<n;i++){const d=r.d0+(r.d1-r.d0)*i/steps,p=samplePos(d,r.side*(r.off||RAIL_OFF),_sp);v.set([p.x,p.y+.3,p.z,p.x,p.y+.84,p.z],i*6);uv.set([(d-r.d0)/2.2,0,(d-r.d0)/2.2,1],i*4);if(i<steps){const a=i*2;idx.push(a,a+2,a+1,a+1,a+2,a+3);}if(i%2===0)posts.push([p.x,p.y,p.z,d]);}
  const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(v,3));g.setAttribute('uv',new T.BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();geos.push(g);}
  const bm2=new T.Mesh(mergeGeometries(geos),band);bm2.castShadow=true;world.add(bm2);
  const pi=new T.InstancedMesh(new T.BoxGeometry(.14,1.5,.14),mat(postCol,{roughness:.6,metalness:.3}),posts.length);posts.forEach(([x,y,z,d],i)=>{const t=tanAt(d);_e.set(0,Math.atan2(t.x,t.z),rollTot(d),'YXZ');_q.setFromEuler(_e);_m.compose(_v.set(x,y+.1,z),_q,_s.set(1,1,1));pi.setMatrixAt(i,_m);});pi.castShadow=true;world.add(pi);}
 function railCollide(r,me){if(!rails.length)return;
  // In Roll- und Loopzonen haelt die Fuehrung; zwei Korrektursysteme wuerden gegeneinander arbeiten
  if((agrav.length||loops.length)&&hasRoll(r.distance))return;
- const dl=lapDist(r.distance);for(const rl of rails){if(lapDist(dl-rl.d0)>rl.d1-rl.d0)continue;const so=r.offset*rl.side;if(so<RAIL_LIMIT||so>RAIL_LIMIT+6)continue;if((r.y||0)>groundAt(r.distance,r.offset).y+1.5)continue;
-  const t=tanAt(r.distance),nx=-rl.side*t.z,nz=rl.side*t.x,pen=so-RAIL_LIMIT;r.x+=nx*pen;r.z+=nz*pen;r.offset=rl.side*RAIL_LIMIT;
-  const vn=r.vx*nx+r.vz*nz;if(vn<0){r.vx-=nx*vn*1.25;r.vz-=nz*vn*1.25;const loss=Math.min(.16,-vn*.011);r.vx*=1-loss;r.vz*=1-loss;if(-vn>7){r.combo=0;if(me){shake=Math.max(shake,Math.min(.28,-vn*.018));SFX.bump(clamp(-vn/26,.2,.8));stats.bumps++;}}}
+ const dl=lapDist(r.distance);for(const rl of rails){if(lapDist(dl-rl.d0)>rl.d1-rl.d0)continue;const so=r.offset*rl.side,lim=rl.lim||RAIL_LIMIT;if(so<lim||so>lim+6)continue;if((r.y||0)>groundAt(r.distance,r.offset).y+1.5)continue;
+  const t=tanAt(r.distance),nx=-rl.side*t.z,nz=rl.side*t.x,pen=so-lim;r.x+=nx*pen;r.z+=nz*pen;r.offset=rl.side*lim;
+  const vn=r.vx*nx+r.vz*nz;if(vn<0){r.vx-=nx*vn*1.0;r.vz-=nz*vn*1.0;const loss=Math.min(.08,-vn*.006);r.vx*=1-loss;r.vz*=1-loss;if(-vn>7){r.combo=0;if(me){shake=Math.max(shake,Math.min(.28,-vn*.018));SFX.bump(clamp(-vn/26,.2,.8));stats.bumps++;}}}
   if(Math.abs(r.speed)>9&&frame%2===0&&nearPlayer(r,60))emit(r.x-nx*1.1,(r.y||0)+.55,r.z-nz*1.1,0xffd27a,-Math.sin(r.h)*5+(Math.random()-.5)*3,1+Math.random()*2,-Math.cos(r.h)*5+(Math.random()-.5)*3,.25);
   if(me&&Math.abs(r.speed)>9&&frame%9===0)SFX.scrape();break;}}
 // ---------- Abzweigungen: glatte Innenlinie (Bezier, tangential zur Hauptstrecke) als kuerzere, engere Alternative
@@ -932,7 +936,17 @@ const FORK_HALF=5.5,MAIN_EDGE=8.0;
 function forkBand(d,off,pad=0){const fk=forkAt(d);if(!fk)return false;const oo=off*fk.f.side;if(oo<=0)return false;const o=Math.abs(fk.off);return oo>=o-FORK_HALF-.4-pad&&oo<=o+FORK_HALF+.4+pad;}
 function forkEdges(p,side){const oo=p.off*side,outer=oo+FORK_HALF,inner=Math.max(MAIN_EDGE,oo-FORK_HALF);return outer<=MAIN_EDGE+.15?null:{inner,outer,w:outer-inner,c:side*(inner+outer)/2,island:oo-FORK_HALF>MAIN_EDGE+.6};}
 function forkBlocks(d,off){const fk=forkAt(d,10);return !!fk&&Math.sign(off)===fk.f.side&&Math.abs(off)<Math.abs(fk.off)+9;}
-function onRoad(d,off){return Math.abs(off)<8.6||forkBand(d,off);}
+// R44: Auslaufzone - beidseitig befestigter Randstreifen von 8,6 bis 11,2 m, zaehlt als Fahrbahn (Platz zum Driften;
+// Planken in Kurven stehen an seiner Aussenkante). Nicht auf Bruecken, an Luecken, in Loopings, Roll-, Wasser-, Flug- und
+// Achterbahnzonen, nicht auf der Abzweigseite und nicht am Start-Ziel-Tor (Pfeiler). Tabelle in 2-m-Schritten je Seite.
+const SHOULDER=11.2;let SHT=null;
+function buildShoulder(){const ds=2,n=Math.ceil(length/ds),L=new Uint8Array(n),R=new Uint8Array(n);SHT={ds,n,L,R};if(theme.space)return;
+ for(let i=0;i<n;i++){const d=i*ds;if(inGap(d)||inGap(d-6)||inGap(d+6)||(agrav.length&&hasMag(d))||raiseH(d)>1.2||coasterH(d)>.4||elemAt(d,14)||Math.abs(wrapDiff(d,0))<10)continue;
+  if(loops.length&&loops.some(q=>lapDist(d-q.s+24)<q.span+48))continue;const fk=forkAt(d,16);L[i]=fk&&fk.f.side<0?0:1;R[i]=fk&&fk.f.side>0?0:1;}
+ // kurze Stuecke (unter 12 m) weglassen - kein Flackern zwischen breit und schmal
+ for(const A of [L,R]){let a=-1;for(let i=0;i<=n;i++){const on=i<n&&A[i];if(on&&a<0)a=i;else if(!on&&a>=0){if(i-a<6)A.fill(0,a,i);a=-1;}}}}
+function shoulderOk(d,off){if(!SHT)return false;const i=Math.floor(lapDist(d)/SHT.ds)%SHT.n;return (off<0?SHT.L:SHT.R)[i]===1;}
+function onRoad(d,off){const a=Math.abs(off);return a<8.6||forkBand(d,off)||(a<SHOULDER&&shoulderOk(d,off));}
 function nearFork(x,z,dist){for(const f of forks)for(let i=0;i<f.pts.length;i+=3){const p=f.pts[i];if(Math.abs(p.x-x)<dist&&Math.abs(p.z-z)<dist&&Math.hypot(p.x-x,p.z-z)<dist)return true;}return false;}
 function polyStripVar(pts,i0,i1,fn,lift,uvLen){const n=i1-i0+1,v=new Float32Array(n*6),uv=new Float32Array(n*4),idx=[];let acc=0;
  for(let i=0;i<n;i++){const p=pts[i0+i];if(i)acc+=Math.hypot(p.x-pts[i0+i-1].x,p.z-pts[i0+i-1].z);const e=fn(p,i/(n-1)),lx=p.tz,lz=-p.tx;
@@ -1339,7 +1353,7 @@ function buildGaps(){for(const g of gaps){const h=trackAt(g.start-1).h;
  for(const d of [g.start-3,g.end+3])for(const side of [-1,1]){const p=sample(d,side*12).p;if(P.rock){const r=cloneProto(P.rock);applyTint(r,'StonePaint',0xc0643a);r.position.set(p.x,0,p.z);r.scale.set(2.2,2.8+Math.random(),2.2);world.add(r);}addObstacle(p.x,p.z,2.4);}
  // Warnschilder vor der Schlucht
  // R44: auf der Lava-Feste das Blender-Warnschild (Tafel mit Warndreieck und Lavawellen) statt der Textplakate
- for(const side of [-1,1]){const s=sample(g.start-70,side*11);if(theme.ember&&P.hazards){const sg=hzPart('HZ_Sign');sg.position.copy(s.p);sg.rotation.y=s.angle+Math.PI;sg.scale.setScalar(1.35);world.add(sg);addObstacle(s.p.x,s.p.z,.6);continue;}const w=new T.Group();w.position.copy(s.p);w.rotation.y=s.angle;world.add(w);box(w,cream,0,1.6,0,.22,3.2,.22);mesh(new T.PlaneGeometry(4.2,1.7),label((theme.chasm&&theme.chasm.label)||'SCHLUCHT! VOLLGAS','#ffd23f','#2b1d24',512,128),w,0,3.4,0);addObstacle(s.p.x,s.p.z,.4);}}}
+ for(const side of [-1,1]){const s=sample(g.start-70,side*12.8);if(theme.ember&&P.hazards){const sg=hzPart('HZ_Sign');sg.position.copy(s.p);sg.rotation.y=s.angle+Math.PI;sg.scale.setScalar(1.35);world.add(sg);addObstacle(s.p.x,s.p.z,.6);continue;}const w=new T.Group();w.position.copy(s.p);w.rotation.y=s.angle;world.add(w);box(w,cream,0,1.6,0,.22,3.2,.22);mesh(new T.PlaneGeometry(4.2,1.7),label((theme.chasm&&theme.chasm.label)||'SCHLUCHT! VOLLGAS','#ffd23f','#2b1d24',512,128),w,0,3.4,0);addObstacle(s.p.x,s.p.z,.4);}}}
 
 // Geistervilla: die Strasse fuehrt mitten durch die Halle (Kollision an Waenden, Fluegeln und Tuermen)
 // Bauwerke, durch die gefahren wird. Je Bauart: Ersatzfarbe (falls das Modell noch laedt),
@@ -1407,7 +1421,7 @@ function buildGrass(random){const [c0,c1]=GRASS[course.theme]||GRASS.forest,a=ne
  matG.onBeforeCompile=sh=>{sh.uniforms.uTime=shaderTime;
   sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nuniform float uTime;')
    .replace('#include <begin_vertex>','#include <begin_vertex>\n#ifdef USE_INSTANCING\nvec3 gp=instanceMatrix[3].xyz;float sw=sin(uTime*1.7+gp.x*.11+gp.z*.15)*.22+sin(uTime*3.1+gp.z*.23)*.08;transformed.x+=sw*transformed.y;transformed.z+=sw*.55*transformed.y;\n#endif');};
- for(let i=0;i<1800*DENS;i++){const d=random()*length,side=random()<.5?-1:1,off=side*(9.2+Math.pow(random(),1.6)*16);if(inGap(d)||inZone(d,20)||forkRoadNear(d,off,7.5)||inBridge(d)||inTunnel(d))continue;const s=samplePos(d,off,_sp),y=Math.max(0,s.y-(Math.abs(off)-8.9)/1.5);const key=Math.floor(s.x/120)+','+Math.floor(s.z/120);let c=cells.get(key);if(!c)cells.set(key,c=[]);c.push([s.x,y,s.z,.7+random()*.9,random()*TAU]);}
+ for(let i=0;i<1800*DENS;i++){const d=random()*length,side=random()<.5?-1:1,off=side*(11.8+Math.pow(random(),1.6)*14);if(inGap(d)||inZone(d,20)||forkRoadNear(d,off,7.5)||inBridge(d)||inTunnel(d))continue;const s=samplePos(d,off,_sp),y=Math.max(0,s.y-(Math.abs(off)-8.9)/1.5);const key=Math.floor(s.x/120)+','+Math.floor(s.z/120);let c=cells.get(key);if(!c)cells.set(key,c=[]);c.push([s.x,y,s.z,.7+random()*.9,random()*TAU]);}
  for(const list of cells.values()){const im=new T.InstancedMesh(geo,matG,list.length);list.forEach(([x,y,z,sc,ry],i)=>{_e.set(0,ry,0);_q.setFromEuler(_e);_m.compose(_v.set(x,y,z),_q,_s.set(sc,sc*(.8+((i*37)%7)/14),sc));im.setMatrixAt(i,_m);});im.castShadow=false;im.receiveShadow=true;world.add(im);}}
 // Riesenrad (R38, Blender): Wahrzeichen der Magnet-Kirmes. Eine GLB, drei Teile ueber die
 // Materialnamen: Gestell (gebacken), Rad (WheelPaint/WheelLights, dreht um die Nabe in 24 m Hoehe)
@@ -1586,11 +1600,11 @@ function buildHazards(){hz={stampers:[],plants:[],cannons:[],missiles:[]};if(!P.
   const sh=new T.Mesh(HZ_SHADOW.geo,HZ_SHADOW.mat.clone());sh.position.set(p.x,p.y+.06,p.z);sh.rotation.y=g.rotation.y;sh.renderOrder=2;world.add(sh);
   hz.stampers.push({d,off,ph,g,base:p.y,sh,was:'up',st:null});}
  const pipeCol=theme.glow?0x2de2e6:0x2aa84a,plantCol=theme.glow?0xff3cac:0xd21f6a;
- for(const [v,side,plant=1] of course.pipes||[]){const d=cpDist(v),off=side*(ROAD_HALF+2.6),g=hzPart('HZ_Pipe');if(!g)break;applyTint(g,'PipePaint',pipeCol);const p=samplePos(d,off,new T.Vector3());g.position.copy(p);world.add(g);addObstacle(p.x,p.z,1.7);
+ for(const [v,side,plant=1] of course.pipes||[]){const d=cpDist(v),off=side*(ROAD_HALF+5.3),g=hzPart('HZ_Pipe');if(!g)break;applyTint(g,'PipePaint',pipeCol);const p=samplePos(d,off,new T.Vector3());g.position.copy(p);world.add(g);addObstacle(p.x,p.z,1.7);
   if(!plant)continue;const root=new T.Group(),lean=new T.Group(),stem=hzPart('HZ_PlantStem'),top=hzPart('HZ_PlantJawTop'),bot=hzPart('HZ_PlantJawBot');
   for(const q of [top,bot])applyTint(q,'PlantPaint',plantCol);lean.add(stem,top,bot);root.add(lean);root.position.set(p.x,p.y+3.2,p.z);world.add(root);
   hz.plants.push({d,off,side,root,lean,top,bot,x:p.x,y:p.y+3.2,z:p.z,cd:0,lunge:0,ph:d*.37,head:new T.Vector3()});}
- for(const [v,side] of course.cannons||[]){const d=cpDist(v),off=side*(ROAD_HALF+4),g=hzPart('HZ_Cannon');if(!g)break;const p=samplePos(d,off,new T.Vector3());g.position.copy(p);g.rotation.y=sample(d).angle+Math.PI;g.scale.setScalar(1.35);world.add(g);addObstacle(p.x,p.z,2.6);
+ for(const [v,side] of course.cannons||[]){const d=cpDist(v),off=side*(ROAD_HALF+6),g=hzPart('HZ_Cannon');if(!g)break;const p=samplePos(d,off,new T.Vector3());g.position.copy(p);g.rotation.y=sample(d).angle+Math.PI;g.scale.setScalar(1.35);world.add(g);addObstacle(p.x,p.z,2.6);
   hz.cannons.push({d,off:off*.86,g,next:0,k:0,pool:[]});}}
 const _hzv=new T.Vector3();
 function hzMissile(c){let m=c.pool.find(q=>!q.live);if(!m){const g=hzPart('HZ_Missile');if(!g)return null;g.scale.setScalar(1.25);world.add(g);m={g,live:false};c.pool.push(m);}
@@ -2334,13 +2348,15 @@ function updateCamera(dt,snap=false){const portrait=camera.aspect<.9;
  // Blickrichtung kommen aus demselben Rahmen und werden durchgehend geglättet. Frueher waren das
  // drei Modi mit harten Umschaltern - genau dort ruckte das Bild.
  const lq=loops.length?loopAt(p.distance):null;
- const rl=rollTot(p.distance);
+ // R44: Achterbahn-Twists drehen die Kamera nur zu 40 % mit (Horizont bleibt ruhiger), und die Kamera-Rolle ist auf
+ // 3,2 rad/s begrenzt - schnelle Spiralen drehten das Bild vorher mit bis zu 15 rad/s
+ const rl=(agrav.length?rollAt(p.distance):0)+(coasters.length?coasterRoll(p.distance,_rax2)*.4:0);
  // Gewicht fuer die Bahnkamera: der Sichthub der Rollzone faehrt ohnehin weich hoch und runter
  // Achterbahn (R38): ab ein paar Metern Hoehe setzt sich die Kamera ebenfalls auf die Bahn hinter
  // dem Kart - sonst schneidet sie an Kuppe und Abfahrt durch den Huegel.
  const rw=Math.max(agrav.length&&!lq?Math.min(1,liftAt(p.distance)/7):0,coasters.length&&!lq?Math.min(1,coasterH(p.distance)/6)*.85:0,elems.length&&!lq?Math.min(1,Math.abs(elemH(p.distance))/4)*.9:0);
  if(snap)camRoll=camRollPrev=rl;
- else{const dRl=angleDiff(rl,camRollPrev),pred=camRoll+dRl;camRoll=angleDiff(pred+angleDiff(rl,pred)*(1-Math.exp(-dt*10)),0);camRollPrev=rl;}
+ else{const dRl=clamp(angleDiff(rl,camRollPrev),-3.2*dt,3.2*dt),pred=camRoll+dRl;camRoll=angleDiff(pred+clamp(angleDiff(rl,pred)*(1-Math.exp(-dt*10)),-3.2*dt,3.2*dt),0);camRollPrev=angleDiff(camRollPrev+dRl,0);}
  let kx=p.x,ky=py,kz=p.z,fx=sx,fy=0,fz=cz,ux=0,uy=1,uz=0;
  // Im Looping wird der Kamerarahmen aus der Blickrichtung des Karts aufgebaut (nicht aus der
  // Streckentangente): am Ein- und Ausgang ist er damit exakt die flache Kamera, also kein Ruck.
@@ -2580,7 +2596,7 @@ document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement
 $('full').onclick=()=>{if(document.fullscreenElement){wantFs=false;document.exitFullscreen().catch(()=>{});}else{wantFs=true;enterFs();}};
 const autoButton=document.createElement('button');autoButton.id='autoGas';
 function setAutoGas(v){autoGas=v;store.set('autogas',v);document.body.classList.toggle('autogas',v);for(const b of [autoButton,$('pauseAutoGas')]){if(!b)continue;b.textContent='Auto-Gas: '+(v?'AN':'AUS');b.setAttribute('aria-pressed',String(v));}}
-autoButton.onclick=()=>setAutoGas(!autoGas);document.querySelector('.controls').after(autoButton);if($('pauseAutoGas'))$('pauseAutoGas').onclick=()=>setAutoGas(!autoGas);setAutoGas(store.get('autogas',false));
+autoButton.onclick=()=>setAutoGas(!autoGas);document.querySelector('.controls').after(autoButton);if($('pauseAutoGas'))$('pauseAutoGas').onclick=()=>setAutoGas(!autoGas);if(store.get('autogasV',0)<44){store.set('autogas',false);store.set('autogasV',44);}setAutoGas(store.get('autogas',false));
 
 // ---------------------------------------------------------------- Laden & Start
 const protoRecovery=createPrototypeRecovery(PROTO_FILES,P,()=>{
