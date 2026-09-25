@@ -106,4 +106,15 @@ report.push(wav('whistle', render(1.1, [{type: 'sq', duty: .5, f0: note('E5'), v
   {type: 'sq', duty: .25, f0: note('G#5'), vib: [6, .012], vol: .11, attack: .06, hold: .7, decay: 1.4}, {type: 'noise', f0: 5200, vol: .07, attack: .05, hold: .6}])));
 // Schrankenglocke: heller kurzer Schlag
 report.push(wav('bell', render(.3, [{type: 'sq', duty: .125, f0: note('C7'), vol: .18, decay: 2.6}, {type: 'sq', duty: .125, f0: note('G7'), vol: .06, decay: 3}])));
+// Kuh: "Muuuh" - tiefes Rechteck, faellt langsam, Vibrato, Nasal-Anteil ueber eine zweite Stimme
+report.push(wav('moo', render(1.0, [{type: 'sq', duty: .25, f0: 190, f1: 140, slide: .9, vib: [5, .03], vol: .2, attack: .08, hold: .6, decay: 1.2},
+  {type: 'tri', f0: 95, f1: 70, slide: .9, vol: .3, attack: .08, hold: .6}])));
+// Geisterhand packt zu: schauriger Abwaertsrutsch mit Rauschen
+report.push(wav('grab', render(.55, [{type: 'sq', duty: .125, f0: 700, f1: 160, vib: [11, .05], vol: .16, decay: 1.2}, {type: 'noise', f0: 800, vol: .12, decay: 1.5}])));
+// Sternschnuppe: fallender Pfeifton
+report.push(wav('meteor', render(1.3, [{type: 'sq', duty: .125, f0: 2400, f1: 500, slide: 1.3, vol: .1, attack: .05, hold: .7}, {type: 'noise', f0: 6000, vol: .04, attack: .3, hold: .7}])));
+// Einschlag: Rauschexplosion und tiefer Schlag
+report.push(wav('boom', render(.7, [{type: 'noise', f0: 900, vol: .3, decay: 1.4}, {type: 'tri', f0: 120, f1: 40, vol: .45, decay: 1.2}])));
+// Donner: langes Grollen mit Knistern
+report.push(wav('thunder', render(1.8, [{type: 'noise', f0: 380, vol: .3, attack: .02, hold: .2, decay: 1.1}, {type: 'noise', f0: 2600, short: true, claps: 24, seed: 5, vol: .08, hold: .15, decay: 1.6}, {type: 'tri', f0: 70, f1: 45, vol: .3, hold: .3, decay: 1.2}])));
 console.log(JSON.stringify(report));
