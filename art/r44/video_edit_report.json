@@ -1,0 +1,97 @@
+{
+  "container": "MPEG4",
+  "codec": "H264",
+  "audio": "AAC",
+  "frames": 1185,
+  "events": 24,
+  "placed": [
+    [
+      0.9,
+      "boost.wav"
+    ],
+    [
+      1.467,
+      "beep.wav"
+    ],
+    [
+      3.167,
+      "moo.wav"
+    ],
+    [
+      3.2,
+      "beep.wav"
+    ],
+    [
+      4.933,
+      "ring.wav"
+    ],
+    [
+      7.433,
+      "trick.wav"
+    ],
+    [
+      8,
+      "ring.wav"
+    ],
+    [
+      8.667,
+      "trick.wav"
+    ],
+    [
+      10.633,
+      "beep.wav"
+    ],
+    [
+      12.033,
+      "item.wav"
+    ],
+    [
+      13.267,
+      "lap.wav"
+    ],
+    [
+      16.267,
+      "boost.wav"
+    ],
+    [
+      17.733,
+      "lap.wav"
+    ],
+    [
+      18.8,
+      "beep.wav"
+    ],
+    [
+      20.567,
+      "hit.wav"
+    ],
+    [
+      22,
+      "ring.wav"
+    ],
+    [
+      23.533,
+      "trick.wav"
+    ],
+    [
+      25.067,
+      "boost.wav"
+    ],
+    [
+      28,
+      "trick.wav"
+    ],
+    [
+      29.767,
+      "beep.wav"
+    ],
+    [
+      34.567,
+      "trick.wav"
+    ]
+  ],
+  "seconds": 39.5,
+  "small_kbps": 1738,
+  "big_bytes": 38088021,
+  "small_bytes": 8919231
+}
