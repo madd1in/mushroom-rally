@@ -42,6 +42,25 @@ GAS (gruen, gross) und HOPS (rot) jetzt getrennt - vorher gab der Drift-Knopf au
 mit dem Hopser waere jeder Gasstoss ein Sprung geworden. Item-Blase gelb leuchtend, Bremse klein,
 Lenkung als zwei grosse Kapseln. Auto-Gas bleibt auf dem Handy standardmaessig aus.
 
+**Rechtwinklige Kurven wie im SNES-Mario-Kart:** Pilz-Promenade, Sonnen-Canyon und Neon-Pilzwald haben je
+eine enge Ecke (Radius 11-15 m statt mindestens 24 m). Dafuer zieht der Streckenbau zwei Hilfspunkte eng um den
+Eckpunkt und schwaecht die Radius-Glaettung nur dort ab; alle Bauten bleiben an ihrem Platz. Mit Grip geht so
+eine Ecke nur mit etwa 19-23 m/s, im Drift mit 26-35 m/s plus Mini-Turbo - Driften lohnt sich. Dazu etwas mehr
+Untersteuern bei Hoechsttempo (vorher war jede Kurve der Spiele mit Vollgas und Grip fahrbar).
+
+**Keine toedlichen Spruenge vor Kurven mehr:** Audit aller Schanzen und Luecken - 12 Landungen lagen in einer
+Kurve mit 24-35 m Radius (Neon allein 4). Neu ist eine Luftfuehrung: in der Luft folgt das Kart sanft dem
+Streckenverlauf und wird Richtung Mitte gezogen. Regenbogenpiste: 2 -> 0 Abstuerze in der Regression.
+
+**Regenbogen-Spirale entschaerft:** der kurvige Dreifach-Looping (Radius 22 m, 3 Umdrehungen) drehte die Kamera
+zu schnell - jetzt 28 m Radius mit 2 Umdrehungen.
+
+**Muenzen und Chiptune-Sound:** Die Sporen sind jetzt echte Sporenmuenzen aus Blender (art/r44/create_coin.py:
+gepraegter Pilz, erhabener Rand, ein Material = ein Draw-Call fuer alle) und drehen sich aufrecht. Neue,
+selbst synthetisierte Chiptune-Effekte (art/r44/make_chiptune.mjs, NES-artig: Rechteck 12,5/25/50 %, Dreieck,
+LFSR-Rauschen): Muenze (H5 -> E6), Item-Box, Rundenfanfare, Mini-Turbo in drei Stufen, Turbo, Treffer,
+Rempler, Banane, Trick, Ring, Raketenstart, Countdown - 15 WAVs, zusammen 270 KB.
+
 **Fehler behoben:** Der Portal-Knopf der Open World ("... fahren") blieb nach dem Antippen im Rennen
 und sogar im Hauptmenue sichtbar.
 

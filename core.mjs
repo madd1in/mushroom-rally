@@ -13,7 +13,8 @@ export const HOP_T=.3,HOP_GRACE=.22,HOP_TURN=1.3;
 // KI-Klassen: Tempo-Faktor und Fahrkoennen (Linienwahl, Bremspunkte, Drift-Nutzung, Fehlerrate).
 export const CLASSES={50:{ai:.76,skill:.34,rubber:.06},100:{ai:.855,skill:.52,rubber:.055},150:{ai:1,skill:.9,rubber:.02}};
 export function racer(id,name,color){return {id,name,color,x:0,z:0,h:0,vx:0,vz:0,speed:0,slide:0,distance:0,offset:0,boost:0,shield:0,stun:0,drift:0,driftDir:0,hop:0,lastMT:null,item:null,charges:0,spores:0,finishTime:null,cooldown:0};}
-export function turnCurve(sp){return clamp(sp/5,0,1)*(1-.32*clamp(sp/PHYS.top,0,1.4));}
+// R44: etwas mehr Untersteuern bei Hoechsttempo (.32 -> .40): enge Ecken verlangen jetzt Linie oder Drift
+export function turnCurve(sp){return clamp(sp/5,0,1)*(1-.40*clamp(sp/PHYS.top,0,1.4));}
 export const driftFactor=into=>.35+.7*(clamp(into,-1,1)+1)/2;
 export function miniTurbo(charge){for(const l of MT_LEVELS)if(charge>=l[0])return l;return null;}
 // surf: {air, offroad, slope (Steigung in Fahrtrichtung), speedMul}
