@@ -109,6 +109,19 @@ geht nicht mehr nur unter Wasser: je 20 % an die Bootsfahrt an der Oberflaeche d
 Hoernern und gluehenden Augen ueber beiden Toren, Fallgitter-Zaehne in der Durchfahrt, Fackeln an Toren und
 Fluegeln, gluehendes Lavaband am Fuss, Stachelkraenze und goldene Spitzen auf den Tuermen.
 
+**Eigener Streckencharakter - Sonnen-Canyon wird zum "Wuestensturm":** Der Canyon war ein Baukasten aus allem
+(drei Loopings, Wandfahrt, Hochstrecke, Tafelberg, Luecke, Abzweigung, Tunnel) ohne Wuestengefuehl. Zwei Loopings
+und die Wandfahrt sind raus, dafuer:
+- **Duenen** auf der Startgeraden: rhythmische Sandkaemme (1,7 m, alle 18 m). Mit Tempo hebt man auf jedem Kamm ab -
+  Hopser/Drift in der Luft gibt den Trick-Turbo bei der Landung.
+- **Sandhosen**: drei wandernde Wirbelstuerme (wirbelnder Sandtrichter mit Staub), die quer ueber die Bahn und etwas
+  vor und zurueck ziehen. Wer hineinfaehrt, wird hochgehoben und gedreht; die KI weicht aus.
+- **Treibsand** an der Innenseite der engen Ecke: wer abkuerzt, wird stark gebremst und zur Mitte gezogen
+  (ausser mit Turbo) - die Drift-Linie lohnt sich.
+- **Dampf-Gueterzug** mit Pfeife und Schrankenglocke (Chiptune) an den Uebergaengen.
+Neue Chiptune-Effekte: Sandhose, Treibsand-Blubbern, Dampfpfeife, Schrankenglocke.
+Neon-Pilzwald: die Schanze kurz vor dem Ziel entfernt (landete in der letzten Kurve, wiederkehrender Absturz).
+
 **Themen-Wahrzeichen aus Blender (art/r44/create_landmarks.py, assets/landmarks.glb):**
 - Pilz-Promenade mit Bayern-Note: Maerchenschloss im Neuschwanstein-Stil (weisse Mauern, schlanke Tuerme mit
   schieferblauen Kegeldaechern, roter Torbau) auf einem Felssockel am Inselrand, Maibaeume, blau-weisse Wimpel.

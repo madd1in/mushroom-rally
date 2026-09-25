@@ -96,4 +96,14 @@ report.push(wav('cheer', render(1.7, [
   {type: 'sq', duty: .125, f0: 1150, f1: 1900, slide: .22, vib: [9, .02], at: .05, len: .38, vol: .09, hold: .5},
   {type: 'sq', duty: .125, f0: 1300, f1: 2100, slide: .2, vib: [11, .02], at: .55, len: .34, vol: .08, hold: .5},
   {type: 'sq', duty: .25, steps: arp(['C6', 'E6', 'G6', 'E6', 'G6', 'C7'], .07), at: .2, len: .6, vol: .08, hold: .6}])));
+// Sandhose: anschwellendes Rauschen mit Tonhoehen-Rutsch, darueber ein pfeifendes Rechteck
+report.push(wav('whirl', render(.9, [{type: 'noise', f0: 1200, vib: [7, .5], vol: .2, attack: .15, hold: .4, decay: 1.2},
+  {type: 'sq', duty: .125, f0: 300, f1: 900, slide: .5, vib: [9, .04], vol: .05, attack: .1, hold: .3}])));
+// Treibsand: tiefe Dreieck-Blubber
+report.push(wav('sand', render(.28, [{type: 'tri', steps: [[0, 110], [.07, 92], [.14, 124]], vol: .38, hold: .3, decay: 1.6}, {type: 'noise', f0: 600, vol: .05, decay: 2}])));
+// Dampfpfeife: zwei Toene mit Vibrato (Terz), Rauschen als Dampf
+report.push(wav('whistle', render(1.1, [{type: 'sq', duty: .5, f0: note('E5'), vib: [6, .012], vol: .16, attack: .06, hold: .7, decay: 1.4},
+  {type: 'sq', duty: .25, f0: note('G#5'), vib: [6, .012], vol: .11, attack: .06, hold: .7, decay: 1.4}, {type: 'noise', f0: 5200, vol: .07, attack: .05, hold: .6}])));
+// Schrankenglocke: heller kurzer Schlag
+report.push(wav('bell', render(.3, [{type: 'sq', duty: .125, f0: note('C7'), vol: .18, decay: 2.6}, {type: 'sq', duty: .125, f0: note('G7'), vol: .06, decay: 3}])));
 console.log(JSON.stringify(report));
