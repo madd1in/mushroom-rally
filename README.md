@@ -109,6 +109,21 @@ geht nicht mehr nur unter Wasser: je 20 % an die Bootsfahrt an der Oberflaeche d
 Hoernern und gluehenden Augen ueber beiden Toren, Fallgitter-Zaehne in der Durchfahrt, Fackeln an Toren und
 Fluegeln, gluehendes Lavaband am Fuss, Stachelkraenze und goldene Spitzen auf den Tuermen.
 
+**Jede Strecke mit eigener Idee (art/r44/create_critters.py, assets/critters.glb):**
+- **Pilz-Promenade "Almwiese":** drei Kuehe (Fleckvieh mit Glocke, Hoernern, grasendem Kopf und laufenden Beinen)
+  wandern nach der engen Ecke ueber die Strasse und bleiben zum Grasen stehen - ausweichen, sonst Dreher und "Muh".
+- **Neon-Pilzwald "Beat":** drei Taktschranken (Neon-Schlagbaeume von beiden Seiten) senken sich im 120-bpm-Takt
+  abwechselnd links und rechts - die offene Seite im Takt waehlen. Turbo-Felder geben auf dem Schlag getroffen
+  deutlich mehr Schub ("IM TAKT!").
+- **Geisterhaus "Spuk":** Geisterhaende schiessen im ersten Abschnitt aus dem Boden (dunkler Riss als Warnung) und
+  packen zu; dazu Gewitter mit Blitz (weisses Aufleuchten) und Donner.
+- **Regenbogenpiste "Sternenstrasse":** Sternschnuppen schlagen mit Warnkreis auf der Bahn ein, dazu die Stampfer
+  und der Sprung ueber den Abgrund. (Eine Mondschwerkraft-Zone war im Test, aber mit dem Gleiter flogen die Karts
+  seitlich weg - wieder entfernt.)
+- Die KI weicht Kuehen, Haenden, Einschlagkreisen aus und waehlt an den Schranken die offene Seite.
+Neue Chiptune-Effekte: Muh, Zupacken, fallende Sternschnuppe, Einschlag, Donner.
+Fehler behoben: die Auslaufzone endete direkt an Hochstrecken - wer auf ihr fuhr, kam an die Kante (Neon-Absturz).
+
 **Eigener Streckencharakter - Sonnen-Canyon wird zum "Wuestensturm":** Der Canyon war ein Baukasten aus allem
 (drei Loopings, Wandfahrt, Hochstrecke, Tafelberg, Luecke, Abzweigung, Tunnel) ohne Wuestengefuehl. Zwei Loopings
 und die Wandfahrt sind raus, dafuer:
