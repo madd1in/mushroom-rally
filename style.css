@@ -484,7 +484,7 @@ body:not(.racing):not(.cer) header .brand{opacity:0;pointer-events:none}
 }
 
 /* Kurzbeschreibung unter dem Namen */
-#menu #tracks .track u{position:absolute;left:9px;right:9px;bottom:14px;z-index:2;font-size:10px;font-weight:600;
+#menu #tracks .track u{position:absolute;left:9px;right:9px;bottom:14px;z-index:2;text-align:left;font-size:10px;font-weight:600;
  text-decoration:none;letter-spacing:.2px;color:#d6e6da;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.82}
 @media(max-width:979px){#menu #tracks .track u{display:none}}
 
@@ -545,6 +545,10 @@ body #menu kbd{background:#fff;color:var(--mk-ink);border:2px solid #15133a33;bo
 /* HUD: Platz, Rundenzaehler, Zeit und Einblendungen in derselben Schrift */
 body .position strong{color:var(--mk-yellow);-webkit-text-stroke:8px var(--mk-ink);text-shadow:0 5px 0 var(--mk-red)}
 body .position>span,body #lap,body #time{font-family:var(--mk-font);font-style:italic;font-weight:900;-webkit-text-stroke:4px var(--mk-ink);paint-order:stroke fill;color:#fff}
+/* R50: Tempo war auf Wasser, Sand und heller Fahrbahn kaum lesbar - gleiche Kontur wie Runde/Zeit, im Turbo tuerkis */
+body #speed{font-family:var(--mk-font);font-weight:900;-webkit-text-stroke:6px var(--mk-ink);paint-order:stroke fill;color:#fff;text-shadow:0 4px 0 var(--mk-ink);font-variant-numeric:tabular-nums;transition:color .15s}
+body.boosting #speed{color:#7cf3ff;text-shadow:0 4px 0 var(--mk-ink),0 0 18px #7cf3ffaa}
+body .speed>small,body #driftlabel{font-weight:800;text-shadow:0 0 3px var(--mk-ink),0 1px 2px var(--mk-ink),0 0 1px var(--mk-ink)}
 body #toast{background:none;color:#fff;font-size:34px;-webkit-text-stroke:7px var(--mk-ink);text-shadow:0 5px 0 var(--mk-red),0 8px 16px #0006;letter-spacing:.5px}
 body #toast.good{background:none;text-shadow:0 5px 0 #1f9a4b,0 8px 16px #0006}
 body #toast.bad{background:none;text-shadow:0 5px 0 var(--mk-red),0 8px 16px #0006}
@@ -903,6 +907,8 @@ body #menu #ctrlMode[hidden]{display:none!important}
 body #menu #assist,body #menu #gfx{display:inline-flex;width:max-content;max-width:100%;background:transparent;padding:0;gap:5px}
 body #menu .ach-btn{margin:0;padding:6px 13px;font-size:13px;border-width:2.5px;transform:skewX(-8deg);box-shadow:0 0 0 2.5px var(--mk-ink),0 4px 0 2px var(--mk-ink)}
 body #menu .ach-btn small{font-size:11px}
+/* R50: ".menu-meta small" faerbt gelb - auf dem gelben Knopf war "Stufe N" unlesbar; jetzt dunkles Abzeichen */
+body #menu .ach-btn small:not(:empty){color:var(--mk-yellow);background:var(--mk-ink);opacity:1;border-radius:999px;padding:1px 7px 2px;margin-left:6px;letter-spacing:.3px;vertical-align:1px}
 @media (max-width:620px){
  body #menu .menu-picks{grid-template-columns:auto minmax(0,1fr);gap:8px 14px}
  body #menu .menu-picks .pick:nth-child(1),body #menu .menu-picks .pick:nth-child(2){grid-column:1/-1;display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;column-gap:8px}
@@ -1019,3 +1025,16 @@ body.mirror #game,body.mirror #map{transform:scaleX(-1)}
 #menu #classes .mirror-btn{position:relative;flex:0 0 auto;min-width:0;padding:6px 9px;font-size:16px;line-height:1}
 #menu #classes .mirror-btn b{display:none}
 #menu #classes .mirror-btn.locked::after{content:'🔒';position:absolute;right:-4px;bottom:-4px;font-size:10px}
+/* R50 Controller: sichtbarer Fokus in Pause, Ergebnis, Siegerehrung und Erfolgen */
+body.pad .modal button:focus,body.pad #ceremony button:focus{outline:4px solid var(--mk-yellow);outline-offset:3px}
+body.pad #item kbd{width:17px;height:17px;padding:0;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:900;background:#1c7cff;border:2px solid #fff;box-shadow:0 2px 0 #15133a}
+/* R50 Wetterbericht: ein Symbol je Runde als Pille unter Runde/Zeit, die aktuelle Runde gross (ausserhalb des
+   Kastens, sonst zog die Zeile ihn am Handy ueber die Platzanzeige) */
+#wxStrip{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:4px 12px;border-radius:999px;background:#15133aa6;backdrop-filter:blur(6px);font-size:15px;line-height:1.15;white-space:nowrap;pointer-events:none}
+#wxStrip[hidden]{display:none}
+#wxStrip i{font-style:normal;opacity:.55;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .3s}
+#wxStrip i.on{opacity:1;transform:scale(1.25)}
+#wxStrip i.past{opacity:.3}
+#wxStrip b{font-size:11px;font-weight:900;opacity:.45}
+@media(pointer:coarse) and (orientation:portrait){#wxStrip{left:0;transform:none;font-size:12px;padding:3px 9px;gap:4px}}
+@media(pointer:coarse) and (orientation:landscape){#wxStrip{font-size:11px;padding:2px 8px;top:calc(100% + 3px)}}

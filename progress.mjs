@@ -67,6 +67,9 @@ export const ACH = [
   {id: 'mirror', n: 'Spiegelmeister', d: 'Gewinne ein Rennen im Spiegel-Modus', t: r => r.place === 1 && !!r.mirror},
   {id: 'mega', n: 'Riesenschritt', d: 'Mache mit dem Riesenpilz 3 Karts platt', t: r => cnt(r.stats, 'megaSquash') >= 3},
   {id: 'ink', n: 'Tintenfisch', d: 'Triff mit einem Tintenpilz 4 Fahrer', t: r => cnt(r.stats, 'inkBest') >= 4},
+  // R50: Wetter von Runde zu Runde
+  {id: 'ufo', n: 'Nahbegegnung', d: 'Lass dich vom UFO-Strahl anheben', t: r => cnt(r.stats, 'ufoLifts') >= 1},
+  {id: 'wxwin', n: 'Wetterfest', d: 'Gewinne bei Gewitter, Schnee oder Sandsturm', t: r => r.place === 1 && !!r.stats.wxRough},
 ];
 export const achById = id => ACH.find(a => a.id === id);
 

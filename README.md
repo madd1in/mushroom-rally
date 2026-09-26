@@ -4,6 +4,44 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 50 (26.09.2026): Wetter und Tageszeit von Runde zu Runde, Controller, HUD-Feinschliff
+
+**Wetter und Tageszeit wechseln von Runde zu Runde** (weather.mjs, 12 Unit-Tests): jedes Rennen bekommt einen
+eigenen Wetterbericht - Runde 1 bleibt ruhig, danach wird es wechselhaft, die letzte Runde ist meist die
+dramatischste (z. B. ☀ → 🌇🌧🛸 → 🌙⛈). Der Wechsel blendet an der Ziellinie ueber (kurz davor bis kurz danach),
+beim Rundenwechsel kommt eine Ansage ("🛸 DAEMMERUNG · REGEN · UFO!"), unter Runde/Zeit steht der Bericht als
+Symbolleiste mit der aktuellen Runde gross.
+- **Tageszeiten:** Tag, Daemmerung (Abendrot, warmes Licht, naeherer Dunst), Nacht (Sterne, Mond, Scheinwerfer),
+  Morgenrot. Die dunklen Strecken (Neon-Pilzwald, Geisterhaus, Regenbogenpiste, Lava-Feste) behalten ihre Stimmung
+  und wechseln nur Wetter und Ereignisse; der Sonnen-Canyon kann in eine Wuestennacht kippen.
+- **Wetter:** Wolken, Regen (Streifen im Shader, Gischt hinter den Karts, Rauschen), Gewitter (Blitze am Horizont
+  mit Bildblitz und Donner mit Laufzeit, Windboeen, die alle Karts gleich seitlich schieben), Nebel, Schneegestoeber,
+  Sandsturm (Canyon), Ascheregen (Lava-Feste). Nasse und verschneite Fahrbahn haelt etwas weniger (fuer alle gleich).
+- **Ereignisse:** UFO mit Schwebe-Strahl - wer darunter faehrt, wird wie vom Sprungpilz angehoben (Trick moeglich),
+  danach fliegt es vor dem Feld weiter; Regenbogen nach dem Regen, Polarlicht, Sternschnuppen, Gluehwuermchen in der
+  Daemmerung, Sonnenfinsternis (Scheibe mit Korona, Scheinwerfer an).
+- Licht, Himmel und Nebel werden aus dem Thema gemischt (reine Funktion `weatherLook`), Teilchen folgen der Kamera
+  im Shader (keine CPU-Arbeit je Tropfen), alles wird mit der Strecke vorkompiliert - keine Shader-Kompilierung im
+  Rennen. Tunnel und Unterwasser haben Vorrang. Zeitfahren und Pilzland bleiben ruhig (faire Bestzeiten), in der
+  Pause abschaltbar ("Wetter: WECHSELHAFT / AUS"). Neue Erfolge "Nahbegegnung" (UFO-Lift) und "Wetterfest" (Sieg
+  bei Gewitter, Schnee oder Sandsturm) - jetzt 32.
+
+**Controller** (pad.mjs, 9 Unit-Tests; Gamepad-API mit Standard-Belegung, Xbox/PlayStation/Switch): Stick oder
+Steuerkreuz lenken stufenlos (Totzone, sanfte Kurve), A/RT Gas, B/LT Bremse, LB/RB Hops und Drift (in der Luft Trick),
+X/Y Item, START Pause, VIEW zuruecksetzen, im Pilzland Y fuer das Portal. Im Menue: links/rechts Strecke,
+hoch/runter Klasse, LB/RB Modus, A/START los, Y Erfolge. In Pause, Ergebnis und Siegerehrung waehlen hoch/runter
+den Knopf (gelber Rahmen), A bestaetigt (kurz nach dem Zieleinlauf gesperrt), B geht zurueck. Rumpeln bei Treffern,
+Turbos und harten Landungen. Die Hinweise (Tastenleiste, Item-Knopf, Drift-Anzeige) zeigen Controller-Tasten,
+sobald er benutzt wird, und wechseln bei Tastatureingabe zurueck.
+
+**Feinschliff:**
+- Tempoanzeige mit Tinten-Kontur wie Runde/Zeit (war auf Wasser, Sand und heller Fahrbahn kaum lesbar), im Turbo tuerkis.
+- Menue: "Stufe N" am Erfolge-Knopf war gelb auf gelb - jetzt dunkles Abzeichen; Kurzbeschreibungen der breiten
+  Streckenkarten stehen linksbuendig unter dem Namen (waren mittig).
+- Motorfilter blieb bei Hoechsttempo ueber der Nyquist-Grenze (Konsole voller Warnungen) - begrenzt.
+- Pruefung: Autopilot-Rennen ueber alle sieben Strecken mit zufaelligem Wetter (alle kommen ins Ziel, keine Fehler),
+  Bildvergleich Desktop, Handy hochkant und quer.
+
 ## Runde 49 (26.09.2026): Sonnen-Turbos im Tunnel
 
 - Jeder Lichtfleck unter einer Deckenoeffnung ist jetzt ein **Sonnen-Turbo**: wer hindurchfaehrt, bekommt einen
@@ -1480,24 +1518,32 @@ Im Projektordner `npm start` ausfuehren und http://127.0.0.1:4218 oeffnen. Node.
 
 ## Steuerung
 
-- WASD / Pfeiltasten: Gas, Bremse und Lenken.
-- Shift beim Lenken halten, dann loslassen: Drift und Mini-Turbo (blau → orange → lila). In der Luft Shift: Trick-Turbo.
-- Leertaste oder Item-Slot anklicken: Item einsetzen.
-- P / Escape: Pause. R: zur Streckenmitte zuruecksetzen.
-- Optionales Auto-Gas im Hauptmenue.
-- Auf Touch-Geraeten: Bildschirmtasten; Item-Slot antippen.
-- Musik/Engine/SFX mit dem Ton-Schalter aktivieren.
+- **Tastatur:** WASD / Pfeiltasten: Gas, Bremse, Lenken. Shift: Hops; beim Lenken halten = Drift, loslassen =
+  Mini-Turbo (blau → rot → lila); in der Luft Shift = Trick-Turbo. Leertaste oder Item-Feld: Item. P / Escape:
+  Pause. R: auf die Strecke zuruecksetzen. Enter: Start im Menue, Portal im Pilzland.
+- **Controller:** Stick/Steuerkreuz lenken, A/RT Gas, B/LT Bremse, LB/RB Hops & Drift, X/Y Item, START Pause,
+  VIEW zuruecksetzen; im Menue Steuerkreuz fuer Strecke und Klasse, LB/RB Modus, A los.
+- **Handy:** hochkant Ein-Hand-Wischsteuerung (wischen = lenken, tippen = Hops, weit wischen = Drift, nach oben =
+  Item), quer Bildschirmknoepfe (Gas, Bremse, Hops, Item). Umschalten und Auto-Gas in der Pause.
+- Ton-Schalter oben rechts (Musik, Motor und Effekte zusammen), Vollbild daneben.
 
 ## Umfang
 
-Drei eigene Kurse (Pilz-Promenade, Sunset Valley, Sternen-Garten), acht Fahrer, vier Kart-Farben, drei Runden, Verfolgungskamera, Minimap, Platzierung, Ergebnisliste, lokal gespeicherte Bestzeiten und vier Items: Turbo, Such-Panzer, Banane, Sternenschild. Die Arcade-Steuerung bewegt das Kart entlang der Strecke mit seitlicher Lenkung, Kurvendruck und Offroad-Bremse. Kein Multiplayer und keine native Store-App.
+Sieben Rennstrecken (Pilz-Promenade, Sonnen-Canyon, Neon-Pilzwald, Geisterhaus, Lava-Feste, Regenbogenpiste,
+Magnet-Kirmes) mit je eigener Idee, dazu die Open World "Pilzland" mit Missionen. Modi: Rennen, Grand Prix,
+Zeitfahren (Geist und Medaillen) und Pilzland; Klassen 50/100/150cc und Spiegel-Modus. Vier Fahrerfiguren (Pilzi,
+Schildi, Volt, Mochi) mit eigenem Kart und eigenen Werten, acht Karts je Rennen, drei Runden. Neun Items: Turbo,
+Dreifach-Turbo, Such-Panzer, Banane, Sternenschild, Pilzbombe, Gewitterwolke, Riesenpilz, Tintenpilz. Loopings,
+Achterbahnen, Elemente-Parcours (Boot, Tauchboot, Flugzeug), Wetter und Tageszeit von Runde zu Runde, Rivale je
+Rennen, Tagesaufgabe, Fahrerstufen mit XP, 32 Erfolge und freischaltbare Lackierungen. Kein Multiplayer und keine
+native Store-App.
 
-Alle Karts, Landschaften und UI-Elemente entstehen im Code. Lokale Three.js-Runtime aus dem vorhandenen Prisma-Kart-Projekt uebernommen; neuer Spielcode, neue Kurse und neues UI in diesem Ordner. Das Blender-MCP war beim Verbindungsversuch nicht erreichbar; Meshy/Tripo/Unreal und Store-MCPs sind nicht fuer die Erstellung oder Veroeffentlichung eingesetzt worden. Keine externen Generierungskosten, kein Store-Upload.
+Die Modelle entstehen in Blender (Skripte unter `art/`), Landschaft, Effekte und UI im Code; lokale Three.js-Runtime
+unter `vendor/`, keine Build-Installation und keine CDN-Abhaengigkeit fuer das Spiel selbst.
 
 ## Verifikation
 
-`npm test` prueft Rundenabschluss, Drift-Boost, Offroad-Bremse, Item-Verbrauch, Schildwirkung und Zieleinlauf-Reihenfolge. Im integrierten Browser wurden Menue und Rennansicht visuell geprueft; Strassenflimmern korrigiert; Start, Beschleunigung, Item-Aufnahme, Turbo, Pause, Ergebnisanzeige und Streckenwechsel getestet. Der beschleunigte Zieltest verwendet die ausschliesslich unter `?test=1` sichtbaren Test-Buttons. Er ersetzt keinen menschlichen Langzeit-Spieltest.
-
-Die API-unabhaengige Browserfassung ist lokal spielbar. Fuer native Android-/iOS-Verpackung und Store-Veroeffentlichung waere ein eigener Folgeschritt erforderlich.
-
-Mobile Sichtpruefung: Menue bei 390 x 844 Pixeln ohne horizontales Abschneiden geprueft. Alle drei Kurse lassen sich umschalten; abschliessender Browser-Fehlerlog leer.
+`npm test` (Node) prueft Fahrphysik, Drift-Turbo, Items, Zieleinlauf, Achterbahn, Loopings, Elemente, Hindernisse,
+Pilzland-Missionen, Fortschritt/Erfolge, Controller-Belegung und Wetterplan (zusammen 110 Tests). Im Browser
+liefert `?test=1` die Test-Schnittstelle `window.rallyTest` (Rennen starten, Zeit vorspulen, Wetter erzwingen,
+Standbilder); damit laufen die Autopilot-Rennen und Bildvergleiche. Das ersetzt keinen menschlichen Langzeit-Spieltest.

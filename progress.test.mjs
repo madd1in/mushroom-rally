@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {raceXP, levelOf, levelStart, recordRace, ACH, TRACKS, RIVAL_XP, DAILY_XP, DAILY_GOALS, dailyChallenge, dailyDone, dayKey, pickRival, rivalBeaten} from './progress.mjs';
+import {raceXP, levelOf, levelStart, recordRace, ACH, TRACKS, RIVAL_XP, DAILY_XP, DAILY_GOALS, dailyChallenge, dailyDone, dayKey, pickRival, rivalBeaten, achById} from './progress.mjs';
 
 test('race XP: placement base, bonuses and class multiplier', () => {
   const plain = raceXP({place: 1, cc: 50, stats: {hitsTaken: 1}});
@@ -73,4 +73,13 @@ test('rival: picked from the front of the grid, beaten when you finish ahead; bo
   assert.equal(raceXP({place: 4, cc: 50, stats: {hitsTaken: 1, rivalBeaten: true, daily: true}}).total, base + RIVAL_XP + DAILY_XP);
   const r = recordRace({}, {track: 2, cc: 100, place: 4, finished: true, stats: {hitsTaken: 1, rivalBeaten: true, daily: true, stormBest: 5}});
   assert.ok(r.fresh.includes('rival') && r.fresh.includes('daily') && r.fresh.includes('storm'));
+});
+
+test('weather achievements: ufo lift and winning in rough weather', () => {
+  const base = {place: 1, finished: true, track: 0, cc: 100, stats: {}};
+  assert.ok(achById('ufo').t({...base, stats: {ufoLifts: 1}}));
+  assert.ok(!achById('ufo').t(base));
+  assert.ok(achById('wxwin').t({...base, stats: {wxRough: true}}));
+  assert.ok(!achById('wxwin').t({...base, place: 2, stats: {wxRough: true}}));
+  assert.ok(!achById('wxwin').t(base));
 });
