@@ -1019,3 +1019,5 @@ body #result .result-actions{position:sticky;bottom:-22px;z-index:2;margin:0 -26
 /* Handy quer: beide Knoepfe nebeneinander, spart eine Zeile */
 @media (max-height:500px){body #result .result-actions{display:flex;gap:12px;align-items:stretch}
  body #result .result-actions button{margin-top:10px}body #result .result-actions #again{flex:1.6}body #result .result-actions #home{flex:1;margin-top:10px}}
+/* R51: Turbo-Zaehler im Ergebnis in den Funkenfarben (blau Mini, rot Super, lila Ultra) */
+#resultStats .mtv{font-style:inherit;padding:0 1px}#resultStats .mtv.mini{color:#1f86d6}#resultStats .mtv.super{color:#e0321f}#resultStats .mtv.ultra{color:#a13fd1}

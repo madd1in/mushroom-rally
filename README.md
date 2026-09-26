@@ -4,6 +4,14 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 51 (26.09.2026): Neustart aus der Pause, Zeitfahren-Ergebnis aufgeraeumt
+
+- **Pause:** neuer Knopf "Rennen neu starten" (auch Taste **R** in der Pause) - im Zeitfahren und Grand Prix
+  startet er das aktuelle Rennen neu, im Pilzland ist er ausgeblendet.
+- **Zeitfahren-Ergebnis:** zeigte nach einem normalen Rennen noch dessen XP-Balken und Erfolge an (das Zeitfahren
+  vergibt keine XP) - jetzt leer.
+- Mini-, Super- und Ultra-Turbos im Ergebnis in ihren Funkenfarben (blau, rot, lila) statt "0 · 0 · 0".
+
 ## Runde 50 (26.09.2026): Feinschliff an Menue, HUD und Ergebnis
 
 - **Ergebnis:** "Nochmal" und "Zur Streckenauswahl" bleiben unten im Bild stehen, auch wenn nach dem ersten Rennen
