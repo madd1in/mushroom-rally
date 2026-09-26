@@ -725,30 +725,6 @@ body.autogas #touch .t-drift{margin-bottom:0;width:clamp(100px,27vw,120px);heigh
 .ach-btn{font-family:var(--mk-font,'Rubik',sans-serif);font-style:italic;font-weight:900;border-radius:999px;padding:6px 14px;border:3px solid #fff;background:linear-gradient(180deg,#ffd43b,#f59f00);color:#3a2300;box-shadow:0 4px 0 rgba(0,0,0,.25);cursor:pointer;margin-right:10px}
 .ach-btn small{font-size:11px;font-weight:800;margin-left:4px;opacity:.85}
 
-/* ===== R44: Fortschritt - XP-Balken im Ergebnis, Erfolge-Tafel ===== */
-#resultProg{margin:10px 0 6px;text-align:left}
-#resultProg .xp-head{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mk-font,'Rubik',sans-serif);font-style:italic;font-weight:900;letter-spacing:.5px}
-#resultProg .xp-head b{font-size:18px;color:#f07800;text-shadow:0 2px 0 rgba(0,0,0,.18)}
-#resultProg .xp-bar,#achBar{position:relative;height:14px;border-radius:9px;background:rgba(0,0,0,.35);border:2px solid #fff;overflow:hidden;margin:6px 0}
-#resultProg .xp-bar i,#achBar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#2fd35f,#b6ff5c);border-radius:7px;transition:width .9s cubic-bezier(.2,.8,.2,1);display:block;height:100%}
-#achBar{height:20px}#achBar span{position:relative;display:block;text-align:center;font-weight:800;font-size:12px;line-height:16px;text-shadow:0 1px 0 rgba(0,0,0,.6)}
-#resultProg .xp-parts{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px;opacity:.9}
-#resultProg .xp-parts b{color:#15913a}
-#resultProg .xp-up{margin-top:8px;padding:6px 10px;border-radius:10px;background:linear-gradient(90deg,#ff7a1a,#ffd43b);color:#2a1606;font-weight:900;font-style:italic;animation:xpPop .5s ease-out 1.2s both}
-@keyframes xpPop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
-.ach-new{display:grid;gap:6px;margin-top:8px}
-.ach{display:grid;grid-template-columns:34px 1fr;align-items:center;column-gap:8px;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.18)}
-.ach i{grid-row:span 2;font-size:24px;font-style:normal;text-align:center}.ach b{font-size:14px}.ach small{font-size:11px;opacity:.8}
-.ach-new .ach{background:linear-gradient(90deg,rgba(255,212,59,.28),rgba(255,122,26,.18));border-color:#ffd43b;animation:xpPop .45s ease-out both}
-#achPanel>div{max-width:720px}
-#achList{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;max-height:52vh;overflow:auto;margin:10px 0;text-align:left}
-#achList .ach{opacity:.55}#achList .ach.on{opacity:1;border-color:#ffd43b;background:rgba(255,212,59,.14)}
-.ach-colors{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.ach-colors span{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800;border:2px solid var(--c);color:#fff;opacity:.6}
-.ach-colors span.on{background:var(--c);opacity:1;text-shadow:0 1px 0 rgba(0,0,0,.5)}
-.ach-btn{font-family:var(--mk-font,'Rubik',sans-serif);font-style:italic;font-weight:900;border-radius:999px;padding:6px 14px;border:3px solid #fff;background:linear-gradient(180deg,#ffd43b,#f59f00);color:#3a2300;box-shadow:0 4px 0 rgba(0,0,0,.25);cursor:pointer;margin-right:10px}
-.ach-btn small{font-size:11px;font-weight:800;margin-left:4px;opacity:.85}
-
 /* ===== R45: Ein-Hand-Steuerung (Handy hochkant) - keine Fahrknoepfe, eine Wischflaeche ueber dem Spielbild ===== */
 #ohPad{display:none}
 #ctrlMode{display:none}
@@ -1019,3 +995,27 @@ body.mirror #game,body.mirror #map{transform:scaleX(-1)}
 #menu #classes .mirror-btn{position:relative;flex:0 0 auto;min-width:0;padding:6px 9px;font-size:16px;line-height:1}
 #menu #classes .mirror-btn b{display:none}
 #menu #classes .mirror-btn.locked::after{content:'🔒';position:absolute;right:-4px;bottom:-4px;font-size:10px}
+
+/* ===== R50: Feinschliff ===== */
+/* POSITION-Beschriftung: der 4px-Schatten der grossen Ziffer liess die kleine Schrift doppelt erscheinen */
+#hud .position small{text-shadow:0 1px 2px #0007}
+/* Kurzbeschreibung der Streckenkarten buendig unter dem Namen (erbte text-align:center, breite Karten der letzten Reihe) */
+#menu #tracks .track u{text-align:left}
+/* Tacho: feste Ziffernbreite, damit der Pilz-Muenzen-Zaehler daneben nicht bei jedem Tempowechsel springt */
+#hud .speed>strong{display:inline-block;min-width:2.9ch;font-variant-numeric:tabular-nums}
+/* Ergebnis: zweizeilige Beschriftungen - Werte trotzdem auf einer Linie */
+#resultStats div{justify-content:space-between}
+/* Ergebnis: neue Erfolge zweispaltig, damit "Nochmal" nach dem ersten Rennen nicht weit unten verschwindet */
+#result .ach-new{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+#result .ach small{line-height:1.25}
+/* Handy hochkant: Einblendungen unter dem Rivalen-Schild statt darueber */
+@media (max-width:620px){body #toast{top:30%}}
+/* Steuerungs-Hinweis unten blendet nach 20 s Rennzeit aus - in der Pause taucht er wieder auf */
+#raceTip{transition:opacity .8s}#raceTip.off{opacity:0}
+/* Ergebnis: "Nochmal" und "Zur Streckenauswahl" bleiben unten im Bild, auch wenn Erfolge und Rangliste scrollen */
+body #result .result-actions{position:sticky;bottom:-22px;z-index:2;margin:0 -26px -22px;padding:2px 26px 22px;
+ background:linear-gradient(180deg,#e7f3ff00,#e7f3fffa 18px)}
+@media (max-width:620px){body #result .result-actions{bottom:-18px;margin:0 -18px -18px;padding:2px 18px 18px}}
+/* Handy quer: beide Knoepfe nebeneinander, spart eine Zeile */
+@media (max-height:500px){body #result .result-actions{display:flex;gap:12px;align-items:stretch}
+ body #result .result-actions button{margin-top:10px}body #result .result-actions #again{flex:1.6}body #result .result-actions #home{flex:1;margin-top:10px}}

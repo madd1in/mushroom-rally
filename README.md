@@ -4,6 +4,20 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 50 (26.09.2026): Feinschliff an Menue, HUD und Ergebnis
+
+- **Ergebnis:** "Nochmal" und "Zur Streckenauswahl" bleiben unten im Bild stehen, auch wenn nach dem ersten Rennen
+  viele neue Erfolge dazukommen (vorher musste man weit nach unten scrollen). Neue Erfolge zweispaltig, auf dem Handy
+  quer liegen beide Knoepfe nebeneinander. **Enter** startet vom Ergebnis aus das naechste Rennen.
+- Statistik-Kacheln: Werte stehen auf einer Linie, auch wenn die Beschriftung zweizeilig umbricht.
+- **HUD:** Die Beschriftung "POSITION" wirkte doppelt (der Schatten der grossen Ziffer lag versetzt darunter).
+  Der Tacho hat feste Ziffernbreite, der Pilzmuenzen-Zaehler daneben springt nicht mehr bei jedem Tempowechsel.
+  Der Steuerungs-Hinweis unten blendet nach 20 s Rennzeit aus und erscheint in der Pause wieder.
+- **Menue:** Die Kurzbeschreibung der Streckenkarten steht buendig unter dem Namen (in der unteren Reihe war sie
+  mittig eingerueckt).
+- Handy hochkant: Einblendungen wie "UEBERKOPF!" liegen unter dem Rivalen-Schild statt darueber.
+- Doppelt eingebundener CSS-Block (Fortschritt/Erfolge aus R44) entfernt.
+
 ## Runde 49 (26.09.2026): Sonnen-Turbos im Tunnel
 
 - Jeder Lichtfleck unter einer Deckenoeffnung ist jetzt ein **Sonnen-Turbo**: wer hindurchfaehrt, bekommt einen
