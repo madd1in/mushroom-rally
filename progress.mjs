@@ -63,6 +63,7 @@ export const ACH = [
   {id: 'storm', n: 'Wettermacher', d: 'Triff 4 Karts mit einer Gewitterwolke', t: r => cnt(r.stats, 'stormBest') >= 4},
   {id: 'daily', n: 'Tagesheld', d: 'Schaffe eine Tages-Herausforderung', t: r => !!r.stats.daily},
   // R47
+  {id: 'sun', n: 'Sonnenanbeter', d: 'Hol dir 6 Sonnen-Turbos in einem Rennen', t: r => cnt(r.stats, 'sunBoosts') >= 6},
   {id: 'mirror', n: 'Spiegelmeister', d: 'Gewinne ein Rennen im Spiegel-Modus', t: r => r.place === 1 && !!r.mirror},
   {id: 'mega', n: 'Riesenschritt', d: 'Mache mit dem Riesenpilz 3 Karts platt', t: r => cnt(r.stats, 'megaSquash') >= 3},
   {id: 'ink', n: 'Tintenfisch', d: 'Triff mit einem Tintenpilz 4 Fahrer', t: r => cnt(r.stats, 'inkBest') >= 4},

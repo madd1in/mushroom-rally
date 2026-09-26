@@ -4,6 +4,16 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 49 (26.09.2026): Sonnen-Turbos im Tunnel
+
+- Jeder Lichtfleck unter einer Deckenoeffnung ist jetzt ein **Sonnen-Turbo**: wer hindurchfaehrt, bekommt einen
+  kurzen Schub (0,65 s, einmal je Durchfahrt) mit hellem Chiptune-Glockenlauf und Glitzern. Die Flecken liegen
+  je nach Sonnenstand seitlich versetzt - im Tunnel lohnt sich die Linienwahl. Geschickte KI-Fahrer zielen darauf.
+- Der Fleck folgt jetzt der Fahrbahn (kleines Gitter statt flacher Ebene, vorher teils unter dem Belag
+  verschwunden) und zeigt Strahlen und drei Pfeile in Fahrtrichtung.
+- Felsen auf dem Tunnelhuegel weiter nach aussen und kleiner - im Canyon ragten sie durch die Decke.
+- Neuer Erfolg "Sonnenanbeter" (6 Sonnen-Turbos in einem Rennen).
+
 ## Runde 48 (26.09.2026): Riesenpilz-Marsch, Neon-Tunnel im Takt, KI weicht aus, Update-Video
 
 - **Riesenpilz-Marsch:** solange das Kart gross ist, laeuft eine eigene Chiptune-Schleife (stampfender Marsch in

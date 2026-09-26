@@ -187,4 +187,7 @@ report.push(wav('daily', render(1.3, [{type: 'sq', duty: .25, steps: [[0, note('
   }
   report.push(wav('megaloop', render(loop, voices)));
 }
+// R49 Sonnen-Turbo: heller Glockenlauf aufwaerts mit Glitzern (durch den Lichtfleck im Tunnel)
+report.push(wav('sun', render(.5, [{type: 'sq', duty: .125, steps: arp(['C6', 'E6', 'G6', 'C7', 'E7', 'G7'], .035), vol: .18, hold: .35, decay: 1.6},
+  {type: 'tri', steps: arp(['C5', 'G5', 'C6'], .05), vol: .22, hold: .3, decay: 1.4}, {type: 'noise', f0: 12000, short: true, at: .08, len: .35, vol: .05, decay: 2.2}])));
 console.log(JSON.stringify(report));
