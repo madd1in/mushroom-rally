@@ -76,7 +76,7 @@ const courses=[
   points:[[0,90],[70,88],[120,52],[108,-2],[128,-52],[96,-96],[36,-104],[-18,-78],[-8,-30],[-52,-8],[-104,-30],[-126,16],[-96,64],[-40,84]],
   loopc:[[6.2,21,2,-1,'curve']],agrav:[[2.05,4.05,'roll',1],[8.85,10.8,'ceiling',1]],coaster:[[10.9,12.95,'hills']],
   hills:[[8.4,5,.03]],gaps:[[4.55,13]],elem:[[.3,1.72,'flug']],stampers:[[5.0,3.6,.9],[13.1,-3.6,0],[13.28,3.6,1.8]],
-  ramps:[[1.9,0,9],[8.15,0,8]],pads:[[3.9,-4]],
+  ramps:[[1.9,0,9],[8.3,0,8]],pads:[[3.9,-4]],
   meteors:[[4.7,5.85]],boost:[.6,5.4,11.4],boxes:[1.4,4.0,7.9,10.7,.45]},
  // R38: Kirmes-Strecke rund um die Magnet-Achterbahn (Katapult, Top-Hat, Kamelruecken, Bunny-Hop),
  // dazu Looping auf der rechten Geraden und ein Korkenzieher links.

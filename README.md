@@ -4,6 +4,13 @@ Spielbarer 3D-Arcade-Kart-Prototyp fuer den Browser, gebaut am 13.09.2026.
 
 Live: https://madd1in.github.io/mushroom-rally/
 
+## Runde 52 (26.09.2026): Schanze auf der Regenbogenpiste aus der Kurve geholt
+
+- Die zweite Schanze der Regenbogenpiste stand mitten in einer engen Kurve (Radius ~32 m) auf der Kuppe: Karts
+  flogen geradeaus weiter, landeten bis 16 m neben der Mitte und stuerzten ab und zu in den Sternenhimmel.
+  Sie steht jetzt ~7 m weiter im flacheren Kurvenausgang (Kontrollpunkt 8,15 -> 8,3); in 12 Test-Anfahrten
+  (Linie -5..+4 m, 30-46 m/s) liegt die Landung hoechstens 4,7 m neben der Mitte.
+
 ## Runde 51 (26.09.2026): Neustart aus der Pause, Zeitfahren-Ergebnis aufgeraeumt
 
 - **Pause:** neuer Knopf "Rennen neu starten" (auch Taste **R** in der Pause) - im Zeitfahren und Grand Prix
